@@ -1,0 +1,11 @@
+CGPA,Interactiveness,Practical_Knowledge,Communication_Skills,Job_Offer
+>=9,Yes,Very_good,Good,1
+>=8,No,Good,Moderate,1
+>=9,No,Average,Poor,0
+<8,No,Average,Good,0
+>=8,Yes,Good,Moderate,1
+>=9,Yes,Good,Moderate,1
+<8,Yes,Good,Poor,0
+>=9,No,Very_good,Good,1
+>=8,Yes,Good,Good,1
+>=8,Yes,Average,Good,1
