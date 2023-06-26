@@ -1,19 +1,25 @@
 import math
 import numpy as np
 
+
 def get_optimal_bins(prices):
     # Determine the optimal number of bins using the square root rule
     num_bins = int(round(math.sqrt(len(prices))))
 
     # Create the optimal bins
     _, bin_edges = np.histogram(prices, bins=num_bins)
-    
+
     # Replace the bin edges with bin labels
     bin_labels = [f'Bin{i}' for i in range(1, num_bins+1)]
 
     # Substitute the bin labels in the prices list
-    binned_prices = np.searchsorted(bin_edges, prices, side='right')
-    binned_prices = [bin_labels[i-1] for i in binned_prices]
+    binned_prices = []
+    for price in prices:
+        bin_idx = np.searchsorted(bin_edges, price, side='right')
+        if bin_idx == len(bin_labels):
+            binned_prices.append(bin_labels[bin_idx-1])
+        else:
+            binned_prices.append(bin_labels[bin_idx])
 
     # Return the binned prices and the optimal number of bins
     return binned_prices, num_bins
