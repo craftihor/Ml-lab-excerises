@@ -1,7 +1,6 @@
 import math
 import numpy as np
 
-
 def get_optimal_bins(prices):
     # Determine the optimal number of bins using the square root rule
     num_bins = int(round(math.sqrt(len(prices))))
@@ -16,10 +15,12 @@ def get_optimal_bins(prices):
     binned_prices = []
     for price in prices:
         bin_idx = np.searchsorted(bin_edges, price, side='right')
-        if bin_idx == len(bin_labels):
-            binned_prices.append(bin_labels[bin_idx-1])
-        else:
+        if bin_idx == len(bin_edges):
+            binned_prices.append(bin_labels[bin_idx-2])
+        elif bin_idx == 0:
             binned_prices.append(bin_labels[bin_idx])
+        else:
+            binned_prices.append(bin_labels[bin_idx-1])
 
     # Return the binned prices and the optimal number of bins
     return binned_prices, num_bins
