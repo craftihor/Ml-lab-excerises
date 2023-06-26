@@ -1,3 +1,4 @@
+conda install -c conda-forge jupyter_contrib_nbextensions
 import math
 import numpy as np
 
