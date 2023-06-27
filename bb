@@ -1,3 +1,27 @@
+from sklearn.naive_bayes import MultinomialNB
+import pandas as pd
+
+# Assuming you have a preprocessed and label-encoded DataFrame called 'df' with attributes and target columns
+
+# Separate the features and target variable
+X = df.drop('target', axis=1)  # Replace 'target' with the name of your target variable column
+y = df['target']
+
+# Create and fit a Naive Bayes classifier
+nb = MultinomialNB()
+nb.fit(X, y)
+
+# Calculate attribute contributions (probability ratios)
+attribute_contributions = pd.DataFrame({'Attribute': X.columns, 'Contribution': nb.feature_log_prob_[1] - nb.feature_log_prob_[0]})
+
+# Sort attribute contributions by descending order
+attribute_contributions = attribute_contributions.sort_values(by='Contribution', ascending=False)
+
+# Print attribute contributions
+print(attribute_contributions)
+
+
+
 from sklearn.linear_model import Lasso
 import pandas as pd
 
