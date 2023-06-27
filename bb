@@ -1,4 +1,32 @@
 import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+
+# Assuming you have preprocessed and scaled unsupervised data in a dataframe called 'df'
+
+# Apply standardization to the data
+scaler = StandardScaler()
+scaled_data = scaler.fit_transform(df)
+
+# Apply PCA
+pca = PCA()
+pca.fit(scaled_data)
+
+# Calculate the cumulative explained variance ratio
+cumulative_variance_ratio = np.cumsum(pca.explained_variance_ratio_)
+
+# Plot the explained variance ratio
+plt.figure(figsize=(10, 6))
+plt.plot(range(1, len(pca.explained_variance_ratio_) + 1), cumulative_variance_ratio, marker='o', linestyle='--')
+plt.xlabel('Number of Principal Components')
+plt.ylabel('Cumulative Explained Variance Ratio')
+plt.title('Cumulative Explained Variance Ratio by Principal Components')
+plt.grid(True)
+plt.show()
+
+
+import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, AdaBoostClassifier
 from sklearn.linear_model import LogisticRegression
