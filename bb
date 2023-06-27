@@ -1,5 +1,38 @@
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering
+from sklearn.decomposition import PCA
+from sklearn.metrics import silhouette_score
+
+# Assuming you have preprocessed and scaled unsupervised data in a dataframe called 'df'
+
+# Apply dimensionality reduction using PCA
+pca = PCA(n_components=2)  # You can adjust the number of components as needed
+pca_result = pca.fit_transform(df)
+
+# Apply different clustering algorithms
+kmeans = KMeans(n_clusters=3)
+dbscan = DBSCAN(eps=0.5, min_samples=5)
+agg_cluster = AgglomerativeClustering(n_clusters=3)
+
+# Fit the clustering models
+kmeans_labels = kmeans.fit_predict(pca_result)
+dbscan_labels = dbscan.fit_predict(pca_result)
+agg_cluster_labels = agg_cluster.fit_predict(pca_result)
+
+# Evaluate the clustering results using silhouette score
+kmeans_score = silhouette_score(pca_result, kmeans_labels)
+dbscan_score = silhouette_score(pca_result, dbscan_labels)
+agg_cluster_score = silhouette_score(pca_result, agg_cluster_labels)
+
+# Print the silhouette scores for each clustering algorithm
+print(f"KMeans Silhouette Score: {kmeans_score}")
+print(f"DBSCAN Silhouette Score: {dbscan_score}")
+print(f"Agglomerative Clustering Silhouette Score: {agg_cluster_score}")
+
+
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 
