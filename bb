@@ -1,3 +1,62 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, AdaBoostClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import VotingClassifier
+
+# Assuming you have preprocessed and label-encoded data in a dataframe called 'df'
+
+# Split the data into features (X) and target variable (y)
+X = df.drop('target_variable', axis=1)  # Replace 'target_variable' with the name of your target variable column
+y = df['target_variable']
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create a list of models to use
+models = [
+    ('Random Forest', RandomForestClassifier()),
+    ('Gradient Boosting', GradientBoostingClassifier()),
+    ('AdaBoost', AdaBoostClassifier()),
+    ('Logistic Regression', LogisticRegression()),
+    ('SVM', SVC())
+]
+
+# Train and evaluate each model
+for model_name, model in models:
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    print(f'{model_name} Accuracy: {accuracy}')
+
+    # Get feature importances if available
+    if hasattr(model, 'feature_importances_'):
+        feature_importances = pd.DataFrame({'Feature': X.columns, 'Importance': model.feature_importances_})
+        print(f'{model_name} Feature Importances:')
+        print(feature_importances)
+
+# Optimize the ensemble
+parameters = {
+    'Random Forest__n_estimators': [100, 200, 300],  # Example hyperparameters for Random Forest
+    'Gradient Boosting__n_estimators': [100, 200, 300],  # Example hyperparameters for Gradient Boosting
+}
+
+ensemble_model = GridSearchCV(
+    VotingClassifier(estimators=models),  # Use VotingClassifier for ensemble
+    param_grid=parameters,
+    cv=5
+)
+
+ensemble_model.fit(X_train, y_train)
+y_pred = ensemble_model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Ensemble Accuracy: {accuracy}')
+
+
+
 conda install -c conda-forge jupyter_contrib_nbextensions
 import math
 import numpy as np
