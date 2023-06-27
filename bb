@@ -1,3 +1,50 @@
+from sklearn.linear_model import Lasso
+import pandas as pd
+
+# Assuming you have a preprocessed and label-encoded DataFrame called 'df' with attributes and target columns
+
+# Separate the features and target variable
+X = df.drop('target', axis=1)  # Replace 'target' with the name of your target variable column
+y = df['target']
+
+# Create and fit a Lasso Regression model
+lasso = Lasso(alpha=0.01)
+lasso.fit(X, y)
+
+# Get attribute contributions from the non-zero coefficients
+attribute_contributions = pd.DataFrame({'Attribute': X.columns, 'Contribution': lasso.coef_})
+
+# Sort attribute contributions by descending order
+attribute_contributions = attribute_contributions.sort_values(by='Contribution', ascending=False)
+
+# Print attribute contributions
+print(attribute_contributions)
+
+
+from sklearn.inspection import permutation_importance
+from sklearn.tree import DecisionTreeClassifier
+import pandas as pd
+
+# Assuming you have a preprocessed and label-encoded DataFrame called 'df' with attributes and target columns
+
+# Separate the features and target variable
+X = df.drop('target', axis=1)  # Replace 'target' with the name of your target variable column
+y = df['target']
+
+# Create and fit a Decision Tree classifier
+dt = DecisionTreeClassifier()
+dt.fit(X, y)
+
+# Calculate permutation importances
+result = permutation_importance(dt, X, y, n_repeats=10, random_state=0)
+
+# Get attribute importances from the permutation importances
+attribute_importances = pd.DataFrame({'Attribute': X.columns, 'Importance': result.importances_mean})
+
+
+
+
+
 import pandas as pd
 
 # Assuming you have a preprocessed and label-encoded DataFrame called 'df' with columns 'attribute1', 'attribute2', and 'target'
