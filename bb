@@ -1,4 +1,20 @@
 import pandas as pd
+
+# Assuming you have a DataFrame called 'original_df'
+
+# Create an empty DataFrame to store the rows with non-null values
+new_df = pd.DataFrame(columns=original_df.columns)
+
+# Iterate over the rows of the original DataFrame
+for index, row in original_df.iterrows():
+    if pd.notnull(row['column_name']):  # Replace 'column_name' with the name of your column
+        new_df = new_df.append(row)
+
+# Reset the index of the new DataFrame
+new_df = new_df.reset_index(drop=True)
+
+
+import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering
 from sklearn.decomposition import PCA
