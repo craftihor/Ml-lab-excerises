@@ -1,3 +1,28 @@
+from sklearn.linear_model import LassoCV
+import numpy as np
+import pandas as pd
+
+# Assuming you have a preprocessed and label-encoded DataFrame called 'df' with attributes and target columns
+
+# Separate the features and target variable
+X = df.drop('target', axis=1)  # Replace 'target' with the name of your target variable column
+y = df['target']
+
+# Create a range of alpha values to be tested
+alphas = np.logspace(-4, 0, 50)
+
+# Create and fit the LassoCV model
+lasso_cv = LassoCV(alphas=alphas, cv=5)
+lasso_cv.fit(X, y)
+
+# Get the optimal alpha value
+optimal_alpha = lasso_cv.alpha_
+
+# Print the optimal alpha value
+print("Optimal Alpha:", optimal_alpha)
+
+
+
 plt.figure(figsize=(10, 6))
 plt.barh(attribute_contributions['Attribute'], attribute_contributions['Contribution'])
 plt.xlabel('Contribution')
