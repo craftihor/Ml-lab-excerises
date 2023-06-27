@@ -1,3 +1,29 @@
+plt.figure(figsize=(10, 6))
+plt.barh(attribute_contributions['Attribute'], attribute_contributions['Contribution'])
+plt.xlabel('Contribution')
+plt.ylabel('Attribute')
+plt.title('Attribute Contributions')
+plt.tight_layout()
+plt.show()
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Assuming you have attribute contributions stored in a DataFrame called 'attribute_contributions'
+
+# Pivot the attribute contributions DataFrame for visualization
+heatmap_data = attribute_contributions.pivot(index=None, columns='Attribute', values='Contribution')
+
+# Create a heatmap of attribute contributions
+plt.figure(figsize=(10, 6))
+sns.heatmap(heatmap_data, cmap='coolwarm', annot=True, fmt=".2f", cbar=False)
+plt.title('Attribute Contributions Heatmap')
+plt.tight_layout()
+plt.show()
+
+
+
 from sklearn.naive_bayes import MultinomialNB
 import pandas as pd
 
