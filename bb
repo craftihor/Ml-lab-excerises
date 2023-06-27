@@ -1,5 +1,22 @@
 import pandas as pd
 
+# Assuming you have a preprocessed and label-encoded DataFrame called 'df' with columns 'attribute1', 'attribute2', and 'target'
+
+# Group the data by the target column and calculate the count for each attribute combination
+grouped = df.groupby('target')[['attribute1', 'attribute2']].count()
+
+# Calculate the total count for each target
+target_counts = df['target'].value_counts().rename('total_count')
+
+# Calculate the percentage of each attribute combination for each target
+percentage_df = grouped.div(target_counts, axis=0) * 100
+
+# Print the percentage of attribute combinations for each target
+print(percentage_df)
+
+
+import pandas as pd
+
 # Assuming you have a DataFrame called 'original_df'
 
 # Create an empty DataFrame to store the rows with non-null values
