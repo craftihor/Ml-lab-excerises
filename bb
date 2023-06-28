@@ -1,3 +1,37 @@
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+
+# Assuming you have a DataFrame 'df' with categorical variables
+
+# Create a new DataFrame to store the encoded values
+df_encoded = df.copy()
+
+# Initialize a dictionary to store the label encoding mappings
+encoding_mappings = {}
+
+# Iterate over each column in the DataFrame
+for column in df.columns:
+    if df[column].dtype == 'object':  # Check if the column contains categorical values
+        # Initialize a LabelEncoder for the column
+        encoder = LabelEncoder()
+        
+        # Fit and transform the column to obtain the encoded values
+        encoded_values = encoder.fit_transform(df[column])
+        
+        # Store the encoded values in the new DataFrame
+        df_encoded[column] = encoded_values
+        
+        # Store the label encoding mappings for future reference
+        encoding_mappings[column] = dict(zip(encoder.classes_, encoder.transform(encoder.classes_)))
+
+# Save the encoded DataFrame and the encoding mappings to separate files
+df_encoded.to_csv('encoded_data.csv', index=False)
+pd.DataFrame.from_dict(encoding_mappings).to_csv('encoding_mappings.csv', index=False)
+
+
+
+
+
 import lightgbm as lgb
 import numpy as np
 import pandas as pd
