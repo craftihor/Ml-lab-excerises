@@ -1,3 +1,40 @@
+import math
+import numpy as np
+
+def get_optimal_bins(prices):
+    # Determine the optimal number of bins using the square root rule
+    num_bins = int(round(math.sqrt(len(prices))))
+
+    # Create the optimal bins
+    counts, bin_edges = np.histogram(prices, bins=num_bins)
+
+    # Replace the bin edges with bin labels
+    bin_labels = [f'Bin{i}' for i in range(1, num_bins + 1)]
+
+    # Substitute the bin labels in the prices list
+    binned_prices = []
+    for price in prices:
+        bin_idx = np.searchsorted(bin_edges, price, side='right')
+        if bin_idx == len(bin_edges):
+            binned_prices.append(bin_labels[bin_idx - 2])
+        elif bin_idx == 0:
+            binned_prices.append(bin_labels[bin_idx])
+        else:
+            binned_prices.append(bin_labels[bin_idx - 1])
+
+    # Return the binned prices, optimal number of bins, and bin edges
+    return binned_prices, num_bins, bin_edges
+
+# Example usage
+prices = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+binned_prices, num_bins, bin_edges = get_optimal_bins(prices)
+
+# Save the bin range
+bin_range = [bin_edges[0], bin_edges[-1]]
+print("Bin Range:", bin_range)
+
+
+
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 
