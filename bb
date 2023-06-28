@@ -1,3 +1,62 @@
+import lightgbm as lgb
+import numpy as np
+import pandas as pd
+from sklearn.metrics import roc_auc_score
+from sklearn.model_selection import StratifiedKFold, train_test_split
+
+# Assuming you have the data stored in X_train, X_test, y_train, and y_test
+
+lgb_params = {
+    'objective': 'binary',
+    'boosting': 'gbdt',
+    'bagging_fraction': 0.9,
+    'bagging_frequency': 1,
+    'cat_smooth': 70,
+    'feature_fraction': 0.9,
+    'learning_rate': 0.01,
+    'min_child_samples': 20,
+    'min_data_per_group': 100,
+    'num_leaves': 18,
+    'metric': 'auc',
+    'unbalance': True
+}
+
+oof_lgb = np.zeros(len(X_train))
+pred_lgb = np.zeros(len(X_test))
+
+scores = []
+
+feature_importances_gain = pd.DataFrame()
+feature_importances_gain['feature'] = X_train.columns
+
+feature_importances_split = pd.DataFrame()
+feature_importances_split['feature'] = X_train.columns
+
+folds = StratifiedKFold(n_splits=3, shuffle=True, random_state=42)
+
+for fold_, (train_ind, val_ind) in enumerate(folds.split(X_train, y_train)):
+    print("fold: ---------------------------------------", fold_)
+    trn_data = lgb.Dataset(X_train.iloc[train_ind], label=y_train.iloc[train_ind], categorical_feature=cats)  # Specify categorical feature for lgb
+    val_data = lgb.Dataset(X_train.iloc[val_ind], label=y_train.iloc[val_ind], categorical_feature=cats)  # Specify categorical feature for lgb
+
+    lgb_clf = lgb.train(lgb_params, trn_data, num_boost_round=1000, valid_sets=(trn_data, val_data), verbose_eval=100, early_stopping_rounds=100)
+    oof_lgb[val_ind] = lgb_clf.predict(X_train.iloc[val_ind], num_iteration=lgb_clf.best_iteration)
+    print("fold:", fold_, "roc_auc =", roc_auc_score(y_train.iloc[val_ind], oof_lgb[val_ind]))
+    scores.append(roc_auc_score(y_train.iloc[val_ind], oof_lgb[val_ind]))
+
+    feature_importances_gain['fold_{}'.format(fold_ + 1)] = lgb_clf.feature_importance(importance_type='gain')
+    feature_importances_split['fold_{}'.format(fold_ + 1)] = lgb_clf.feature_importance(importance_type='split')
+    pred_lgb += lgb_clf.predict(X_test, num_iteration=lgb_clf.best_iteration) / folds.n_splits
+
+print(' \\\\\\\\\\\\\\\ model roc_auc ////////////// : ', np.mean(scores))
+
+np.save('oof_lgb', oof_lgb)
+np.save('pred_lgb', pred_lgb)
+
+
+
+
+
 from sklearn.linear_model import LassoCV
 import numpy as np
 import pandas as pd
