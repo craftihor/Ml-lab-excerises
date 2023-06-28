@@ -1,3 +1,74 @@
+from catboost import CatBoostClassifier
+
+# Assuming you have trained a CatBoost classifier and stored it in the variable 'model'
+
+# Get the feature importance
+feature_importance = model.get_feature_importance(prettified=True)
+
+# Specify the target attribute feature
+target_attribute = 'target_feature_name'  # Replace with the actual name of the target attribute feature
+
+# Filter the feature importance by the target attribute
+target_feature_importance = feature_importance[feature_importance['Feature Id'].str.contains(target_attribute)]
+
+# Sort the feature importance in descending order
+sorted_target_feature_importance = target_feature_importance.sort_values(by='Importances', ascending=False)
+
+# Print the sorted feature importance
+print(sorted_target_feature_importance)
+
+
+
+from catboost import CatBoostClassifier
+import matplotlib.pyplot as plt
+
+# Assuming you have trained a CatBoost classifier and stored it in the variable 'model'
+
+# Print the classification tree
+model.plot_tree(tree_idx=0, pool=None, figsize=(20, 20), feature_names=None, plot=True)
+
+# Get the feature importance
+feature_importance = model.get_feature_importance(prettified=True)
+
+# Print the feature importance
+print(feature_importance)
+
+# Visualize the feature importance
+plt.figure(figsize=(10, 6))
+plt.barh(feature_importance['Feature Id'], feature_importance['Importances'])
+plt.xlabel('Feature Importance')
+plt.ylabel('Features')
+plt.title('CatBoost Feature Importance')
+plt.show()
+
+
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from catboost import CatBoostClassifier
+
+# Assuming you have a DataFrame 'df' with features and 'target' column
+
+# Split the data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(df.drop('target', axis=1), df['target'], test_size=0.2, random_state=42)
+
+# Identify the categorical features
+categorical_features = ['cat_feature1', 'cat_feature2']  # Replace with the actual column names of categorical features
+
+# Create a CatBoost classifier
+model = CatBoostClassifier(iterations=100, learning_rate=0.1, depth=6, loss_function='MultiClass')
+
+# Fit the model to the training data
+model.fit(X_train, y_train, cat_features=categorical_features, verbose=100)
+
+# Make predictions on the test data
+predictions = model.predict(X_test)
+
+# Evaluate the model
+accuracy = (predictions == y_test).mean()
+print("Accuracy:", accuracy)
+
+
 import math
 import numpy as np
 
