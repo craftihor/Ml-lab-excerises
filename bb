@@ -3,6 +3,54 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from keras.models import Sequential
+from keras.layers import Dense, Dropout
+from keras.optimizers import Adam, RMSprop
+from keras.utils import np_utils
+
+# Assuming you have a preprocessed DataFrame called 'df' with features and target columns
+
+# Separate the features and target variable
+X = df.drop('target', axis=1)  # Replace 'target' with the name of your target variable column
+y = df['target']
+
+# Encode the target variable
+label_encoder = LabelEncoder()
+y_encoded = label_encoder.fit_transform(y)
+# Convert the encoded labels to one-hot encoded format
+y_encoded_onehot = np_utils.to_categorical(y_encoded)
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y_encoded_onehot, test_size=0.2, random_state=42)
+
+# Define the Deep Learning model
+model = Sequential()
+model.add(Dense(64, input_dim=X_train.shape[1], activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(32, activation='relu'))
+model.add(Dense(16, activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(y_train.shape[1], activation='softmax'))
+
+# Compile the model
+optimizer = Adam(learning_rate=0.001)
+model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+
+# Train the model
+model.fit(X_train, y_train, epochs=10, batch_size=32, verbose=1)
+
+# Evaluate the model on the test set
+loss, accuracy = model.evaluate(X_test, y_test, verbose=1)
+print("Test Loss:", loss)
+print("Test Accuracy:", accuracy)
+
+
+
+
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from keras.models import Sequential
 from keras.layers import Dense
 from keras.utils import np_utils
 
