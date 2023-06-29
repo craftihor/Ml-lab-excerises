@@ -1,3 +1,34 @@
+from sklearn.naive_bayes import MultinomialNB
+import pandas as pd
+
+# Assuming you have a preprocessed and label-encoded DataFrame called 'df' with attributes and target columns
+
+# Separate the features and target variable
+X = df.drop('target', axis=1)  # Replace 'target' with the name of your target variable column
+y = df['target']
+
+# Create and fit a Naive Bayes classifier
+nb = MultinomialNB()
+nb.fit(X, y)
+
+# Create a DataFrame to store the attribute contributions
+attribute_contributions = pd.DataFrame(index=X.columns)
+
+# Iterate over each class
+for class_label in nb.classes_:
+    # Calculate attribute contributions (probability ratios) for the current class
+    class_contributions = nb.feature_log_prob_[class_label] - nb.feature_log_prob_.sum(axis=0)
+    # Assign the contributions to the corresponding class column in the DataFrame
+    attribute_contributions[class_label] = class_contributions
+
+# Sort attribute contributions by descending order for each class
+attribute_contributions = attribute_contributions.sort_values(by=nb.classes_[0], ascending=False)
+
+# Print attribute contributions
+print(attribute_contributions)
+
+
+
 from itertools import combinations
 import numpy as np
 
