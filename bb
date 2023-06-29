@@ -1,3 +1,32 @@
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+
+# Assuming you have already preprocessed your data and stored it in 'X' and 'y' variables
+
+# Create and fit the LDA model
+lda = LinearDiscriminantAnalysis()
+lda.fit(X, y)
+
+# Get the coefficients or loadings of the LDA components
+loadings = lda.coef_
+
+# Access the loadings for each component
+for i, component in enumerate(loadings):
+    original_columns = X.columns  # Replace 'X' with your original data
+    component_loadings = dict(zip(original_columns, component))
+
+    # Sort the loadings in descending order
+    sorted_loadings = sorted(component_loadings.items(), key=lambda x: abs(x[1]), reverse=True)
+
+    # Select the top 10 contributing columns
+    top_10_loadings = sorted_loadings[:10]
+
+    print(f"Top 10 Loadings for Component {i+1}:")
+    for feature, loading in top_10_loadings:
+        print(f"{feature}: {loading}")
+    print()
+
+
+
 from sklearn.decomposition import PCA
 
 # Assuming you have already performed PCA on your data and stored it in 'pca' variable
