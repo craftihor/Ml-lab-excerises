@@ -1,6 +1,42 @@
 from itertools import combinations
 import numpy as np
 
+# Assuming you have already trained a Random Forest model 'rf' on your encoded data
+# And you have an encoding map 'encoding_map' that maps encoded feature indices to their original feature names
+
+# Get the feature importances from the Random Forest
+feature_importances = rf.feature_importances_
+
+# Get the indices of the top-k most important features
+top_k_features = np.argsort(feature_importances)[::-1][:k]
+
+# Map the feature indices to their original feature names
+top_k_feature_names = [encoding_map[i] for i in top_k_features]
+
+# Create a list to store the top feature combinations
+top_feature_combinations = []
+
+# Iterate through different combination lengths
+for r in range(1, k+1):
+    # Generate all possible combinations of length r using the top-k features
+    combinations_r = combinations(top_k_feature_names, r)
+    
+    # Store the combination and its corresponding importance score
+    for combination in combinations_r:
+        top_feature_combinations.append((combination, np.sum(feature_importances[top_k_features])))
+
+# Sort the feature combinations based on their importance scores in descending order
+top_feature_combinations.sort(key=lambda x: x[1], reverse=True)
+
+# Print the top feature combinations and their importance scores
+for combination, importance_score in top_feature_combinations:
+    print(f"Feature Combination: {combination}, Importance Score: {importance_score}")
+
+
+
+from itertools import combinations
+import numpy as np
+
 # Assuming you have already trained a Random Forest model 'rf' on your data
 
 # Get the feature importances from the Random Forest
