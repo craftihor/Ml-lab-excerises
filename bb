@@ -1,3 +1,67 @@
+import json
+from sklearn.preprocessing import LabelEncoder
+
+# Load the JSON object containing the data to be encoded
+with open('data.json') as json_file:
+    data = json.load(json_file)
+
+# Load the existing encoding dictionary from a JSON file
+with open('encoding.json') as json_file:
+    encoding_dict = json.load(json_file)
+
+# Create a new LabelEncoder instance
+label_encoder = LabelEncoder()
+
+# Iterate through each key-value pair in the data JSON
+for key, value in data.items():
+    # Check if the key is present in the encoding dictionary
+    if key in encoding_dict:
+        # Use the existing encoding for the value
+        encoded_value = encoding_dict[key][value]
+    else:
+        # Fit the label encoder on the new values and update the encoding dictionary
+        label_encoder.fit([value])
+        encoding_dict[key] = {value: label_encoder.transform([value])[0]}
+        encoded_value = encoding_dict[key][value]
+
+    # Assign the encoded value back to the data JSON
+    data[key] = encoded_value
+
+# Save the updated encoding dictionary to a JSON file
+with open('encoding.json', 'w') as json_file:
+    json.dump(encoding_dict, json_file)
+
+# Save the encoded data JSON to a file
+with open('encoded_data.json', 'w') as json_file:
+    json.dump(data, json_file)
+
+
+
+from sklearn.feature_selection import RFE
+from sklearn.ensemble import RandomForestClassifier
+import pandas as pd
+
+# Assuming you have a DataFrame 'data' containing the features and a Series 'target' containing the multinomial target values
+
+# Create a Random Forest classifier
+rf = RandomForestClassifier()
+
+# Perform Recursive Feature Elimination (RFE) with the Random Forest classifier
+rfe = RFE(estimator=rf, n_features_to_select=10)
+rfe.fit(data, target)
+
+# Get the selected features
+selected_features = data.columns[rfe.support_]
+
+# Combine selected features with their respective target values
+selected_data = pd.concat([data[selected_features], target], axis=1)
+
+# Display the top 10 combinations of features and their target values
+top_10_combinations = selected_data.head(10)
+print(top_10_combinations)
+
+
+
 from catboost import CatBoostClassifier
 
 # Assuming you have trained a CatBoost classifier and stored it in the variable 'model'
