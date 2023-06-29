@@ -1,3 +1,22 @@
+from sklearn.decomposition import PCA
+
+# Assuming you have already performed PCA on your data and stored it in 'pca' variable
+
+# Get the loadings or coefficients of the PCA components
+loadings = pca.components_
+
+# Access the loadings for each component
+for i, component in enumerate(loadings):
+    original_columns = X.columns  # Replace 'X' with your original data
+    component_loadings = dict(zip(original_columns, component))
+    print(f"Loadings for Component {i+1}:")
+    for feature, loading in component_loadings.items():
+        print(f"{feature}: {loading}")
+    print()
+
+
+
+
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
