@@ -1,3 +1,31 @@
+import pandas as pd
+import numpy as np
+
+# Assuming you have a DataFrame called 'data' with a numerical column named 'value'
+
+# Automatically calculate the number of bins using the Freedman-Diaconis rule
+q75, q25 = np.percentile(data['value'], [75 ,25])
+iqr = q75 - q25
+bin_width = 2 * iqr / (len(data) ** (1/3))
+num_bins = int((data['value'].max() - data['value'].min()) / bin_width)
+
+# Perform automatic binning using pandas cut() function
+bin_labels = []  # List to store bin labels
+
+# Use the cut() function to automatically bin the 'value' column
+data['bin'], bins = pd.cut(data['value'], bins=num_bins, retbins=True, labels=False)
+
+# Generate bin range labels using the bin ranges
+for i in range(len(bins) - 1):
+    bin_labels.append(f'{bins[i]:.2f}-{bins[i+1]:.2f}')
+
+# Replace the bin numbers with the bin range labels in the 'bin' column
+data['bin'] = pd.Series(bin_labels)[pd.cut(data['value'], bins=num_bins, labels=False)]
+
+# Print the DataFrame with bin range labels
+print(data)
+
+
 
 
 import numpy as np 
