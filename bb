@@ -1,4 +1,27 @@
 import pandas as pd
+
+# Create an empty DataFrame
+df = pd.DataFrame(columns=['Column'])
+
+# Assuming you have the string stored in a variable called 'data_string'
+data_string = 'gdhdf|"dfs"|"ghdf'
+
+# Split the string by the separator "|"
+entries = data_string.split('|')
+
+# Remove the surrounding double quotes from each entry
+entries = [entry.strip('"') for entry in entries]
+
+# Insert the entries into the DataFrame
+df['Column'] = entries
+
+# Print the DataFrame
+print(df)
+
+
+
+
+import pandas as pd
 import numpy as np
 
 # Assuming you have a DataFrame called 'data' with a numerical column named 'value'
