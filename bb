@@ -1,5 +1,29 @@
 import pandas as pd
 
+# Create a sample DataFrame
+data = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+
+# Iterate through rows and make changes
+for index, row in data.iterrows():
+    # Access the values of each column in the row
+    value_A = row['A']
+    value_B = row['B']
+    
+    # Perform some operations on the row
+    new_value = value_A + value_B
+    
+    # Add a new column to the row
+    row['C'] = new_value
+
+# Print the updated DataFrame
+print(data)
+
+
+
+
+
+import pandas as pd
+
 # Create an empty DataFrame
 df = pd.DataFrame(columns=['Column'])
 
