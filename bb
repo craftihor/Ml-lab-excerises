@@ -1,3 +1,33 @@
+import numpy as np
+
+def get_optimal_bins(prices):
+    # Set the desired range for the bin edges
+    bin_range = 20
+
+    # Calculate the number of bins based on the desired range
+    num_bins = int(np.ceil((np.max(prices) - np.min(prices)) / bin_range))
+
+    # Create the bin edges
+    bin_edges = np.linspace(np.min(prices), np.max(prices), num_bins + 1)
+
+    # Replace the bin edges with bin labels
+    bin_labels = [f'Bin{bin_edges[i]:.2f}-{bin_edges[i+1]:.2f}' for i in range(num_bins)]
+
+    # Substitute the bin labels in the prices list
+    binned_prices = []
+    for price in prices:
+        bin_idx = np.searchsorted(bin_edges, price, side='right')
+        if bin_idx == len(bin_edges):
+            binned_prices.append(bin_labels[bin_idx - 2])
+        elif bin_idx == 0:
+            binned_prices.append(bin_labels[bin_idx - 1])
+        else:
+            binned_prices.append(bin_labels[bin_idx - 1])
+
+    # Return the binned prices, optimal number of bins, and bin edges
+    return binned_prices, num_bins, bin_edges
+
+
 num_bins = int(math.ceil(math.log2(len(prices)) + 1))
 
     # Create the bin edges
