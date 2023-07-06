@@ -1,3 +1,34 @@
+import math
+import numpy as np
+
+def get_optimal_bins(prices):
+    # Calculate the optimal number of bins using the Freeman-Diaconis rule
+    IQR = np.percentile(prices, 75) - np.percentile(prices, 25)
+    num_bins = int(round((2 * IQR) / math.pow(len(prices), 1/3)))
+
+    # Create the optimal bins
+    counts, bin_edges = np.histogram(prices, bins=num_bins)
+
+    # Replace the bin edges with bin labels
+    bin_labels = [f'Bin{bin_edges[i]:.2f}-{bin_edges[i+1]:.2f}' for i in range(len(bin_edges) - 1)]
+
+    # Substitute the bin labels in the prices list
+    binned_prices = []
+    for price in prices:
+        bin_idx = np.searchsorted(bin_edges, price, side='right')
+        if bin_idx == len(bin_edges):
+            binned_prices.append(bin_labels[bin_idx - 2])
+        elif bin_idx == 0:
+            binned_prices.append(bin_labels[bin_idx - 1])
+        else:
+            binned_prices.append(bin_labels[bin_idx - 1])
+
+    # Return the binned prices, optimal number of bins, and bin edges
+    return binned_prices, num_bins, bin_edges
+
+
+
+
 from imblearn.under_sampling import RandomUnderSampler
 from imblearn.over_sampling import RandomOverSampler
 from sklearn.model_selection import train_test_split
