@@ -1,3 +1,13 @@
+from tensorflow import keras
+from tensorflow.keras import regularizers
+
+model = keras.Sequential()
+model.add(keras.layers.Dense(64, activation='relu', kernel_regularizer=regularizers.l2(0.01), input_shape=(input_dim,)))
+model.add(keras.layers.Dense(64, activation='relu', kernel_regularizer=regularizers.l2(0.01)))
+model.add(keras.layers.Dense(1, activation='sigmoid'))
+
+
+
 import numpy as np
 
 def get_optimal_bins(prices):
