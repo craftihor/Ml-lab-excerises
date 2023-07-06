@@ -1,3 +1,12 @@
+num_bins = int(math.ceil(math.log2(len(prices)) + 1))
+
+    # Create the bin edges
+    bin_edges = np.linspace(np.min(prices), np.max(prices), num_bins + 1)
+
+    # Replace
+
+
+
 import math
 import numpy as np
 
