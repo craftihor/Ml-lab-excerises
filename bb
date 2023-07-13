@@ -1,3 +1,34 @@
+from sklearn.kernel_approximation import Nystroem
+from sklearn.linear_model import SGDClassifier
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# Step 1: Generate synthetic classification data
+X, y = make_classification(n_samples=1000, n_features=10, random_state=42)
+
+# Step 2: Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Step 3: Nystroem approximation
+nystroem = Nystroem(n_components=100, random_state=42)
+X_train_transformed = nystroem.fit_transform(X_train)
+X_test_transformed = nystroem.transform(X_test)
+
+# Step 4: SGDClassifier
+sgd_classifier = SGDClassifier(loss='hinge', alpha=0.001, random_state=42)
+sgd_classifier.fit(X_train_transformed, y_train)
+
+# Step 5: Predict using the trained model
+y_pred = sgd_classifier.predict(X_test_transformed)
+
+# Step 6: Evaluate the model performance
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+
+
+
+
 from tensorflow import keras
 from tensorflow.keras import regularizers
 
