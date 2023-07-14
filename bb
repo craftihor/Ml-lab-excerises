@@ -1,3 +1,33 @@
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.*;
+String filePath = "path/to/your/file.xlsx";
+Workbook workbook = new XSSFWorkbook(new FileInputStream(filePath));
+Sheet firstSheet = workbook.getSheetAt(0); // Assuming the first sheet is at index 0
+Sheet secondSheet = workbook.createSheet("SecondSheet");
+int[] columnsToCopy = {0, 2, 4, 6}; // Assuming you want to copy columns A, C, E, and G
+int rowCount = 0;
+for (Row row : firstSheet) {
+    Row newRow = secondSheet.createRow(rowCount);
+    int cellCount = 0;
+    for (int colIndex : columnsToCopy) {
+        Cell cell = row.getCell(colIndex, MissingCellPolicy.RETURN_BLANK_AS_NULL);
+        if (cell != null) {
+            Cell newCell = newRow.createCell(cellCount);
+            newCell.setCellValue(cell.getStringCellValue()); // Assuming the cells contain string values
+        }
+        cellCount++;
+    }
+    rowCount++;
+}
+workbook.removeSheetAt(0); // Remove the first sheet at index 0
+String newFilePath = "path/to/new/file.xlsx";
+FileOutputStream outputStream = new FileOutputStream(newFilePath);
+workbook.write(outputStream);
+workbook.close();
+outputStream.close();
+
+
+
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
