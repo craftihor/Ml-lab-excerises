@@ -1,3 +1,44 @@
+import dask
+from sklearn.datasets import make_blobs
+from sklearn.ensemble import BaggingClassifier
+from sklearn.model_selection import ParameterGrid
+from sklearn.model_selection import cross_val_score
+from dask.distributed import Client
+
+# Start a Dask client
+client = Client()
+
+# Define dataset
+X, y = make_blobs(n_samples=1000, centers=2, n_features=100, cluster_std=20)
+
+# Define models and parameters
+model = BaggingClassifier()
+n_estimators = [10, 100, 1000]
+param_grid = {'n_estimators': n_estimators}
+
+# Create a Dask delayed object for parallel execution
+@dask.delayed
+def fit_score_model(model, X, y, params):
+    model.set_params(**params)
+    return cross_val_score(model, X, y, cv=3, scoring='accuracy').mean()
+
+# Create a list of delayed computations for grid search
+delayed_results = []
+for params in ParameterGrid(param_grid):
+    delayed_result = fit_score_model(model, X, y, params)
+    delayed_results.append(delayed_result)
+
+# Compute the results in parallel
+results = dask.compute(*delayed_results)
+
+# Summarize results
+best_score = max(results)
+best_params = list(ParameterGrid(param_grid))[results.index(best_score)]
+print("Best: %f using %s" % (best_score, best_params))
+for params, score in zip(ParameterGrid(param_grid), results):
+    print("%f with: %r" % (score, params))
+
+
 import dask_ml.model_selection as dcv
 from sklearn.datasets import make_blobs
 from sklearn.ensemble import BaggingClassifier
