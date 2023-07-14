@@ -1,3 +1,50 @@
+import eli5
+from eli5.sklearn import InverseTransformWrapper
+from lime.lime_tabular import LimeTabularExplainer
+from sklearn.datasets import load_iris
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+
+# Load the Iris dataset
+data = load_iris()
+X, y = data.data, data.target
+feature_names = data.feature_names
+class_names = data.target_names
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create a random forest classifier
+rf_classifier = RandomForestClassifier(n_estimators=100)
+rf_classifier.fit(X_train, y_train)
+
+# Wrap the classifier for inverse transform with eli5
+wrapped_classifier = InverseTransformWrapper(rf_classifier)
+
+# Create a LIME explainer
+explainer = LimeTabularExplainer(X_train, feature_names=feature_names, class_names=class_names)
+
+# Choose a random test instance for explanation
+instance_idx = 10
+instance = X_test[instance_idx]
+
+# Generate explanation with LIME
+lime_explanation = explainer.explain_instance(instance, wrapped_classifier.predict_proba)
+
+# Print LIME explanation
+print("LIME Explanation:")
+print(lime_explanation.as_list())
+
+# Generate explanation with eli5
+eli5_explanation = eli5.explain_weights(rf_classifier, feature_names=feature_names)
+
+# Print eli5 explanation
+print("eli5 Explanation:")
+print(eli5_explanation)
+
+
+
+
 import dask
 import dask.dataframe as dd
 from dask.distributed import Client
