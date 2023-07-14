@@ -1,3 +1,66 @@
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import java.io.*;
+import java.util.*;
+
+public class CSVToXLSXConverter {
+
+    public static void main(String[] args) {
+        String csvFilePath = "path/to/input.csv";
+        String xlsxFilePath = "path/to/output.xlsx";
+
+        List<String[]> csvData = readCSVFile(csvFilePath);
+        writeXLSXFile(xlsxFilePath, csvData);
+        System.out.println("Conversion completed successfully.");
+    }
+
+    public static List<String[]> readCSVFile(String csvFilePath) {
+        List<String[]> csvData = new ArrayList<>();
+
+        try (Reader reader = new FileReader(csvFilePath);
+             CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT)) {
+            for (CSVRecord record : csvParser) {
+                String[] fields = new String[record.size()];
+                for (int i = 0; i < record.size(); i++) {
+                    fields[i] = record.get(i);
+                }
+                csvData.add(fields);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return csvData;
+    }
+
+    public static void writeXLSXFile(String xlsxFilePath, List<String[]> data) {
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Sheet1");
+            int rowCount = 0;
+            for (String[] rowData : data) {
+                Row row = sheet.createRow(rowCount++);
+                int columnCount = 0;
+                for (String cellData : rowData) {
+                    Cell cell = row.createCell(columnCount++);
+                    cell.setCellValue(cellData);
+                }
+            }
+            try (FileOutputStream outputStream = new FileOutputStream(xlsxFilePath)) {
+                workbook.write(outputStream);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+
+
+
 import dask
 from sklearn.datasets import make_blobs
 from sklearn.ensemble import BaggingClassifier
