@@ -1,3 +1,33 @@
+import dask
+import dask.dataframe as dd
+from dask.distributed import Client
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import make_classification
+from sklearn.model_selection import cross_val_score
+
+# Start a Dask client
+client = Client()
+
+# Generate synthetic classification data
+X, y = make_classification(n_samples=1000, n_features=10, random_state=42)
+
+# Convert data to Dask DataFrame
+ddf = dd.from_pandas(pd.DataFrame(X), npartitions=4)
+ddf['target'] = y
+
+# Create a random forest classifier
+rf_classifier = RandomForestClassifier(n_estimators=100)
+
+# Perform cross-validation using Dask and cross_val_score
+scores = dask.compute(cross_val_score(rf_classifier, ddf.drop('target', axis=1).values.compute(), ddf['target'].values.compute(), cv=5)) 
+
+# Print the scores
+print("Cross-validation scores:", scores)
+
+
+
+
+
 import xgboost as xgb
 from sklearn.datasets import make_classification
 from sklearn.model_selection import cross_val_score
