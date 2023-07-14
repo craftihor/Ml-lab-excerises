@@ -1,3 +1,26 @@
+import xgboost as xgb
+from sklearn.datasets import make_classification
+from sklearn.model_selection import cross_val_score
+
+# Generate synthetic classification data
+X, y = make_classification(n_samples=1000, n_features=10, random_state=42)
+
+# Create a GPU-accelerated random forest classifier using xgboost
+params = {
+    'tree_method': 'gpu_hist',  # Specify the GPU training method
+    'n_estimators': 100
+}
+rf_classifier = xgb.XGBClassifier(**params)
+
+# Perform cross-validation using cross_val_score
+scores = cross_val_score(rf_classifier, X, y, cv=5)  # Use 5-fold cross-validation
+
+# Print the scores
+print("Cross-validation scores:", scores)
+
+
+
+
 from sklearn.kernel_approximation import Nystroem
 from sklearn.linear_model import SGDClassifier
 from sklearn.datasets import make_classification
