@@ -1,3 +1,38 @@
+import dask_ml.model_selection as dcv
+from sklearn.datasets import make_blobs
+from sklearn.ensemble import BaggingClassifier
+from dask.distributed import Client
+
+# Start a Dask client
+client = Client()
+
+# Define dataset
+X, y = make_blobs(n_samples=1000, centers=2, n_features=100, cluster_std=20)
+
+# Define models and parameters
+model = BaggingClassifier()
+n_estimators = [10, 100, 1000]
+
+# Define parameter grid
+param_grid = {'n_estimators': n_estimators}
+
+# Perform grid search with Dask
+grid_search = dcv.GridSearchCV(estimator=model, param_grid=param_grid, cv=3, scoring='accuracy')
+with client:
+    grid_search.fit(X, y)
+
+# Summarize results
+print("Best: %f using %s" % (grid_search.best_score_, grid_search.best_params_))
+means = grid_search.cv_results_['mean_test_score']
+stds = grid_search.cv_results_['std_test_score']
+params = grid_search.cv_results_['params']
+for mean, stdev, param in zip(means, stds, params):
+    print("%f (%f) with: %r" % (mean, stdev, param))
+
+
+
+
+
 import eli5
 from eli5.sklearn import InverseTransformWrapper
 from lime.lime_tabular import LimeTabularExplainer
