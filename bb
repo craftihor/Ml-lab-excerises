@@ -1,3 +1,57 @@
+
+import torch
+from torch import nn
+from skorch import NeuralNetClassifier
+
+class NDF(nn.Module):
+
+  def __init__(self):
+    super().__init__()
+    self.trees = nn.ModuleList([self.make_tree() for i in range(10)])
+  
+  def make_tree(self):
+    return NeuralNetClassifier(
+      # Define model architecture
+      ...
+    )
+
+  def forward(self, x):
+    tree_preds = [tree(x) for tree in self.trees]
+    forest_pred = torch.mean(torch.stack(tree_preds), dim=0)
+    return forest_pred
+
+# Training loop
+ndf = NDF()
+optimizer = torch.optim.Adam(ndf.parameters())  
+
+for epoch in range(100):
+
+  # Boosting
+  weights = np.ones(len(X)) / len(X)
+  
+  for xb, yb, wb in loader:
+    pred = ndf(xb)
+    loss = clf_loss(pred, yb) * wb
+    
+    # Update weights
+    weights[loss > 0] *= np.exp(loss[loss > 0])
+
+    # Auxiliary reconstruction loss   
+    recon_loss = recon_criterion(encoder(xb), xb) 
+    loss = loss + recon_loss
+    
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+
+  # Normalize weights    
+  weights = weights / np.sum(weights)
+
+# OOB evaluation
+oob_scores = [tree.score(X[oob_idx], y[oob_idx]) for tree, oob_idx in zip(ndf.trees, oob_idx)]  
+print("OOB Score:", np.mean(oob_scores))
+
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
