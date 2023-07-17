@@ -1,3 +1,32 @@
+from sklearn.model_selection import RandomizedSearchCV
+from sklearn.ensemble import RandomForestClassifier
+
+# Define hyperparameter ranges
+rf_params = {'n_estimators': [100, 200, 500], 
+             'max_depth': [5, 8, 15, 25],
+             'min_samples_split': [2, 5, 10],
+             'min_samples_leaf': [1, 2, 4]}
+
+# Create randomized search with 3-fold cross validation
+rf_search = RandomizedSearchCV(RandomForestClassifier(), 
+                               param_distributions=rf_params,
+                               n_iter=20, 
+                               cv=3,
+                               n_jobs=-1) 
+
+# Fit randomized search
+rf_search.fit(X_train, y_train)
+
+# Get best model
+best_rf = rf_search.best_estimator_
+
+# Evaluate on test set
+accuracy = best_rf.score(X_test, y_test)
+print("Accuracy:", accuracy)
+
+
+
+
 from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
