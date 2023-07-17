@@ -1,3 +1,40 @@
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+from sklearn.utils import shuffle
+from sklearn.metrics import classification_report
+from imblearn.over_sampling import RandomOverSampler
+import random
+
+# Generate a synthetic imbalanced dataset
+X, y = make_classification(n_samples=1000, n_features=10, weights=[0.9, 0.1], random_state=42)
+
+# Split the dataset into train and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Inject noise into the dataset
+noise_ratio = 0.05  # Percentage of instances to mislabel
+num_noise = int(noise_ratio * len(y_train))
+indices = random.sample(range(len(y_train)), num_noise)
+for index in indices:
+    y_train[index] = 1 - y_train[index]  # Flipping the label
+
+# Perform oversampling using RandomOverSampler
+oversampler = RandomOverSampler(random_state=42)
+X_train_resampled, y_train_resampled = oversampler.fit_resample(X_train, y_train)
+
+# Shuffle the resampled data
+X_train_resampled, y_train_resampled = shuffle(X_train_resampled, y_train_resampled, random_state=42)
+
+# Train your classification model on the resampled data
+# ...
+
+# Evaluate the model on the test set
+y_pred = model.predict(X_test)
+print(classification_report(y_test, y_pred))
+
+
+
+
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
 String filePath = "path/to/your/file.xlsx";
