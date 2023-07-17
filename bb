@@ -1,3 +1,33 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from pytorch_tabnet.tab_model import TabNetClassifier
+
+# Prepare data
+X = pd.DataFrame(# features)  
+y = pd.Series(# target)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Define TabNet model
+tabnet = TabNetClassifier(optimizer_fn=torch.optim.Adam,
+                          optimizer_params=dict(lr=2e-2)) 
+
+# Train model                     
+tabnet.fit(
+    X_train=X_train, y_train=y_train,
+    eval_set=[(X_train, y_train), (X_test, y_test)],
+    eval_name=['train', 'valid'],
+    eval_metric=['accuracy'],
+    max_epochs=100, patience=20)
+
+# Make predictions
+preds = tabnet.predict(X_test)
+
+# Evaluate model
+accuracy = tabnet.score_func(y_test, preds)
+print("Test Accuracy:", accuracy)
+
+
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.ensemble import RandomForestClassifier
 
