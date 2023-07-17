@@ -1,5 +1,68 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from skorch import NeuralNetClassifier
+import torch
+from torch.nn import Linear, ReLU, Dropout
+
+# Prepare data
+X = pd.DataFrame(data)
+y = pd.Series(target) 
+
+X_train, X_test, y_train, y_test = train_test_split(X, y)
+
+# Neural Decision Forest model 
+class NDF(torch.nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.trees = []
+        for _ in range(10): 
+            tree = RandomForestClassifier()
+            self.trees.append(tree)
+    
+    def forward(self, x):
+        x = torch.tensor(x)
+        preds = []
+        for tree in self.trees:
+            p = NeuralNetClassifier(
+                module=torch.nn.Sequential(
+                    Linear(X.shape[1], 64),
+                    ReLU(),
+                    Dropout(0.5),
+                    Linear(64, 1),
+                    ReLU()
+                ),
+                module__input_dims=[X.shape[1]],
+                max_epochs=100,
+                lr=0.01
+            )
+            p.fit(X_train, y_train)
+            preds.append(p.predict(x))
+        return torch.mean(torch.stack(preds), axis=0) 
+        
+# Create NDF model
+model = NDF()
+
+# Train model
+train_loader = torch.utils.data.DataLoader(X_train, y_train) 
+optim = torch.optim.Adam(model.parameters(), lr=0.01)
+EPOCHS = 100
+for i in range(EPOCHS):
+    for xb, yb in train_loader:
+        loss = model.training_step(xb, yb)
+        loss.backward()
+        optim.step()
+        optim.zero_grad()
+
+# Evaluate    
+acc = model.evaluation(X_test, y_test)
+print("Test accuracy:", acc)
+
+
+
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
 from pytorch_tabnet.tab_model import TabNetClassifier
 
 # Prepare data
