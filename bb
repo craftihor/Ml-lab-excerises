@@ -1,3 +1,41 @@
+import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from lime import lime_tabular
+
+# Load the Iris dataset
+data = load_iris()
+X = data.data
+y = data.target
+feature_names = data.feature_names
+class_names = data.target_names
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train a classification model (Random Forest in this example)
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Create the Lime explainer
+explainer = lime_tabular.LimeTabularExplainer(X_train, feature_names=feature_names, class_names=class_names)
+
+# Select a sample from the test set for explanation
+sample_idx = 0
+X_sample = X_test[sample_idx]
+y_sample = y_test[sample_idx]
+
+# Generate an explanation for the sample
+explanation = explainer.explain_instance(X_sample, model.predict_proba, num_features=len(feature_names))
+
+# Display the explanation
+explanation.show_in_notebook()
+
+
+
+
+
 
 import torch
 from torch import nn
