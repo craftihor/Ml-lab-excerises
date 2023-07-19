@@ -1,3 +1,25 @@
+import os
+import subprocess
+
+whl_directory = '/path/to/whl_directory'
+
+# Iterate over the files in the directory
+for filename in os.listdir(whl_directory):
+    if filename.endswith('.whl'):
+        whl_file = os.path.join(whl_directory, filename)
+        try:
+            subprocess.run(['pip', 'install', whl_file], check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Error occurred during installation of {filename}: {e}")
+            print("Attempting to fetch dependencies using Conda...")
+            try:
+                subprocess.run(['conda', 'install', '<dependency-name>'], check=True)
+                print("Conda installation successful.")
+            except subprocess.CalledProcessError as e:
+                print(f"Error occurred during Conda installation of <dependency-name>: {e}")
+                continue
+
+
 import numpy as np
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
