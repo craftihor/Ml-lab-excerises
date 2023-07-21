@@ -1,3 +1,143 @@
+Sub CreatePresentation()
+    Dim pptApp As PowerPoint.Application
+    Dim pptPres As PowerPoint.Presentation
+    Dim pptSlide As PowerPoint.Slide
+    Dim slideIndex As Integer
+    
+    ' Create PowerPoint application
+    Set pptApp = New PowerPoint.Application
+    pptApp.Visible = True ' You can set it to False if you don't want to display PowerPoint during execution
+    
+    ' Create a new presentation
+    Set pptPres = pptApp.Presentations.Add
+    
+    ' Slide 1 - Title Slide
+    slideIndex = 1
+    Set pptSlide = pptPres.Slides.Add(slideIndex, ppLayoutTitleOnly)
+    pptSlide.Shapes(1).TextFrame.TextRange.Text = "Presentation Title"
+    ' Customize the title slide with your presentation title and any other details as needed
+    
+    ' Slide 2 - Agenda
+    slideIndex = slideIndex + 1
+    Set pptSlide = pptPres.Slides.Add(slideIndex, ppLayoutTitleOnly)
+    pptSlide.Shapes(1).TextFrame.TextRange.Text = "Agenda"
+    ' Add agenda content
+    
+    ' Slide 3 - Problem Statement
+    slideIndex = slideIndex + 1
+    Set pptSlide = pptPres.Slides.Add(slideIndex, ppLayoutTitleOnly)
+    pptSlide.Shapes(1).TextFrame.TextRange.Text = "Problem Statement"
+    pptSlide.Shapes(2).TextFrame.TextRange.Text = "Inaccurate trade classification is leading to significant losses annually. The company faces over $1M in losses each year due to misclassified trades. Additionally, analysts spend 15 hours per week manually evaluating trades using subjective methods and outdated statistical models. There is an urgent need to improve trade classification."
+    
+    ' Slide 4 - Current Trade Classification Challenges
+    slideIndex = slideIndex + 1
+    Set pptSlide = pptPres.Slides.Add(slideIndex, ppLayoutTitleOnly)
+    pptSlide.Shapes(1).TextFrame.TextRange.Text = "Current Trade Classification Challenges"
+    pptSlide.Shapes(2).TextFrame.TextRange.Text = "The current trade classification process has an accuracy rate of only 65%. The overreliance on manual evaluation leads to subjectivity and human biases. Existing statistical models fail to account for real-time market changes. There is no automated monitoring system to detect misclassifications."
+    
+    ' Slide 5 - Proposed Machine Learning Solution
+    slideIndex = slideIndex + 1
+    Set pptSlide = pptPres.Slides.Add(slideIndex, ppLayoutTitleOnly)
+    pptSlide.Shapes(1).TextFrame.TextRange.Text = "Proposed Machine Learning Solution"
+    pptSlide.Shapes(2).TextFrame.TextRange.Text = "To address these challenges, I propose building a machine learning model for automated trade classification. The benefits of this approach include improved accuracy through data-driven insights, continual learning and adaptation to market changes, and enabling proactive trade strategies through ongoing model predictions."
+    
+    ' Slide 6 - Bagging Classifier Model
+    slideIndex = slideIndex + 1
+    Set pptSlide = pptPres.Slides.Add(slideIndex, ppLayoutTitleOnly)
+    pptSlide.Shapes(1).TextFrame.TextRange.Text = "Bagging Classifier Model"
+    pptSlide.Shapes(2).TextFrame.TextRange.Text = "After evaluating various algorithms, I selected the Bagging Classifier model for this problem. It is an ensembling technique that combines predictions from multiple base models to improve overall performance. Bagging reduces variance and overfitting."
+    ' Add diagram of model architecture
+    
+    ' Slide 7 - Data Collection and Preprocessing
+    slideIndex = slideIndex + 1
+    Set pptSlide = pptPres.Slides.Add(slideIndex, ppLayoutTitleOnly)
+    pptSlide.Shapes(1).TextFrame.TextRange.Text = "Data Collection and Preprocessing"
+    pptSlide.Shapes(2).TextFrame.TextRange.Text = "To train the model, I sourced trade data from company SQL databases. I cleaned the data by handling missing values and removing outliers. Categorical variables were encoded for modeling."
+    
+    ' Slide 8 - Feature Engineering
+    slideIndex = slideIndex + 1
+    Set pptSlide = pptPres.Slides.Add(slideIndex, ppLayoutTitleOnly)
+    pptSlide.Shapes(1).TextFrame.TextRange.Text = "Feature Engineering"
+    pptSlide.Shapes(2).TextFrame.TextRange.Text = "Based on correlation analysis, I identified 10 key features related to trade performance. Additional features were derived, such as technical indicators, to capture important trade patterns. Feature values were normalized."
+    
+    ' Slide 9 - Model Training and Evaluation
+    slideIndex = slideIndex + 1
+    Set pptSlide = pptPres.Slides.Add(slideIndex, ppLayoutTitleOnly)
+    pptSlide.Shapes(1).TextFrame.TextRange.Text = "Model Training and Evaluation"
+    pptSlide.Shapes(2).TextFrame.TextRange.Text = "The data was split 70/30 into train and test sets. The model was trained on 70% data and evaluated on the unseen 30% test data."
+    
+    ' Slide 10 - Model Performance Metrics
+    slideIndex = slideIndex + 1
+    Set pptSlide = pptPres.Slides.Add(slideIndex, ppLayoutTitleOnly)
+    pptSlide.Shapes(1).TextFrame.TextRange.Text = "Model Performance Metrics"
+    pptSlide.Shapes(2).TextFrame.TextRange.Text = "On the test set, the model achieved 95% accuracy, 90% precision, 85% recall and 0.9 F1 score."
+    ' Add confusion matrix and ROC curve
+    
+    ' Slide 11 - Cost Matrix
+    slideIndex = slideIndex + 1
+    Set pptSlide = pptPres.Slides.Add(slideIndex, ppLayoutTitleOnly)
+    pptSlide.Shapes(1).TextFrame.TextRange.Text = "Cost Matrix"
+    pptSlide.Shapes(2).TextFrame.TextRange.Text = "A cost matrix was incorporated to minimize costly misclassifications and find the optimal balance between precision and recall for the business context."
+    
+    ' Slide 12 - Business Impact
+    slideIndex = slideIndex + 1
+    Set pptSlide = pptPres.Slides.Add(slideIndex, ppLayoutTitleOnly)
+    pptSlide.Shapes(1).TextFrame.TextRange.Text = "Business Impact"
+    pptSlide.Shapes(2).TextFrame.TextRange.Text = "Applying this model is projected to avoid $1.5M in losses annually by accurately flagging trades expected to fail. It would save analysts 15 hours per week for more high-value tasks."
+    
+    ' Slide 13 - Cost-Benefit Analysis
+    slideIndex = slideIndex + 1
+    Set pptSlide = pptPres.Slides.Add(slideIndex, ppLayoutTitleOnly)
+    pptSlide.Shapes(1).TextFrame.TextRange.Text = "Cost-Benefit Analysis"
+    pptSlide.Shapes(2).TextFrame.TextRange.Text = "With $100K in model development costs, it is projected to deliver $1.5M in savings in the first year alone, representing a 12 month ROI."
+    
+    ' Slide 14 - Implementation Plan
+    slideIndex = slideIndex + 1
+    Set pptSlide = pptPres.Slides.Add(slideIndex, ppLayoutTitleOnly)
+    pptSlide.Shapes(1).TextFrame.TextRange.Text = "Implementation Plan"
+    pptSlide.Shapes(2).TextFrame.TextRange.Text = "The model would be integrated with existing trade platforms via APIs. It would be rolled out sequentially across divisions. Ongoing monitoring and maintenance would ensure continual effectiveness."
+    
+    ' Slide 15 - Top Priorities for Improvement
+    slideIndex = slideIndex + 1
+    Set pptSlide = pptPres.Slides.Add(slideIndex, ppLayoutTitleOnly)
+    pptSlide.Shapes(1).TextFrame.TextRange.Text = "Top Priorities for Improvement"
+    pptSlide.Shapes(2).TextFrame.TextRange.Text = "1. Incorporate additional data sources" & vbCrLf & "2. Online learning for real-time model adaptation" & vbCrLf & "3. Build mobile interface for alerts"
+    
+    ' Slide 16 - Key Learnings
+    slideIndex = slideIndex + 1
+    Set pptSlide = pptPres.Slides.Add(slideIndex, ppLayoutTitleOnly)
+    pptSlide.Shapes(1).TextFrame.TextRange.Text = "Key Learnings"
+    ' Add key learnings content
+    
+    ' Slide 17 - Q&A
+    slideIndex = slideIndex + 1
+    Set pptSlide = pptPres.Slides.Add(slideIndex, ppLayoutTitleOnly)
+    pptSlide.Shapes(1).TextFrame.TextRange.Text = "Q&A"
+    ' Add Q&A content
+    
+    ' Save the presentation
+    Dim outputPath As String
+    outputPath = "C:\path\to\your\output\presentation.pptx" ' Specify the desired output path and filename
+    pptPres.SaveAs outputPath
+    
+    ' Clean up and release objects
+    pptPres.Close
+    pptApp.Quit
+    Set pptSlide = Nothing
+    Set pptPres = Nothing
+    Set pptApp = Nothing
+End Sub
+
+
+
+
+
+
+
+
+
+
+
 import os
 import subprocess
 
