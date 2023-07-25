@@ -1,3 +1,29 @@
+import os
+import subprocess
+
+def install_whl_files(folder_path):
+    # List all files in the folder
+    files = os.listdir(folder_path)
+
+    # Filter only .whl files
+    whl_files = [file for file in files if file.endswith(".whl")]
+
+    # Install each .whl file without dependencies
+    for whl_file in whl_files:
+        whl_path = os.path.join(folder_path, whl_file)
+        try:
+            subprocess.run(["conda", "install", "--use-local", "--no-deps", whl_path], check=True)
+            print(f"Successfully installed: {whl_file}")
+        except subprocess.CalledProcessError as e:
+            print(f"Error installing {whl_file}: {e}")
+            continue
+
+if __name__ == "__main__":
+    folder_path = "/path/to/your/folder"  # Replace with the actual folder path
+    install_whl_files(folder_path)
+
+
+
 Sub CreatePresentation()
     Dim pptApp As PowerPoint.Application
     Dim pptPres As PowerPoint.Presentation
