@@ -1,3 +1,31 @@
+import dash
+from interpret.ext.dash import DashInterpretation
+from interpret_community import ExplanationDashboard
+import requests
+
+# Model predictions
+preds = model.predict(X_test)
+
+# Create interpretations
+interpretation = interpret_ml.explain_prediction(model, X_test[0], preds[0])
+
+# Dash app
+app = dash.Dash(__name__)
+app.layout = dash_html_components.Div([
+    ExplanationDashboard(interpretation, persist_state=True)
+]) 
+
+# Run app
+if __name__ == '__main__':
+    app.run_server(port=8050, debug=True)
+
+# Download page
+response = requests.get('http://127.0.0.1:8050/')
+with open('dashboard.html', 'w') as f:
+    f.write(response.text)
+
+
+
 import os
 import subprocess
 
