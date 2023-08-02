@@ -1,3 +1,27 @@
+What are Trade Fails?
+
+A trade fail occurs when a trade does not settle on the contracted settlement date. This results in a failure to deliver the asset.
+Impacts of Trade Fails
+
+Increased costs - interest charges, penalties, reputational damage
+Manual investigations are time consuming
+Regulatory compliance risks
+Trade Fail Statistics
+
+45,000 fails monthly in Delphi trading system
+Daily average of 18,000 failed trades
+Up 17% year-over-year
+Proposed ML Solution
+
+Develop automated classification model to identify root causes
+Continual learning to adapt to evolving trade fail patterns
+Provide predictive insights to reduce fails proactively
+Benefits
+
+Reduce trade fails through data-driven insights
+Faster trade settlements
+Improved client satisfaction
+
 import dash
 from interpret.ext.dash import DashInterpretation
 from interpret_community import ExplanationDashboard
