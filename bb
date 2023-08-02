@@ -1,3 +1,21 @@
+Here is a suggested script to accompany the presentation slides on reducing trade fails with AI/ML:
+
+Slide 1 - Title Slide
+
+Slide 2 - Agenda
+Let's walk through how AI and machine learning can help reduce trade fails. I'll start by explaining what trade fails are, their major impacts, and some key statistics. Then I'll discuss the proposed ML solution and project aims.
+
+Slide 3 - What is a Trade Fail? + Impacts & Statistics
+A trade fail occurs when a trade doesn't settle on its contracted settlement date, failing to deliver the asset. This results in increased costs from interest, penalties, and reputation damage. Manual investigation is required across systems. There are regulatory compliance risks too. In Delphi, we see 45,000 open fail trades monthly, with around 18,000 happening daily. Fails are up 17% year-over-year, highlighting the growing scope of the problem.
+
+Slide 4 - Proposed AI/ML Solution
+To address this, I propose developing AI and ML models to predict fail probabilities for trades. These data-driven insights can identify root causes for proactive action. We can combine model predictions with logic rules on positions and obligations. This gives a comprehensive solution to target and prevent fails.
+
+Slide 5 - Project Aims
+The project aims are four-fold. First, analyze historical data to ensure it's adequate for modeling. Next, demonstrate predictive accuracy in the models. Then, work to reduce false positives and misses. And finally, quantify the reduction in fails our models can achieve.
+
+
+
 What are Trade Fails?
 
 A trade fail occurs when a trade does not settle on the contracted settlement date. This results in a failure to deliver the asset.
