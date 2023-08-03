@@ -1,3 +1,41 @@
+Presenter: Good morning, everyone! Today, I'm excited to share with you the journey we've taken to build our system. At an abstract level, our work can be divided into six key segments, each playing a critical role in creating a robust and efficient system.
+
+Segment 1: Data Collection
+We kick-started our project by gathering essential data from two key sources: opentrade and fails data. These were obtained from opsdashboard and Delphi, respectively, forming the foundation of our analysis.
+
+Segment 2: Data Preprocessing
+Next, we dove into the data preprocessing stage, where we cleaned and organized the collected data. Our team meticulously handled null values and concentrated on refining the dataset to ensure its quality.
+
+Segment 3: Data Encoding
+To prepare our data for machine learning models, we recognized the importance of encoding categorical and continuous values separately. This step was crucial, as machine learning algorithms thrive on numerical data.
+
+Segment 4: Feature Engineering
+Now, one of the highlights of our process was feature engineering. Here, we explored various features already available in the data and carefully selected the most impactful ones. By doing so, we significantly reduced the model's processing time, improved its accuracy, and minimized data variance.
+
+Segment 5: Machine Learning Model Selection
+With our enriched feature set, we ventured into the world of machine learning algorithms. We scoured through a pool of algorithms to find the optimal model that best suited our needs.
+
+Segment 6: eXplainable Artificial Intelligence (XAI)
+Finally, we wanted to ensure the transparency of our model's predictions. Enter eXplainable Artificial Intelligence (XAI). We employed XAI techniques to interpret and explain our model's predictions, adding an essential layer of trust to our system.
+
+Audience: That sounds like an impressive journey! Can you share some specific insights you gained during the feature engineering stage?
+
+Presenter: Absolutely! During feature engineering, we discovered certain features that had a substantial impact on the model's performance. For instance, by analyzing historical trade patterns and dependencies, we identified features that played a critical role in predicting potential trade fails. By leveraging this knowledge, our model became more adept at foreseeing challenges and proactively suggesting actions to mitigate the risks.
+
+Audience: That's fascinating! How did you go about selecting the optimal machine learning model?
+
+Presenter: Excellent question! We carefully evaluated various machine learning algorithms, ranging from decision trees to ensemble methods like random forests and gradient boosting. Through rigorous testing and cross-validation, we identified the model that demonstrated the best performance on our data. By selecting the optimal model, we achieved both accuracy and efficiency in predicting trade fails.
+
+Audience: It's great to see the practical application of eXplainable Artificial Intelligence (XAI). How did XAI help in interpreting your model's predictions?
+
+Presenter: XAI was instrumental in providing transparency to our model's predictions. With techniques like feature importance plots, we could understand which features had the most significant influence on the model's decisions. This not only helped us gain insights into our system's functioning but also allowed us to explain our model's reasoning to stakeholders, building trust and confidence in our predictions.
+
+Audience: Thank you for sharing these insights! Your work seems to have covered every aspect comprehensively. We look forward to seeing your presentation!
+
+Presenter: Thank you! We're excited to showcase the complete journey and demonstrate how our system can make a positive impact on the bank's operations. We're grateful for the opportunity to present our findings to all of you. Let's make this a memorable presentation!
+
+
+
 Here is a suggested script to accompany the presentation slides on reducing trade fails with AI/ML:
 
 Slide 1 - Title Slide
