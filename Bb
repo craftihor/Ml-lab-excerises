@@ -1,663 +1,321 @@
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+
 import java.util.List;
 
-@XmlRootElement(name = "Search")
-public class Search {
-    @XmlElement(name = "CustRepOptSubscr")
+@JacksonXmlRootElement(localName = "Search")
+public class XmlData {
+    @JacksonXmlProperty(localName = "CustRepOptSubscr")
     private CustRepOptSubscr custRepOptSubscr;
-    @XmlElement(name = "Acct")
+
+    @JacksonXmlProperty(localName = "Acct")
     private Acct acct;
-    @XmlElement(name = "Per")
+
+    @JacksonXmlProperty(localName = "Per")
     private Per per;
-    @XmlElement(name = "SecLendCommissRep")
+
+    @JacksonXmlProperty(localName = "SecLendCommissRep")
     private SecLendCommissRep secLendCommissRep;
 
     // Getters and setters
-    public CustRepOptSubscr getCustRepOptSubscr() {
-        return custRepOptSubscr;
-    }
-
-    public void setCustRepOptSubscr(CustRepOptSubscr custRepOptSubscr) {
-        this.custRepOptSubscr = custRepOptSubscr;
-    }
-
-    public Acct getAcct() {
-        return acct;
-    }
-
-    public void setAcct(Acct acct) {
-        this.acct = acct;
-    }
-
-    public Per getPer() {
-        return per;
-    }
-
-    public void setPer(Per per) {
-        this.per = per;
-    }
-
-    public SecLendCommissRep getSecLendCommissRep() {
-        return secLendCommissRep;
-    }
-
-    public void setSecLendCommissRep(SecLendCommissRep secLendCommissRep) {
-        this.secLendCommissRep = secLendCommissRep;
-    }
-
-    public static class CustRepOptSubscr {
-        @XmlAttribute(name = "schdId")
-        private String schdId;
-        @XmlAttribute(name = "tmplId")
-        private String tmplId;
-        @XmlAttribute(name = "tmplDetlId")
-        private String tmplDetlId;
-
-        // Getters and setters
-        public String getSchdId() {
-            return schdId;
-        }
-
-        public void setSchdId(String schdId) {
-            this.schdId = schdId;
-        }
-
-        public String getTmplId() {
-            return tmplId;
-        }
-
-        public void setTmplId(String tmplId) {
-            this.tmplId = tmplId;
-        }
-
-        public String getTmplDetlId() {
-            return tmplDetlId;
-        }
-
-        public void setTmplDetlId(String tmplDetlId) {
-            this.tmplDetlId = tmplDetlId;
-        }
-    }
-
-    public static class Acct {
-        @XmlElement(name = "AcctName")
-        private String acctName;
-        @XmlElement(name = "AcctId")
-        private AcctId acctId;
-
-        // Getters and setters
-        public String getAcctName() {
-            return acctName;
-        }
-
-        public void setAcctName(String acctName) {
-            this.acctName = acctName;
-        }
-
-        public AcctId getAcctId() {
-            return acctId;
-        }
-
-        public void setAcctId(AcctId acctId) {
-            this.acctId = acctId;
-        }
-
-        public static class AcctId {
-            @XmlAttribute(name = "acctOrig")
-            private String acctOrig;
-            @XmlValue
-            private String value;
-
-            // Getters and setters
-            public String getAcctOrig() {
-                return acctOrig;
-            }
-
-            public void setAcctOrig(String acctOrig) {
-                this.acctOrig = acctOrig;
-            }
-
-            public String getValue() {
-                return value;
-            }
-
-            public void setValue(String value) {
-                this.value = value;
-            }
-        }
-    }
-
-    public static class Per {
-        @XmlElement(name = "PerStart")
-        private PerStart perStart;
-        @XmlElement(name = "PerEnd")
-        private PerEnd perEnd;
-
-        // Getters and setters
-        public PerStart getPerStart() {
-            return perStart;
-        }
-
-        public void setPerStart(PerStart perStart) {
-            this.perStart = perStart;
-        }
-
-        public PerEnd getPerEnd() {
-            return perEnd;
-        }
-
-        public void setPerEnd(PerEnd perEnd) {
-            this.perEnd = perEnd;
-        }
-
-        public static class PerStart {
-            @XmlAttribute(name = "dt")
-            private String dt;
-            @XmlAttribute(name = "effctvTmstmp")
-            private String effctvTmstmp;
-            @XmlAttribute(name = "busEvnt")
-            private String busEvnt;
-            @XmlAttribute(name = "busTime")
-            private String busTime;
-
-            // Getters and setters
-            public String getDt() {
-                return dt;
-            }
-
-            public void setDt(String dt) {
-                this.dt
-            public String getEffctvTmstmp() {
-                return effctvTmstmp;
-            }
-
-            public void setEffctvTmstmp(String effctvTmstmp) {
-                this.effctvTmstmp = effctvTmstmp;
-            }
-
-            public String getBusEvnt() {
-                return busEvnt;
-            }
-
-            public void setBusEvnt(String busEvnt) {
-                this.busEvnt = busEvnt;
-            }
-
-            public String getBusTime() {
-                return busTime;
-            }
-
-            public void setBusTime(String busTime) {
-                this.busTime = busTime;
-            }
-        }
-
-        public static class PerEnd {
-            @XmlAttribute(name = "dt")
-            private String dt;
-            @XmlAttribute(name = "effctvTmstmp")
-            private String effctvTmstmp;
-            @XmlAttribute(name = "busEvnt")
-            private String busEvnt;
-            @XmlAttribute(name = "busTime")
-            private String busTime;
-
-            // Getters and setters
-            public String getDt() {
-                return dt;
-            }
-
-            public void setDt(String dt) {
-                this.dt = dt;
-            }
-
-            public String getEffctvTmstmp() {
-                return effctvTmstmp;
-            }
-
-            public void setEffctvTmstmp(String effctvTmstmp) {
-                this.effctvTmstmp = effctvTmstmp;
-            }
-
-            public String getBusEvnt() {
-                return busEvnt;
-            }
-
-            public void setBusEvnt(String busEvnt) {
-                this.busEvnt = busEvnt;
-            }
-
-            public String getBusTime() {
-                return busTime;
-            }
-
-            public void setBusTime(String busTime) {
-                this.busTime = busTime;
-            }
-        }
-    }
-
-    public static class SecLendCommissRep {
-        @XmlElement(name = "SecLendCommissSection")
-        private SecLendCommissSection secLendCommissSection;
-
-        // Getters and setters
-        public SecLendCommissSection getSecLendCommissSection() {
-            return secLendCommissSection;
-        }
-
-        public void setSecLendCommissSection(SecLendCommissSection secLendCommissSection) {
-            this.secLendCommissSection = secLendCommissSection;
-        }
-
-        public static class SecLendCommissSection {
-            @XmlElement(name = "SecInstr")
-            private SecInstr secInstr;
-            @XmlElement(name = "SecLendCommissDetl")
-            private List<SecLendCommissDetl> secLendCommissDetlList;
-
-            // Getters and setters
-            public SecInstr getSecInstr() {
-                return secInstr;
-            }
-
-            public void setSecInstr(SecInstr secInstr) {
-                this.secInstr = secInstr;
-            }
-
-            public List<SecLendCommissDetl> getSecLendCommissDetlList() {
-                return secLendCommissDetlList;
-            }
-
-            public void setSecLendCommissDetlList(List<SecLendCommissDetl> secLendCommissDetlList) {
-                this.secLendCommissDetlList = secLendCommissDetlList;
-            }
-
-            public static class SecInstr {
-                @XmlAttribute(name = "isinCd")
-                private String isinCd;
-                @XmlAttribute(name = "commonCd")
-                private String commonCd;
-                @XmlAttribute(name = "instrType")
-                private String instrType;
-                @XmlValue
-                private String value;
-
-                // Getters and setters
-                public String getIsinCd() {
-                    return isinCd;
-                }
-
-                public void setIsinCd(String isinCd) {
-                    this.isinCd = isinCd;
-                }
-
-                public String getCommonCd() {
-                    return commonCd;
-                }
-
-                public void setCommonCd(String commonCd) {
-                    this.commonCd = commonCd;
-                }
-
-                public String getInstrType() {
-                    return instrType;
-                }
-
-                public void setInstrType(String instrType) {
-                    this.instrType = instrType;
-                }
-
-                public String getValue() {
-                    return value;
-                }
-
-                public void setValue(String value) {
-                    this.value = value;
-                }
-            }
-
-            public static class SecLendCommissDetl {
-                @XmlAttribute(name = "loanTyp")
-                private String loanTyp;
-                @XmlAttribute(name = "lenBorrInd")
-                private String lenBorrInd;
-                @XmlAttribute(name = "streetChgd")
-                private String streetChgd;
-                @XmlElement(name = "LoanRef")
-                                private String loanRef;
-                @XmlElement(name = "UTI")
-                private String uti;
-                @XmlElement(name = "ExtRef")
-                private String extRef;
-                @XmlElement(name = "LoanOpngDt")
-                private String loanOpngDt;
-                @XmlElement(name = "LoanClsgDt")
-                private String loanClsgDt;
-                @XmlElement(name = "LoanQty")
-                private LoanQty loanQty;
-                @XmlElement(name = "LoanVal")
-                private LoanVal loanVal;
-                @XmlElement(name = "BondPrcAccrint")
-                private String bondPrcAccrint;
-                @XmlElement(name = "XchgRate")
-                private XchgRate xchgRate;
-                @XmlElement(name = "FeeRate")
-                private String feeRate;
-                @XmlElement(name = "DivCoupReq")
-                private String divCoupReq;
-                @XmlElement(name = "Hd1gFeeAmt")
-                private Hd1gFeeAmt hd1gFeeAmt;
-                @XmlElement(name = "CurntCommissAmt")
-                private CurntCommissAmt curntCommissAmt;
-                @XmlElement(name = "AccrCommissAmt")
-                private AccrCommissAmt accrCommissAmt;
-                @XmlElement(name = "CollPldgRktVal")
-                private CollPldgRktVal collPldgRktVal;
-
-                // Getters and setters
-                public String getLoanRef() {
-                    return loanRef;
-                }
-
-                public void setLoanRef(String loanRef) {
-                    this.loanRef = loanRef;
-                }
-
-                public String getUti() {
-                    return uti;
-                }
-
-                public void setUti(String uti) {
-                    this.uti = uti;
-                }
-
-                public String getExtRef() {
-                    return extRef;
-                }
-
-                public void setExtRef(String extRef) {
-                    this.extRef = extRef;
-                }
-
-                public String getLoanOpngDt() {
-                    return loanOpngDt;
-                }
-
-                public void setLoanOpngDt(String loanOpngDt) {
-                    this.loanOpngDt = loanOpngDt;
-                }
-
-                public String getLoanClsgDt() {
-                    return loanClsgDt;
-                }
-
-                public void setLoanClsgDt(String loanClsgDt) {
-                    this.loanClsgDt = loanClsgDt;
-                }
-
-                public LoanQty getLoanQty() {
-                    return loanQty;
-                }
-
-                public void setLoanQty(LoanQty loanQty) {
-                    this.loanQty = loanQty;
-                }
-
-                public LoanVal getLoanVal() {
-                    return loanVal;
-                }
-
-                public void setLoanVal(LoanVal loanVal) {
-                    this.loanVal = loanVal;
-                }
-
-                public String getBondPrcAccrint() {
-                    return bondPrcAccrint;
-                }
-
-                public void setBondPrcAccrint(String bondPrcAccrint) {
-                    this.bondPrcAccrint = bondPrcAccrint;
-                }
-
-                public XchgRate getXchgRate() {
-                    return xchgRate;
-                }
-
-                public void setXchgRate(XchgRate xchgRate) {
-                    this.xchgRate = xchgRate;
-                }
-
-                public String getFeeRate() {
-                    return feeRate;
-                }
-
-                public void setFeeRate(String feeRate) {
-                    this.feeRate = feeRate;
-                }
-
-                public String getDivCoupReq() {
-                    return divCoupReq;
-                }
-
-                public void setDivCoupReq(String divCoupReq) {
-                    this.divCoupReq = divCoupReq;
-                }
-
-                public Hd1gFeeAmt getHd1gFeeAmt() {
-                    return hd1gFeeAmt;
-                }
-
-                public void setHd1gFeeAmt(Hd1gFeeAmt hd1gFeeAmt) {
-                    this.hd1gFeeAmt = hd1gFeeAmt;
-                }
-
-                public CurntCommissAmt getCurntCommissAmt() {
-                    return curntCommissAmt;
-                }
-
-                public void setCurntCommissAmt(CurntCommissAmt curntCommissAmt) {
-                    this.curntCommissAmt = curntCommissAmt;
-                }
-
-                public AccrCommissAmt getAccrCommissAmt() {
-                    return accrCommissAmt;
-                }
-
-                public void setAccrCommissAmt(AccrCommissAmt accrCommissAmt) {
-                    this.accrCommissAmt = accrCommissAmt;
-                }
-
-                public CollPldgRktVal getCollPldgRktVal() {
-                    return collPldgRktVal;
-                }
-
-                                public void setCollPldgRktVal(CollPldgRktVal collPldgRktVal) {
-                    this.collPldgRktVal = collPldgRktVal;
-                }
-            }
-
-            public static class LoanQty {
-                @XmlAttribute(name = "qtyTyp")
-                private String qtyTyp;
-                @XmlValue
-                private String value;
-
-                // Getters and setters
-                public String getQtyTyp() {
-                    return qtyTyp;
-                }
-
-                public void setQtyTyp(String qtyTyp) {
-                    this.qtyTyp = qtyTyp;
-                }
-
-                public String getValue() {
-                    return value;
-                }
-
-                public void setValue(String value) {
-                    this.value = value;
-                }
-            }
-
-            public static class LoanVal {
-                @XmlAttribute(name = "IsoCurrCd")
-                private String isoCurrCd;
-                @XmlValue
-                private String value;
-
-                // Getters and setters
-                public String getIsoCurrCd() {
-                    return isoCurrCd;
-                }
-
-                public void setIsoCurrCd(String isoCurrCd) {
-                    this.isoCurrCd = isoCurrCd;
-                }
-
-                public String getValue() {
-                    return value;
-                }
-
-                public void setValue(String value) {
-                    this.value = value;
-                }
-            }
-
-            public static class XchgRate {
-                @XmlAttribute(name = "frstIsoCurrCd")
-                private String frstIsoCurrCd;
-                @XmlAttribute(name = "recpIsoCurrCd")
-                private String recpIsoCurrCd;
-                @XmlValue
-                private String value;
-
-                // Getters and setters
-                public String getFrstIsoCurrCd() {
-                    return frstIsoCurrCd;
-                }
-
-                public void setFrstIsoCurrCd(String frstIsoCurrCd) {
-                    this.frstIsoCurrCd = frstIsoCurrCd;
-                }
-
-                public String getRecpIsoCurrCd() {
-                    return recpIsoCurrCd;
-                }
-
-                public void setRecpIsoCurrCd(String recpIsoCurrCd) {
-                    this.recpIsoCurrCd = recpIsoCurrCd;
-                }
-
-                public String getValue() {
-                    return value;
-                }
-
-                public void setValue(String value) {
-                    this.value = value;
-                }
-            }
-
-            public static class Hd1gFeeAmt {
-                @XmlAttribute(name = "IsoCurrCd")
-                private String isoCurrCd;
-                @XmlValue
-                private String value;
-
-                // Getters and setters
-                public String getIsoCurrCd() {
-                    return isoCurrCd;
-                }
-
-                public void setIsoCurrCd(String isoCurrCd) {
-                    this.isoCurrCd = isoCurrCd;
-                }
-
-                public String getValue() {
-                    return value;
-                }
-
-                public void setValue(String value) {
-                    this.value = value;
-                }
-            }
-
-            public static class CurntCommissAmt {
-                @XmlAttribute(name = "IsoCurrCd")
-                private String isoCurrCd;
-                @XmlValue
-                private String value;
-
-                // Getters and setters
-                public String getIsoCurrCd() {
-                    return isoCurrCd;
-                }
-
-                public void setIsoCurrCd(String isoCurrCd) {
-                    this.isoCurrCd = isoCurrCd;
-                }
-
-                public String getValue() {
-                    return value;
-                }
-
-                public void setValue(String value) {
-                    this.value = value;
-                }
-            }
-
-            public static class AccrCommissAmt {
-                @XmlAttribute(name = "IsoCurrCd")
-                private String isoCurrCd;
-                @XmlValue
-                private String value;
-
-                // Getters and setters
-                public String getIsoCurrCd() {
-                    return isoCurrCd;
-                }
-
-                public void setIsoCurrCd(String isoCurrCd) {
-                    this.isoCurrCd = isoCurrCd;
-                }
-
-                public String getValue() {
-                    return value;
-                }
-
-                public void setValue(String value) {
-                    this.value = value;
-                }
-            }
-
-            public static class CollPldgRktVal {
-                @XmlAttribute(name = "IsoCurrCd")
-                private String isoCurrCd;
-                @XmlValue
-                private String value;
-
-                // Getters and setters
-                public String getIsoCurrCd() {
-                    return isoCurrCd;
-                }
-
-                public void setIsoCurrCd(String isoCurrCd) {
-                    this.isoCurrCd = isoCurrCd;
-                }
-
-                public String getValue() {
-                    return value;
-                }
-
-                public void setValue(String value) {
-                    this.value = value;
-                }
-            }
-        }
-    }
+}
+
+class CustRepOptSubscr {
+    @JacksonXmlProperty(localName = "schdId")
+    private String schdId;
+
+    @JacksonXmlProperty(localName = "tmplId")
+    private String tmplId;
+
+    @JacksonXmlProperty(localName = "tmplDetlId")
+    private String tmplDetlId;
+
+    // Getters and setters
+}
+
+class Acct {
+    @JacksonXmlProperty(localName = "ACCTNAME")
+    private String acctName;
+
+    @JacksonXmlProperty(localName = "AcctId")
+    private AcctId acctId;
+
+    // Getters and setters
+}
+
+class AcctId {
+    @JacksonXmlProperty(localName = "acctOrig")
+    private String acctOrig;
+
+    @JacksonXmlProperty(localName = "acctId")
+    private String acctId;
+
+    // Getters and setters
+}
+
+class Per {
+    @JacksonXmlProperty(localName = "PerStart")
+    private PerStart perStart;
+
+    @JacksonXmlProperty(localName = "PerEnd")
+    private PerEnd perEnd;
+
+    // Getters and setters
+}
+
+class PerStart {
+    @JacksonXmlProperty(localName = "dt")
+    private String dt;
+
+    @JacksonXmlProperty(localName = "effctvTmstmp")
+    private String effctvTmstmp;
+
+    @JacksonXmlProperty(localName = "busEvnt")
+    private String busEvnt;
+
+    @JacksonXmlProperty(localName = "busTime")
+    private String busTime;
+
+    // Getters and setters
+}
+
+class PerEnd {
+    @JacksonXmlProperty(localName = "dt")
+    private String dt;
+
+    @JacksonXmlProperty(localName = "effctvTmstmp")
+    private String effctvTmstmp;
+
+    @JacksonXmlProperty(localName = "busEvnt")
+    private String busEvnt;
+
+    @JacksonXmlProperty(localName = "busTime")
+    private String busTime;
+
+    // Getters and setters
+}
+
+class SecLendCommissRep {
+    @JacksonXmlProperty(localName = "SecLendCommissDetl")
+    private List<SecLendCommissDetl> secLendCommissDetls;
+
+    // Getters and setters
+}
+
+class SecLendCommissDetl {
+    @JacksonXmlProperty(localName = "loanTyp")
+    private String loanTyp;
+
+    @JacksonXmlProperty(localName = "lenBorrInd")
+    private String lenBorrInd;
+
+    @JacksonXmlProperty(localName = "streetChgd")
+    private String streetChgd;
+
+    @JacksonXmlProperty(localName = "LoanRef")
+    private String loanRef;
+
+    @JacksonXmlProperty(localName = "UTI")
+    private String uti;
+
+    @JacksonXmlProperty(localName = "ExtRef")
+    private String extRef;
+
+    @JacksonXmlProperty(localName = "LoanOpngDt")
+    private String loanOpngDt;
+
+    @JacksonXmlProperty(localName = "LoanClsgDt")
+    private String loanClsgDt;
+
+    @JacksonXmlProperty(localName = "LoanQty")
+    private LoanQty loanQty;
+
+    @JacksonXmlProperty(localName = "Loanval")
+    private Loanval loanval;
+
+    @JacksonXmlProperty(localName = "BondPrcAccrint")
+    private String bondPrcAccrint;
+
+    @JacksonXmlProperty(localName = "Cxchgate")
+    private Cxchgate cxchgate;
+
+    @JacksonXmlProperty(localName = "Feellate")
+    private String feellate;
+
+    @JacksonXmlProperty(localName = "DivCoupReq")
+    private String divCoupReq;
+
+    @JacksonXmlProperty(localName = "Hd1gFeeAmnt")
+    private Hd1gFeeAmnt hd1gFeeAmnt;
+
+    @JacksonXmlProperty(localName = "CurntCommissAmnt")
+    private CurntCommissAmnt curntCom
+
+class SecLendCommissDetl {
+    // ...
+
+    @JacksonXmlProperty(localName = "CurntCommissAmnt")
+    private CurntCommissAmnt curntCommissAmnt;
+
+    @JacksonXmlProperty(localName = "AccrCommissAmnt")
+    private AccrCommissAmnt accrCommissAmnt;
+
+    @JacksonXmlProperty(localName = "CollPldgIrktval")
+    private CollPldgIrktval collPldgIrktval;
+
+    @JacksonXmlProperty(localName = "CollPldgFeeRate")
+    private String collPldgFeeRate;
+
+    @JacksonXmlProperty(localName = "CollPldgCurntCommissAmnt")
+    private CollPldgCurntCommissAmnt collPldgCurntCommissAmnt;
+
+    @JacksonXmlProperty(localName = "CollPldgAccrCommissAmnt")
+    private CollPldgAccrCommissAmnt collPldgAccrCommissAmnt;
+
+    @JacksonXmlProperty(localName = "CurntCommissStartDt")
+    private String curntCommissStartDt;
+
+    @JacksonXmlProperty(localName = "CurntCommissEndDt")
+    private String curntCommissEndDt;
+
+    // Getters and setters
+}
+
+class LoanQty {
+    @JacksonXmlProperty(localName = "qtyTyp")
+    private String qtyTyp;
+
+    @JacksonXmlProperty(localName = "value")
+    private String value;
+
+    // Getters and setters
+}
+
+class Loanval {
+    @JacksonXmlProperty(localName = "IsoCurrCd")
+    private String isoCurrCd;
+
+    @JacksonXmlProperty(localName = "value")
+    private String value;
+
+    // Getters and setters
+}
+
+class Cxchgate {
+    @JacksonXmlProperty(localName = "frstIsoCurrCd")
+    private String frstIsoCurrCd;
+
+    @JacksonXmlProperty(localName = "recpIsoCurrCd")
+    private String recpIsoCurrCd;
+
+    @JacksonXmlProperty(localName = "value")
+    private String value;
+
+    // Getters and setters
+}
+
+class Hd1gFeeAmnt {
+    @JacksonXmlProperty(localName = "IsoCurrCd")
+    private String isoCurrCd;
+
+    @JacksonXmlProperty(localName = "value")
+    private String value;
+
+    // Getters and setters
+}
+
+class CurntCommissAmnt {
+    @JacksonXmlProperty(localName = "IsoCurrCd")
+    private String isoCurrCd;
+
+    @JacksonXmlProperty(localName = "value")
+    private String value;
+
+    // Getters and setters
+}
+
+class AccrCommissAmnt {
+    @JacksonXmlProperty(localName = "IsoCurrCd")
+    private String isoCurrCd;
+
+    @JacksonXmlProperty(localName = "value")
+    private String value;
+
+    // Getters and setters
+}
+
+class CollPldgIrktval {
+    @JacksonXmlProperty(localName = "IsoCurrCd")
+    private String isoCurrCd;
+
+    @JacksonXmlProperty(localName = "value")
+    private String value;
+
+    // Getters and setters
+}
+
+class CollPldgCurntCommissAmnt {
+    @JacksonXmlProperty(localName = "IsoCurrCd")
+    private String isoCurrCd;
+
+    @JacksonXmlProperty(localName = "value")
+    private String value;
+
+    // Getters and setters
+}
+
+class CollPldgAccrCommissAmnt {
+    @JacksonXmlProperty(localName = "IsoCurrCd")
+    private String isoCurrCd;
+
+    @JacksonXmlProperty(localName = "value")
+    private String value;
+
+    // Getters and setters
 }
 
 
+// ...
+
+private void convertXmlToCsv() throws Exception {
+    // Read XML file
+    File xmlFile = new File(XML_FILE_PATH);
+    XmlMapper xmlMapper = new XmlMapper();
+    XmlData data = xmlMapper.readValue(xmlFile, XmlData.class);
+
+    // Write to CSV file
+    try (FileWriter writer = new FileWriter(CSV_FILE_PATH);
+         CSVWriter csvWriter = new CSVWriter(writer)) {
+        csvWriter.writeNext(new String[] {"loanTyp", "lenBorrInd", "streetChgd", "LoanRef", "UTI", "ExtRef", "LoanOpngDt", "LoanClsgDt", "LoanQty", "Loanval", "BondPrcAccrint", "Cxchgate", "Feellate", "DivCoupReq", "Hd1gFeeAmnt", "CurntCommissAmnt", "AccrCommissAmnt", "CollPldgIrktval", "CollPldgFeeRate", "CollPldgCurntCommissAmnt", "CollPldgAccrCommissAmnt", "CurntCommissStartDt", "CurntCommissEndDt"});
+
+        for (SecLendCommissDetl detl : data.getSecLendCommissRep().getSecLendCommissDetls()) {
+            csvWriter.writeNext(new String[] {
+                    detl.getLoanTyp(),
+                    detl.getLenBorrInd(),
+                    detl.getStreetChgd(),
+                    detl.getLoanRef(),
+                    detl.getUti(),
+                    detl.getExtRef(),
+                    detl.getLoanOpngDt(),
+                    detl.getLoanClsgDt(),
+                    detl.getLoanQty().getValue(),
+                    detl.getLoanval().getValue(),
+                    detl.getBondPrcAccrint(),
+                    detl.getCxchgate().getValue(),
+                    detl.getFeellate(),
+                    detl.getDivCoupReq(),
+                    detl.getHd1gFeeAmnt().getValue(),
+                    detl.getCurntCommissAmnt().getValue(),
+                    detl.getAccrCommissAmnt().getValue(),
+                    detl.getCollPldgIrktval().getValue(),
+                    detl.getCollPldgFeeRate(),
+                    detl.getCollPldgCurntCommissAmnt().getValue(),
+                    detl.getCollPldgAccrCommissAmnt().getValue(),
+                    detl.getCurntCommissStartDt(),
+                    detl.getCurntCommissEndDt()
+            });
+        }
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
+}
