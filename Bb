@@ -1,321 +1,198 @@
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-
 import java.util.List;
 
-@JacksonXmlRootElement(localName = "Search")
-public class XmlData {
-    @JacksonXmlProperty(localName = "CustRepOptSubscr")
+public class SecLendCommiss {
+
+    private String xmlId;
+    private String tmstmp;
+    private String repFreq;
+    private String repMode;
+    private String repActvFlg;
     private CustRepOptSubscr custRepOptSubscr;
-
-    @JacksonXmlProperty(localName = "Acct")
-    private Acct acct;
-
-    @JacksonXmlProperty(localName = "Per")
-    private Per per;
-
-    @JacksonXmlProperty(localName = "SecLendCommissRep")
-    private SecLendCommissRep secLendCommissRep;
-
-    // Getters and setters
-}
-
-class CustRepOptSubscr {
-    @JacksonXmlProperty(localName = "schdId")
-    private String schdId;
-
-    @JacksonXmlProperty(localName = "tmplId")
-    private String tmplId;
-
-    @JacksonXmlProperty(localName = "tmplDetlId")
-    private String tmplDetlId;
-
-    // Getters and setters
-}
-
-class Acct {
-    @JacksonXmlProperty(localName = "ACCTNAME")
-    private String acctName;
-
-    @JacksonXmlProperty(localName = "AcctId")
-    private AcctId acctId;
-
-    // Getters and setters
-}
-
-class AcctId {
-    @JacksonXmlProperty(localName = "acctOrig")
-    private String acctOrig;
-
-    @JacksonXmlProperty(localName = "acctId")
-    private String acctId;
-
-    // Getters and setters
-}
-
-class Per {
-    @JacksonXmlProperty(localName = "PerStart")
-    private PerStart perStart;
-
-    @JacksonXmlProperty(localName = "PerEnd")
-    private PerEnd perEnd;
-
-    // Getters and setters
-}
-
-class PerStart {
-    @JacksonXmlProperty(localName = "dt")
-    private String dt;
-
-    @JacksonXmlProperty(localName = "effctvTmstmp")
-    private String effctvTmstmp;
-
-    @JacksonXmlProperty(localName = "busEvnt")
-    private String busEvnt;
-
-    @JacksonXmlProperty(localName = "busTime")
-    private String busTime;
-
-    // Getters and setters
-}
-
-class PerEnd {
-    @JacksonXmlProperty(localName = "dt")
-    private String dt;
-
-    @JacksonXmlProperty(localName = "effctvTmstmp")
-    private String effctvTmstmp;
-
-    @JacksonXmlProperty(localName = "busEvnt")
-    private String busEvnt;
-
-    @JacksonXmlProperty(localName = "busTime")
-    private String busTime;
-
-    // Getters and setters
-}
-
-class SecLendCommissRep {
-    @JacksonXmlProperty(localName = "SecLendCommissDetl")
-    private List<SecLendCommissDetl> secLendCommissDetls;
-
-    // Getters and setters
-}
-
-class SecLendCommissDetl {
-    @JacksonXmlProperty(localName = "loanTyp")
-    private String loanTyp;
-
-    @JacksonXmlProperty(localName = "lenBorrInd")
-    private String lenBorrInd;
-
-    @JacksonXmlProperty(localName = "streetChgd")
-    private String streetChgd;
-
-    @JacksonXmlProperty(localName = "LoanRef")
-    private String loanRef;
-
-    @JacksonXmlProperty(localName = "UTI")
-    private String uti;
-
-    @JacksonXmlProperty(localName = "ExtRef")
-    private String extRef;
-
-    @JacksonXmlProperty(localName = "LoanOpngDt")
-    private String loanOpngDt;
-
-    @JacksonXmlProperty(localName = "LoanClsgDt")
-    private String loanClsgDt;
-
-    @JacksonXmlProperty(localName = "LoanQty")
-    private LoanQty loanQty;
-
-    @JacksonXmlProperty(localName = "Loanval")
-    private Loanval loanval;
-
-    @JacksonXmlProperty(localName = "BondPrcAccrint")
-    private String bondPrcAccrint;
-
-    @JacksonXmlProperty(localName = "Cxchgate")
-    private Cxchgate cxchgate;
-
-    @JacksonXmlProperty(localName = "Feellate")
-    private String feellate;
-
-    @JacksonXmlProperty(localName = "DivCoupReq")
-    private String divCoupReq;
-
-    @JacksonXmlProperty(localName = "Hd1gFeeAmnt")
-    private Hd1gFeeAmnt hd1gFeeAmnt;
-
-    @JacksonXmlProperty(localName = "CurntCommissAmnt")
-    private CurntCommissAmnt curntCom
-
-class SecLendCommissDetl {
-    // ...
-
-    @JacksonXmlProperty(localName = "CurntCommissAmnt")
-    private CurntCommissAmnt curntCommissAmnt;
-
-    @JacksonXmlProperty(localName = "AccrCommissAmnt")
-    private AccrCommissAmnt accrCommissAmnt;
-
-    @JacksonXmlProperty(localName = "CollPldgIrktval")
-    private CollPldgIrktval collPldgIrktval;
-
-    @JacksonXmlProperty(localName = "CollPldgFeeRate")
-    private String collPldgFeeRate;
-
-    @JacksonXmlProperty(localName = "CollPldgCurntCommissAmnt")
-    private CollPldgCurntCommissAmnt collPldgCurntCommissAmnt;
-
-    @JacksonXmlProperty(localName = "CollPldgAccrCommissAmnt")
-    private CollPldgAccrCommissAmnt collPldgAccrCommissAmnt;
-
-    @JacksonXmlProperty(localName = "CurntCommissStartDt")
-    private String curntCommissStartDt;
-
-    @JacksonXmlProperty(localName = "CurntCommissEndDt")
-    private String curntCommissEndDt;
-
-    // Getters and setters
-}
-
-class LoanQty {
-    @JacksonXmlProperty(localName = "qtyTyp")
-    private String qtyTyp;
-
-    @JacksonXmlProperty(localName = "value")
-    private String value;
-
-    // Getters and setters
-}
-
-class Loanval {
-    @JacksonXmlProperty(localName = "IsoCurrCd")
-    private String isoCurrCd;
-
-    @JacksonXmlProperty(localName = "value")
-    private String value;
-
-    // Getters and setters
-}
-
-class Cxchgate {
-    @JacksonXmlProperty(localName = "frstIsoCurrCd")
-    private String frstIsoCurrCd;
-
-    @JacksonXmlProperty(localName = "recpIsoCurrCd")
-    private String recpIsoCurrCd;
-
-    @JacksonXmlProperty(localName = "value")
-    private String value;
-
-    // Getters and setters
-}
-
-class Hd1gFeeAmnt {
-    @JacksonXmlProperty(localName = "IsoCurrCd")
-    private String isoCurrCd;
-
-    @JacksonXmlProperty(localName = "value")
-    private String value;
-
-    // Getters and setters
-}
-
-class CurntCommissAmnt {
-    @JacksonXmlProperty(localName = "IsoCurrCd")
-    private String isoCurrCd;
-
-    @JacksonXmlProperty(localName = "value")
-    private String value;
-
-    // Getters and setters
-}
-
-class AccrCommissAmnt {
-    @JacksonXmlProperty(localName = "IsoCurrCd")
-    private String isoCurrCd;
-
-    @JacksonXmlProperty(localName = "value")
-    private String value;
-
-    // Getters and setters
-}
-
-class CollPldgIrktval {
-    @JacksonXmlProperty(localName = "IsoCurrCd")
-    private String isoCurrCd;
-
-    @JacksonXmlProperty(localName = "value")
-    private String value;
-
-    // Getters and setters
-}
-
-class CollPldgCurntCommissAmnt {
-    @JacksonXmlProperty(localName = "IsoCurrCd")
-    private String isoCurrCd;
-
-    @JacksonXmlProperty(localName = "value")
-    private String value;
-
-    // Getters and setters
-}
-
-class CollPldgAccrCommissAmnt {
-    @JacksonXmlProperty(localName = "IsoCurrCd")
-    private String isoCurrCd;
-
-    @JacksonXmlProperty(localName = "value")
-    private String value;
-
-    // Getters and setters
-}
-
-
-// ...
-
-private void convertXmlToCsv() throws Exception {
-    // Read XML file
-    File xmlFile = new File(XML_FILE_PATH);
-    XmlMapper xmlMapper = new XmlMapper();
-    XmlData data = xmlMapper.readValue(xmlFile, XmlData.class);
-
-    // Write to CSV file
-    try (FileWriter writer = new FileWriter(CSV_FILE_PATH);
-         CSVWriter csvWriter = new CSVWriter(writer)) {
-        csvWriter.writeNext(new String[] {"loanTyp", "lenBorrInd", "streetChgd", "LoanRef", "UTI", "ExtRef", "LoanOpngDt", "LoanClsgDt", "LoanQty", "Loanval", "BondPrcAccrint", "Cxchgate", "Feellate", "DivCoupReq", "Hd1gFeeAmnt", "CurntCommissAmnt", "AccrCommissAmnt", "CollPldgIrktval", "CollPldgFeeRate", "CollPldgCurntCommissAmnt", "CollPldgAccrCommissAmnt", "CurntCommissStartDt", "CurntCommissEndDt"});
-
-        for (SecLendCommissDetl detl : data.getSecLendCommissRep().getSecLendCommissDetls()) {
-            csvWriter.writeNext(new String[] {
-                    detl.getLoanTyp(),
-                    detl.getLenBorrInd(),
-                    detl.getStreetChgd(),
-                    detl.getLoanRef(),
-                    detl.getUti(),
-                    detl.getExtRef(),
-                    detl.getLoanOpngDt(),
-                    detl.getLoanClsgDt(),
-                    detl.getLoanQty().getValue(),
-                    detl.getLoanval().getValue(),
-                    detl.getBondPrcAccrint(),
-                    detl.getCxchgate().getValue(),
-                    detl.getFeellate(),
-                    detl.getDivCoupReq(),
-                    detl.getHd1gFeeAmnt().getValue(),
-                    detl.getCurntCommissAmnt().getValue(),
-                    detl.getAccrCommissAmnt().getValue(),
-                    detl.getCollPldgIrktval().getValue(),
-                    detl.getCollPldgFeeRate(),
-                    detl.getCollPldgCurntCommissAmnt().getValue(),
-                    detl.getCollPldgAccrCommissAmnt().getValue(),
-                    detl.getCurntCommissStartDt(),
-                    detl.getCurntCommissEndDt()
-            });
+    private String stentNbr;
+    private XchgRate xchgRate;
+    private List<SecLendCommissDetl> secLendCommissDetlList;
+
+    // Getters and Setters
+
+    public static class CustRepOptSubscr {
+        private String schdId;
+        private String tmplId;
+        private String tmplDetlId;
+        private String repSubscrim;
+
+        // Getters and Setters
+    }
+
+    public static class XchgRate {
+        private String frstIsoCurrCd;
+        private String recpIsoCurrCd;
+        private double value;
+
+        // Getters and Setters
+    }
+
+    public static class SecLendCommissDetl {
+        private String loanTyp;
+        private String lenBorrInd;
+        private String streetChgd;
+        private String loanRef;
+        private String uti;
+        private String extRef;
+        private String loanDpngDt;
+        private String loanOpngDt;
+        private String loanClsgDt;
+        private LoanQty loanQty;
+        private LoanVal loanVal;
+        private double bondPrcAccrInt;
+        private XchgRate xchgRate;
+        private double feeRate;
+        private double divCoupReq;
+        private HdlgFeeAmnt hdlgFeeAmnt;
+        private CurntCommissAmnt curntCommissAmnt;
+        private AccrCommissAmnt accrCommissAmnt;
+        private CollPldgMrktVal collPldgMrktVal;
+        private double collPldgFeeRate;
+        private CollPldgCurntCommissAmnt collPldgCurntCommissAmnt;
+        private CollPldgAccrCommissAmnt collPldgAccrCommissAmnt;
+        private String curntCommissStartDt;
+        private String curntCommissEndDt;
+
+        // Getters and Setters
+
+        public static class LoanQty {
+            private String qtyTyp;
+            private double value;
+
+            // Getters and Setters
         }
-    } catch (IOException e) {
-        throw new RuntimeException(e);
+
+        public static class LoanVal {
+            private String isoCurrCd;
+            private double value;
+
+            // Getters and Setters
+        }
+
+        public static class HdlgFeeAmnt {
+            private String isoCurrCd;
+            private double value;
+
+            // Getters and Setters
+        }
+
+        public static class CurntCommissAmnt {
+            private String isoCurrCd;
+            private double value;
+
+            // Getters and Setters
+        }
+
+        public static class AccrCommissAmnt {
+            private String isoCurrCd;
+            private double value;
+
+            // Getters and Setters
+        }
+
+        public static class CollPldgMrktVal {
+            private String isoCurrCd;
+            private double value;
+
+            // Getters and Setters
+        }
+
+        public static class CollPldgCurntCommissAmnt {
+            private String isoCurrCd;
+            private double value;
+
+            // Getters and Setters
+        }
+
+        public static class CollPldgAccrCommissAmnt {
+            private String isoCurrCd;
+            private double value;
+
+            // Getters and Setters
+        }
+    }
+}
+
+
+package com.example.xmltocsv;
+
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.opencsv.CSVWriter;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
+
+@SpringBootApplication
+public class XmlToCsvApplication implements CommandLineRunner {
+
+    private static final String XML_FILE_PATH = "src/main/resources/input.xml";
+    private static final String CSV_FILE_PATH = "src/main/resources/output.csv";
+
+    public static void main(String[] args) {
+        SpringApplication.run(XmlToCsvApplication.class, args);
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        // Read XML and convert it to POJO
+        SecLendCommiss secLendCommiss = readXml();
+
+        // Write POJO data to CSV
+        writeCsv(secLendCommiss);
+    }
+
+    private SecLendCommiss readXml() throws IOException {
+        XmlMapper xmlMapper = new XmlMapper();
+        return xmlMapper.readValue(new File(XML_FILE_PATH), SecLendCommiss.class);
+    }
+
+    private void writeCsv(SecLendCommiss secLendCommiss) throws IOException {
+        try (CSVWriter writer = new CSVWriter(new FileWriter(CSV_FILE_PATH))) {
+            // Write header
+            writer.writeNext(new String[]{
+                    "xmlId", "tmstmp", "repFreq", "repMode", "repActvFlg",
+                    "schdId", "tmplId", "tmplDetlId", "RepSubscrim",
+                    "StentNbr", "frstIsoCurrCd", "recpIsoCurrCd", "xchgRate"
+            });
+
+            // Write data
+            writer.writeNext(new String[]{
+                    secLendCommiss.getXmlId(), secLendCommiss.getTmstmp(), secLendCommiss.getRepFreq(),
+                    secLendCommiss.getRepMode(), secLendCommiss.getRepActvFlg(),
+                    secLendCommiss.getCustRepOptSubscr().getSchdId(),
+                    secLendCommiss.getCustRepOptSubscr().getTmplId(),
+                    secLendCommiss.getCustRepOptSubscr().getTmplDetlId(),
+                    secLendCommiss.getCustRepOptSubscr().getRepSubscrim(),
+                    secLendCommiss.getStentNbr(), 
+                    secLendCommiss.getInfo().getXchgRate().getFrstIsoCurrCd(), 
+                    secLendCommiss.getInfo().getXchgRate().getRecpIsoCurrCd(),
+                    String.valueOf(secLendCommiss.getInfo().getXchgRate().getXchgRate())
+            });
+
+            // If you have multiple details, iterate through them and write to the CSV
+            for (SecLendCommissDetl detl : secLendCommiss.getSection().getDetls()) {
+                writer.writeNext(new String[]{
+                        detl.getLoanRef(), detl.getUti(), detl.getExtRef(),
+                        detl.getLoanDpngDt(), detl.getLoanOpngDt(), detl.getLoanClsgDt(),
+                        String.valueOf(detl.getLoanQty().getQty()), 
+                        String.valueOf(detl.getLoanVal().getVal()),
+                        String.valueOf(detl.getBondPrcAccrint()), 
+                        String.valueOf(detl.getFeeRate()),
+                        String.valueOf(detl.getDivCoupReq()), 
+                        String.valueOf(detl.getHdlgFeeAmnt().getAmount()),
+                        String.valueOf(detl.getCurntCommissAmnt().getAmount()),
+                        String.valueOf(detl.getAccrCommissAmnt().getAmount())
+                });
+            }
+        }
     }
 }
