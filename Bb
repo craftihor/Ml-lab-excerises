@@ -1,0 +1,235 @@
+@XmlRootElement(name = "Search")
+public class Search {
+    @XmlElement(name = "CustRepOptSubscr")
+    private CustRepOptSubscr custRepOptSubscr;
+    @XmlElement(name = "Acct")
+    private Acct acct;
+    @XmlElement(name = "Per")
+    private Per per;
+    @XmlElement(name = "SecLendCommissRep")
+    private SecLendCommissRep secLendCommissRep;
+    // Getters and setters
+}
+
+public class CustRepOptSubscr {
+    @XmlAttribute(name = "schdId")
+    private String schdId;
+    @XmlAttribute(name = "tmplId")
+    private String tmplId;
+    @XmlAttribute(name = "tmplDetlId")
+    private String tmplDetlId;
+    // Getters and setters
+}
+
+public class Acct {
+    @XmlElement(name = "AcctName")
+    private String acctName;
+    @XmlElement(name = "AcctId")
+    private AcctId acctId;
+    // Getters and setters
+}
+
+public class AcctId {
+    @XmlAttribute(name = "acctOrig")
+    private String acctOrig;
+    @XmlValue
+    private String value;
+    // Getters and setters
+}
+
+public class Per {
+    @XmlElement(name = "PerStart")
+    private PerStart perStart;
+    @XmlElement(name = "PerEnd")
+    private PerEnd perEnd;
+    // Getters and setters
+}
+
+public class PerStart {
+    @XmlAttribute(name = "dt")
+    private String dt;
+    @XmlAttribute(name = "effctvTmstmp")
+    private String effctvTmstmp;
+    @XmlAttribute(name = "busEvnt")
+    private String busEvnt;
+    @XmlAttribute(name = "busTime")
+    private String busTime;
+    // Getters and setters
+}
+
+public class PerEnd {
+    @XmlAttribute(name = "dt")
+    private String dt;
+    @XmlAttribute(name = "effctvTmstmp")
+    private String effctvTmstmp;
+    @XmlAttribute(name = "busEvnt")
+    private String busEvnt;
+    @XmlAttribute(name = "busTime")
+    private String busTime;
+    // Getters and setters
+}
+
+public class SecLendCommissRep {
+    @XmlElement(name = "SecLendCommissSection")
+    private SecLendCommissSection secLendCommissSection;
+    // Getters and setters
+}
+
+public class SecLendCommissSection {
+    @XmlElement(name = "SecInstr")
+    private SecInstr secInstr;
+    @XmlElement(name = "SecLendCommissDetl")
+    private List<SecLendCommissDetl> secLendCommissDetlList;
+    // Getters and setters
+}
+
+public class SecInstr {
+    @XmlAttribute(name = "isinCd")
+    private String isinCd;
+    @XmlAttribute(name = "commonCd")
+    private String commonCd;
+    @XmlAttribute(name = "instrType")
+    private String instrType;
+    @XmlValue
+    private String value;
+    // Getters and setters
+}
+
+public class SecLendCommissDetl {
+    @XmlAttribute(name = "loanTyp")
+    private String loanTyp;
+    @XmlAttribute(name = "lenBorrInd")
+    private String lenBorrInd;
+    @XmlAttribute(name = "streetChgd")
+    private String streetChgd;
+    @XmlElement(name = "LoanRef")
+    private String loanRef;
+    @XmlElement(name = "UTI")
+    private String uti;
+    @XmlElement(name = "ExtRef")
+    private String extRef;
+    @XmlElement(name = "LoanOpngDt")
+    private String loanOpngDt;
+    @XmlElement(name = "LoanClsgDt")
+    private String loanClsgDt;
+    @XmlElement(name = "LoanQty")
+    private LoanQty loanQty;
+    @XmlElement(name = "LoanVal")
+    private LoanVal loanVal;
+    @XmlElement(name = "BondPrcAccrint")
+    private String bondPrcAccrint;
+    @XmlElement(name = "XchgRate")
+    private XchgRate xchgRate;
+    @XmlElement(name = "FeeRate")
+    private String feeRate;
+    @XmlElement(name = "DivCoupReq")
+    private String divCoupReq;
+    @XmlElement(name = "Hd1gFeeAmt")
+    private Hd1gFeeAmt hd1gFeeAmt;
+    @XmlElement(name = "CurntCommissAmt")
+    private CurntCommissAmt curntCommissAmt;
+    @XmlElement(name = "AccrCommissAmt")
+    private AccrCommissAmt accrCommissAmt;
+    @XmlElement(name = "CollPldgRktVal")
+    private CollPldgRktVal collPldgRktVal;
+    @XmlElement(name
+
+public class LoanQty {
+    @XmlAttribute(name = "qtyTyp")
+    private String qtyTyp;
+    @XmlValue
+    private String value;
+    // Getters and setters
+}
+
+public class LoanVal {
+    @XmlAttribute(name = "IsoCurrCd")
+    private String isoCurrCd;
+    @XmlValue
+    private String value;
+    // Getters and setters
+}
+
+public class XchgRate {
+    @XmlAttribute(name = "frstIsoCurrCd")
+    private String frstIsoCurrCd;
+    @XmlAttribute(name = "recpIsoCurrCd")
+    private String recpIsoCurrCd;
+    @XmlValue
+    private String value;
+    // Getters and setters
+}
+
+public class Hd1gFeeAmt {
+    @XmlAttribute(name = "IsoCurrCd")
+    private String isoCurrCd;
+    @XmlValue
+    private String value;
+    // Getters and setters
+}
+
+public class CurntCommissAmt {
+    @XmlAttribute(name = "IsoCurrCd")
+    private String isoCurrCd;
+    @XmlValue
+    private String value;
+    // Getters and setters
+}
+
+public class AccrCommissAmt {
+    @XmlAttribute(name = "IsoCurrCd")
+    private String isoCurrCd;
+    @XmlValue
+    private String value;
+    // Getters and setters
+}
+
+public class CollPldgRktVal {
+    @XmlAttribute(name = "IsoCurrCd")
+    private String isoCurrCd;
+    @XmlValue
+    private String value;
+    // Getters and setters
+}
+
+
+public class FileProcessingService {
+    public void processFile(File file) {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Search.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            Search search = (Search) unmarshaller.unmarshal(file);
+            
+            // Write the parsed data to a local file
+            ObjectMapper mapper = new ObjectMapper();
+            String json = mapper.writeValueAsString(search);
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.json"))) {
+                writer.write(json);
+            }
+        } catch (Exception e) {
+            log.error("Error processing file", e);
+        }
+    }
+}
+
+
+public class FileProcessingService {
+    public void processFile(File file) {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Search.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            Search search = (Search) unmarshaller.unmarshal(file);
+            
+            // Write the parsed data to a local file in a specific format
+            StringBuilder sb = new StringBuilder();
+            sb.append("CustRepOptSubscr: ").append(search.getCustRepOptSubscr().getSchdId()).append("\n");
+            sb.append("Acct: ").append(search.getAcct().getAcctName()).append("\n");
+            // Add more fields as needed
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.txt"))) {
+                writer.write(sb.toString());
+            }
+        } catch (Exception e) {
+            log.error("Error processing file", e);
+        }
+    }
+}
