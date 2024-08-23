@@ -29,8 +29,6 @@ public class SecLendCommissiep {
 
     @XmlElement(name = "SecLendCommiss.section")
     private SecLendCommissSection secLendCommissSection;
-
-    // Getters and setters
 }
 
 // CustRepOptSubscr.java
@@ -49,8 +47,6 @@ public class CustRepOptSubscr {
 
     @XmlElement(name = "RepSubscrim")
     private String repSubscrim;
-
-    // Getters and setters
 }
 
 // SecLendCommissRepInfo.java
@@ -62,8 +58,6 @@ import jakarta.xml.bind.annotation.*;
 public class SecLendCommissRepInfo {
     @XmlElement(name = "XchgRate")
     private XchgRate xchgRate;
-
-    // Getters and setters
 }
 
 // XchgRate.java
@@ -79,8 +73,6 @@ public class XchgRate {
     private String recpIsoCurrCd;
     @XmlValue
     private double value;
-
-    // Getters and setters
 }
 
 // SecLendCommissSection.java
@@ -96,8 +88,6 @@ public class SecLendCommissSection {
 
     @XmlElement(name = "SecLendCommissDetl")
     private List<SecLendCommissDetl> secLendCommissDetl;
-
-    // Getters and setters
 }
 
 // SecInstr.java
@@ -116,8 +106,6 @@ public class SecInstr {
 
     @XmlElement(name = "SecNm")
     private String secNm;
-
-    // Getters and setters
 }
 
 // SecLendCommissDetl.java
@@ -174,8 +162,6 @@ public class SecLendCommissDetl {
     private String curntCommissStartDt;
     @XmlElement(name = "CurntCommissEndDt")
     private String curntCommissEndDt;
-
-    // Getters and setters
 }
 
 // LoanQty.java
@@ -189,632 +175,95 @@ public class LoanQty {
     private String qtyTyp;
     @XmlValue
     private double value;
-
-    // Getters and setters
 }
 
-// LoanVal.java, HdlgFeeAmnt.java, CurntCommissAmnt.java, AccrCommissAmnt.java, CollPldgMrktVal.java, CollPldgCurntCommissAmnt.java, CollPldgAccrCommissAmnt.java
-// Create similar classes for these elements with isoCurrCd attribute and value
+// LoanVal.java
+package com.example.xmlparser.model;
 
-// XmlParserService.java
-package com.example.xmlparser.service;
+import jakarta.xml.bind.annotation.*;
 
-import com.example.xmlparser.model.SecLendCommissiep;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Unmarshaller;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import java.io.File;
-
-@Service
-public class XmlParserService {
-
-    @Value("${xml.file.path}")
-    private String xmlFilePath;
-
-    public SecLendCommissiep parseXml() throws JAXBException {
-        File xmlFile = new File(xmlFilePath);
-        JAXBContext jaxbContext = JAXBContext.newInstance(SecLendCommissiep.class);
-        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        return (SecLendCommissiep) unmarshaller.unmarshal(xmlFile);
-    }
-}
-
-// XmlParserController.java
-package com.example.xmlparser.controller;
-
-import com.example.xmlparser.model.SecLendCommissiep;
-import com.example.xmlparser.service.XmlParserService;
-import jakarta.xml.bind.JAXBException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
-@RequestMapping("/api")
-public class XmlParserController {
-
-    @Autowired
-    private XmlParserService xmlParserService;
-
-    @GetMapping("/parse-xml")
-    public ResponseEntity<SecLendCommissiep> parseXml() {
-        try {
-            SecLendCommissiep result = xmlParserService.parseXml();
-            return ResponseEntity.ok(result);
-        } catch (JAXBException e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-}
-
-server.port=8080
-xml.file.path=/path/to/your/xml/file.xml
-
-// Application.java
-package com.example.xmlparser;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-}
-
-
-import java.util.HashMap;
-import java.util.Map;
-public class AccrCommissAmnt {
-    private Double content;
-    private String isoCurrCd;
-    public Double getContent() {
-        return content;
-    }
-    public void setContent(Double content) {
-        this.content = content;
-    }
-    public String getIsoCurrCd() {
-        return isoCurrCd;
-    }
-    public void setIsoCurrCd(String isoCurrCd) {
-        this.isoCurrCd = isoCurrCd;
-    }
-}
-package javainuse;
-import java.util.HashMap;
-import java.util.Map;
-public class CollPldgAccrCommissAmnt {
-    private Double content;
-    private String isoCurrCd;
-    public Double getContent() {
-        return content;
-    }
-    public void setContent(Double content) {
-        this.content = content;
-    }
-    public String getIsoCurrCd() {
-        return isoCurrCd;
-    }
-    public void setIsoCurrCd(String isoCurrCd) {
-        this.isoCurrCd = isoCurrCd;
-    }
-}
-package javainuse;
-import java.util.HashMap;
-import java.util.Map;
-public class CollPldgCurntCommissAmnt {
-    private Double content;
-    private String isoCurrCd;
-    public Double getContent() {
-        return content;
-    }
-    public void setContent(Double content) {
-        this.content = content;
-    }
-    public String getIsoCurrCd() {
-        return isoCurrCd;
-    }
-    public void setIsoCurrCd(String isoCurrCd) {
-        this.isoCurrCd = isoCurrCd;
-    }
-}
-package javainuse;
-import java.util.HashMap;
-import java.util.Map;
-public class CollPldgMrktVal {
-    private Double content;
-    private String isoCurrCd;
-    public Double getContent() {
-        return content;
-    }
-    public void setContent(Double content) {
-        this.content = content;
-    }
-    public String getIsoCurrCd() {
-        return isoCurrCd;
-    }
-    public void setIsoCurrCd(String isoCurrCd) {
-        this.isoCurrCd = isoCurrCd;
-    }
-}
-package javainuse;
-import java.util.HashMap;
-import java.util.Map;
-public class CurntCommissAmnt {
-    private Double content;
-    private String isoCurrCd;
-    public Double getContent() {
-        return content;
-    }
-    public void setContent(Double content) {
-        this.content = content;
-    }
-    public String getIsoCurrCd() {
-        return isoCurrCd;
-    }
-    public void setIsoCurrCd(String isoCurrCd) {
-        this.isoCurrCd = isoCurrCd;
-    }
-}
-package javainuse;
-import java.util.HashMap;
-import java.util.Map;
-public class CustRepOptSubscr {
-    private Integer schdId;
-    private Integer tmplId;
-    private Integer tmplDetlId;
-    private String repSubscrim;
-    public Integer getSchdId() {
-        return schdId;
-    }
-    public void setSchdId(Integer schdId) {
-        this.schdId = schdId;
-    }
-    public Integer getTmplId() {
-        return tmplId;
-    }
-    public void setTmplId(Integer tmplId) {
-        this.tmplId = tmplId;
-    }
-    public Integer getTmplDetlId() {
-        return tmplDetlId;
-    }
-    public void setTmplDetlId(Integer tmplDetlId) {
-        this.tmplDetlId = tmplDetlId;
-    }
-    public String getRepSubscrim() {
-        return repSubscrim;
-    }
-    public void setRepSubscrim(String repSubscrim) {
-        this.repSubscrim = repSubscrim;
-    }
-}
-package javainuse;
-import java.util.HashMap;
-import java.util.Map;
-public class HdlgFeeAmnt {
-    private Integer content;
-    private String isoCurrCd;
-    public Integer getContent() {
-        return content;
-    }
-    public void setContent(Integer content) {
-        this.content = content;
-    }
-    public String getIsoCurrCd() {
-        return isoCurrCd;
-    }
-    public void setIsoCurrCd(String isoCurrCd) {
-        this.isoCurrCd = isoCurrCd;
-    }
-}
-package javainuse;
-import java.util.HashMap;
-import java.util.Map;
-public class LoanQty {
-    private String qtyTyp;
-    private Integer content;
-    public String getQtyTyp() {
-        return qtyTyp;
-    }
-    public void setQtyTyp(String qtyTyp) {
-        this.qtyTyp = qtyTyp;
-    }
-    public Integer getContent() {
-        return content;
-    }
-    public void setContent(Integer content) {
-        this.content = content;
-    }
-}
-package javainuse;
-import java.util.HashMap;
-import java.util.Map;
+@XmlAccessorType(XmlAccessType.FIELD)
 public class LoanVal {
-    private Double content;
+    @XmlAttribute
     private String isoCurrCd;
-    public Double getContent() {
-        return content;
-    }
-    public void setContent(Double content) {
-        this.content = content;
-    }
-    public String getIsoCurrCd() {
-        return isoCurrCd;
-    }
-    public void setIsoCurrCd(String isoCurrCd) {
-        this.isoCurrCd = isoCurrCd;
-    }
+    @XmlValue
+    private double value;
 }
-package javainuse;
-import java.util.HashMap;
-import java.util.Map;
-public class Root {
-    private SecLendCommissiep secLendCommissiep;
-    public SecLendCommissiep getSecLendCommissiep() {
-        return secLendCommissiep;
-    }
-    public void setSecLendCommissiep(SecLendCommissiep secLendCommissiep) {
-        this.secLendCommissiep = secLendCommissiep;
-    }
+
+// HdlgFeeAmnt.java
+package com.example.xmlparser.model;
+
+import jakarta.xml.bind.annotation.*;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+public class HdlgFeeAmnt {
+    @XmlAttribute
+    private String isoCurrCd;
+    @XmlValue
+    private double value;
 }
-package javainuse;
-import java.util.HashMap;
-import java.util.Map;
-public class SecInstr {
-    private String commonCd;
-    private String secNm;
-    private String isinCd;
-    private String instrTyp;
-    public String getCommonCd() {
-        return commonCd;
-    }
-    public void setCommonCd(String commonCd) {
-        this.commonCd = commonCd;
-    }
-    public String getSecNm() {
-        return secNm;
-    }
-    public void setSecNm(String secNm) {
-        this.secNm = secNm;
-    }
-    public String getIsinCd() {
-        return isinCd;
-    }
-    public void setIsinCd(String isinCd) {
-        this.isinCd = isinCd;
-    }
-    public String getInstrTyp() {
-        return instrTyp;
-    }
-    public void setInstrTyp(String instrTyp) {
-        this.instrTyp = instrTyp;
-    }
+
+// CurntCommissAmnt.java
+package com.example.xmlparser.model;
+
+import jakarta.xml.bind.annotation.*;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+public class CurntCommissAmnt {
+    @XmlAttribute
+    private String isoCurrCd;
+    @XmlValue
+    private double value;
 }
-package javainuse;
-import java.util.HashMap;
-import java.util.Map;
-public class SecLendCommissDetl {
-    private String lenBorrInd;
-    private Double collPldgFeeRate;
-    private String curntCommissEndDt;
-    private CollPldgAccrCommissAmnt collPldgAccrCommissAmnt;
-    private Double feeRate;
-    private String loanClsgDt;
-    private Integer divCoupReq;
-    private AccrCommissAmnt accrCommissAmnt;
-    private CollPldgCurntCommissAmnt collPldgCurntCommissAmnt;
-    private String uTI;
-    private LoanQty loanQty;
-    private String loanTyp;
-    private String loanRef;
-    private XchgRate xchgRate;
-    private CurntCommissAmnt curntCommissAmnt;
-    private CollPldgMrktVal collPldgMrktVal;
-    private String streetChgd;
-    private String curntCommissStartDt;
-    private Double bondPrcAccrint;
-    private HdlgFeeAmnt hdlgFeeAmnt;
-    private LoanVal loanVal;
-    private String extRef;
-    private String loanOpngDt;
-    public String getLenBorrInd() {
-        return lenBorrInd;
-    }
-    public void setLenBorrInd(String lenBorrInd) {
-        this.lenBorrInd = lenBorrInd;
-    }
-    public Double getCollPldgFeeRate() {
-        return collPldgFeeRate;
-    }
-    public void setCollPldgFeeRate(Double collPldgFeeRate) {
-        this.collPldgFeeRate = collPldgFeeRate;
-    }
-    public String getCurntCommissEndDt() {
-        return curntCommissEndDt;
-    }
-    public void setCurntCommissEndDt(String curntCommissEndDt) {
-        this.curntCommissEndDt = curntCommissEndDt;
-    }
-    public CollPldgAccrCommissAmnt getCollPldgAccrCommissAmnt() {
-        return collPldgAccrCommissAmnt;
-    }
-    public void setCollPldgAccrCommissAmnt(CollPldgAccrCommissAmnt collPldgAccrCommissAmnt) {
-        this.collPldgAccrCommissAmnt = collPldgAccrCommissAmnt;
-    }
-    public Double getFeeRate() {
-        return feeRate;
-    }
-    public void setFeeRate(Double feeRate) {
-        this.feeRate = feeRate;
-    }
-    public String getLoanClsgDt() {
-        return loanClsgDt;
-    }
-    public void setLoanClsgDt(String loanClsgDt) {
-        this.loanClsgDt = loanClsgDt;
-    }
-    public Integer getDivCoupReq() {
-        return divCoupReq;
-    }
-    public void setDivCoupReq(Integer divCoupReq) {
-        this.divCoupReq = divCoupReq;
-    }
-    public AccrCommissAmnt getAccrCommissAmnt() {
-        return accrCommissAmnt;
-    }
-    public void setAccrCommissAmnt(AccrCommissAmnt accrCommissAmnt) {
-        this.accrCommissAmnt = accrCommissAmnt;
-    }
-    public CollPldgCurntCommissAmnt getCollPldgCurntCommissAmnt() {
-        return collPldgCurntCommissAmnt;
-    }
-    public void setCollPldgCurntCommissAmnt(CollPldgCurntCommissAmnt collPldgCurntCommissAmnt) {
-        this.collPldgCurntCommissAmnt = collPldgCurntCommissAmnt;
-    }
-    public String getUTI() {
-        return uTI;
-    }
-    public void setUTI(String uTI) {
-        this.uTI = uTI;
-    }
-    public LoanQty getLoanQty() {
-        return loanQty;
-    }
-    public void setLoanQty(LoanQty loanQty) {
-        this.loanQty = loanQty;
-    }
-    public String getLoanTyp() {
-        return loanTyp;
-    }
-    public void setLoanTyp(String loanTyp) {
-        this.loanTyp = loanTyp;
-    }
-    public String getLoanRef() {
-        return loanRef;
-    }
-    public void setLoanRef(String loanRef) {
-        this.loanRef = loanRef;
-    }
-    public XchgRate getXchgRate() {
-        return xchgRate;
-    }
-    public void setXchgRate(XchgRate xchgRate) {
-        this.xchgRate = xchgRate;
-    }
-    public CurntCommissAmnt getCurntCommissAmnt() {
-        return curntCommissAmnt;
-    }
-    public void setCurntCommissAmnt(CurntCommissAmnt curntCommissAmnt) {
-        this.curntCommissAmnt = curntCommissAmnt;
-    }
-    public CollPldgMrktVal getCollPldgMrktVal() {
-        return collPldgMrktVal;
-    }
-    public void setCollPldgMrktVal(CollPldgMrktVal collPldgMrktVal) {
-        this.collPldgMrktVal = collPldgMrktVal;
-    }
-    public String getStreetChgd() {
-        return streetChgd;
-    }
-    public void setStreetChgd(String streetChgd) {
-        this.streetChgd = streetChgd;
-    }
-    public String getCurntCommissStartDt() {
-        return curntCommissStartDt;
-    }
-    public void setCurntCommissStartDt(String curntCommissStartDt) {
-        this.curntCommissStartDt = curntCommissStartDt;
-    }
-    public Double getBondPrcAccrint() {
-        return bondPrcAccrint;
-    }
-    public void setBondPrcAccrint(Double bondPrcAccrint) {
-        this.bondPrcAccrint = bondPrcAccrint;
-    }
-    public HdlgFeeAmnt getHdlgFeeAmnt() {
-        return hdlgFeeAmnt;
-    }
-    public void setHdlgFeeAmnt(HdlgFeeAmnt hdlgFeeAmnt) {
-        this.hdlgFeeAmnt = hdlgFeeAmnt;
-    }
-    public LoanVal getLoanVal() {
-        return loanVal;
-    }
-    public void setLoanVal(LoanVal loanVal) {
-        this.loanVal = loanVal;
-    }
-    public String getExtRef() {
-        return extRef;
-    }
-    public void setExtRef(String extRef) {
-        this.extRef = extRef;
-    }
-    public String getLoanOpngDt() {
-        return loanOpngDt;
-    }
-    public void setLoanOpngDt(String loanOpngDt) {
-        this.loanOpngDt = loanOpngDt;
-    }
+
+// AccrCommissAmnt.java
+package com.example.xmlparser.model;
+
+import jakarta.xml.bind.annotation.*;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+public class AccrCommissAmnt {
+    @XmlAttribute
+    private String isoCurrCd;
+    @XmlValue
+    private double value;
 }
-package javainuse;
-import java.util.HashMap;
-import java.util.Map;
-public class SecLendCommissRepInfo {
-    private XchgRate_ xchgRate;
-    public XchgRate_ getXchgRate() {
-        return xchgRate;
-    }
-    public void setXchgRate(XchgRate_ xchgRate) {
-        this.xchgRate = xchgRate;
-    }
+
+// CollPldgMrktVal.java
+package com.example.xmlparser.model;
+
+import jakarta.xml.bind.annotation.*;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+public class CollPldgMrktVal {
+    @XmlAttribute
+    private String isoCurrCd;
+    @XmlValue
+    private double value;
 }
-package javainuse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-public class SecLendCommissSection {
-    private List<SecLendCommissDetl> secLendCommissDetl = new ArrayList<SecLendCommissDetl>();
-    private SecInstr secInstr;
-    public List<SecLendCommissDetl> getSecLendCommissDetl() {
-        return secLendCommissDetl;
-    }
-    public void setSecLendCommissDetl(List<SecLendCommissDetl> secLendCommissDetl) {
-        this.secLendCommissDetl = secLendCommissDetl;
-    }
-    public SecInstr getSecInstr() {
-        return secInstr;
-    }
-    public void setSecInstr(SecInstr secInstr) {
-        this.secInstr = secInstr;
-    }
+
+// CollPldgCurntCommissAmnt.java
+package com.example.xmlparser.model;
+
+import jakarta.xml.bind.annotation.*;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+public class CollPldgCurntCommissAmnt {
+    @XmlAttribute
+    private String isoCurrCd;
+    @XmlValue
+    private double value;
 }
-package javainuse;
-import java.util.HashMap;
-import java.util.Map;
-public class SecLendCommissiep {
-    private String tmstmp;
-    private String repActvFlg;
-    private CustRepOptSubscr custRepOptSubscr;
-    private String stentNbr;
-    private Integer xmlId;
-    private SecLendCommissSection secLendCommissSection;
-    private SecLendCommissRepInfo secLendCommissRepInfo;
-    private String repFreq;
-    private String repMode;
-    public String getTmstmp() {
-        return tmstmp;
-    }
-    public void setTmstmp(String tmstmp) {
-        this.tmstmp = tmstmp;
-    }
-    public String getRepActvFlg() {
-        return repActvFlg;
-    }
-    public void setRepActvFlg(String repActvFlg) {
-        this.repActvFlg = repActvFlg;
-    }
-    public CustRepOptSubscr getCustRepOptSubscr() {
-        return custRepOptSubscr;
-    }
-    public void setCustRepOptSubscr(CustRepOptSubscr custRepOptSubscr) {
-        this.custRepOptSubscr = custRepOptSubscr;
-    }
-    public String getStentNbr() {
-        return stentNbr;
-    }
-    public void setStentNbr(String stentNbr) {
-        this.stentNbr = stentNbr;
-    }
-    public Integer getXmlId() {
-        return xmlId;
-    }
-    public void setXmlId(Integer xmlId) {
-        this.xmlId = xmlId;
-    }
-    public SecLendCommissSection getSecLendCommissSection() {
-        return secLendCommissSection;
-    }
-    public void setSecLendCommissSection(SecLendCommissSection secLendCommissSection) {
-        this.secLendCommissSection = secLendCommissSection;
-    }
-    public SecLendCommissRepInfo getSecLendCommissRepInfo() {
-        return secLendCommissRepInfo;
-    }
-    public void setSecLendCommissRepInfo(SecLendCommissRepInfo secLendCommissRepInfo) {
-        this.secLendCommissRepInfo = secLendCommissRepInfo;
-    }
-    public String getRepFreq() {
-        return repFreq;
-    }
-    public void setRepFreq(String repFreq) {
-        this.repFreq = repFreq;
-    }
-    public String getRepMode() {
-        return repMode;
-    }
-    public void setRepMode(String repMode) {
-        this.repMode = repMode;
-    }
-}
-package javainuse;
-import java.util.HashMap;
-import java.util.Map;
-public class XchgRate {
-    private String recpIsoCurrCd;
-    private String frstIsoCurrCd;
-    private Double content;
-    public String getRecpIsoCurrCd() {
-        return recpIsoCurrCd;
-    }
-    public void setRecpIsoCurrCd(String recpIsoCurrCd) {
-        this.recpIsoCurrCd = recpIsoCurrCd;
-    }
-    public String getFrstIsoCurrCd() {
-        return frstIsoCurrCd;
-    }
-    public void setFrstIsoCurrCd(String frstIsoCurrCd) {
-        this.frstIsoCurrCd = frstIsoCurrCd;
-    }
-    public Double getContent() {
-        return content;
-    }
-    public void setContent(Double content) {
-        this.content = content;
-    }
-}
-package javainuse;
-import java.util.HashMap;
-import java.util.Map;
-public class XchgRate_ {
-    private String recpIsoCurrCd;
-    private String frstIsoCurrCd;
-    private Double content;
-    public String getRecpIsoCurrCd() {
-        return recpIsoCurrCd;
-    }
-    public void setRecpIsoCurrCd(String recpIsoCurrCd) {
-        this.recpIsoCurrCd = recpIsoCurrCd;
-    }
-    public String getFrstIsoCurrCd() {
-        return frstIsoCurrCd;
-    }
-    public void setFrstIsoCurrCd(String frstIsoCurrCd) {
-        this.frstIsoCurrCd = frstIsoCurrCd;
-    }
-    public Double getContent() {
-        return content;
-    }
-    public void setContent(Double content) {
-        this.content = content;
-    }
+
+// CollPldgAccrCommissAmnt.java
+package com.example.xmlparser.model;
+
+import jakarta.xml.bind.annotation.*;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+public class CollPldgAccrCommissAmnt {
+    @XmlAttribute
+    private String isoCurrCd;
+    @XmlValue
+    private double value;
 }
