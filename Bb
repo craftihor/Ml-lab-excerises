@@ -1,14 +1,11 @@
 package com.example.xmlparser.service;
 
+import com.example.xmlparser.model.*;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Unmarshaller;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,91 +22,115 @@ public class XmlToCsvService {
     private String csvOutputPath;
 
     public void convertXmlToCsv() throws Exception {
-        Document doc = loadXmlDocument();
-        XPath xPath = XPathFactory.newInstance().newXPath();
-
+        SecLendCommissRep secLendCommissRep = loadXmlDocument();
         List<String> headers = getHeaders();
-        List<String> xpaths = getXpaths();
 
         try (FileWriter writer = new FileWriter(csvOutputPath)) {
             // Write headers
             writer.write(String.join("|", headers) + "\n");
 
             // Write data
-            NodeList secLendCommissDetlNodes = (NodeList) xPath.compile("/SecLendCommissRep/SecLendCommissRep.info/SecLendCommiss.section/SecLendCommissDetl").evaluate(doc, XPathConstants.NODESET);
-
-            for (int i = 0; i < secLendCommissDetlNodes.getLength(); i++) {
+            SecLendCommissSection section = secLendCommissRep.getSecLendCommissRepInfo().getSecLendCommissSection();
+            SecInstr secInstr = section.getSecInstr();
+            
+            for (SecLendCommissDetl detl : section.getSecLendCommissDetl()) {
                 List<String> rowData = new ArrayList<>();
-                for (String xpath : xpaths) {
-                    String value = evaluateXPath(xPath, doc, xpath, i + 1);
-                    rowData.add(value);
-                }
-                // Add hardcoded values
-                rowData.add(""); // User Selected Value
-                rowData.add(""); // User entered Value
-                rowData.add("AUTO BORROW"); // Hardcoded "AUTO BORROW"
+                
+                // Add common data
+                rowData.add(secLendCommissRep.getTmstmp()); // businessDate
+                rowData.add(detl.getLoanRef()); // tradeTicket
+                rowData.add(""); // tradeTag (empty as not in XML)
+                rowData.add(detl.getExtRef()); // external TradeID
+                rowData.add(detl.getLoanTyp()); // activityType
+                rowData.add(detl.getLenBorrInd()); // buyOrSell
+                rowData.add(detl.getLoanOpngDt()); // tradeDate
+                rowData.add(detl.getLoanClsgDt()); // valueDate
+                rowData.add(secInstr.getIsinCd()); // ISIN
+                rowData.add(secInstr.getInstrTyp()); // instrument Type
+                rowData.add(secInstr.getSecNm()); // securityName
+                rowData.add(String.valueOf(detl.getLoanQty().getValue())); // nominalAmount
+                rowData.add(String.valueOf(detl.getLoanVal().getValue())); // netConsiderationoutstanding
+                rowData.add(detl.getLoanVal().getIsoCurrCd()); // currency
+                rowData.add(String.valueOf(detl.getBondPrcAccrInt())); // bondAccural Interest
+                rowData.add(detl.getXchgRate().getFrstIsoCurrCd()); // firstCurrency
+                rowData.add(detl.getXchgRate().getRecpIsoCurrCd()); // SecondCurrency
+                rowData.add(String.valueOf(detl.getXchgRate().getValue())); // exchangeRate
+                rowData.add(String.valueOf(detl.getFeeRate())); // feeRate
+                rowData.add(String.valueOf(detl.getDivCoupReq())); // dividendCoupon
+                rowData.add(String.valueOf(detl.getHdlgFeeAmnt().getValue())); // handling Fee
+                rowData.add(detl.getHdlgFeeAmnt().getIsoCurrCd()); // handlingCurrency
+                rowData.add(String.valueOf(detl.getCurntCommissAmnt().getValue())); // commissionAmount
+                rowData.add(detl.getCurntCommissAmnt().getIsoCurrCd()); // commissionCurrency
+                rowData.add(String.valueOf(detl.getAccrCommissAmnt().getValue())); // accuralCommissionAmount
+                rowData.add(detl.getAccrCommissAmnt().getIsoCurrCd()); // accuralCommissionCurrency
+                rowData.add(String.valueOf(detl.getCollPldgMrktVal().getValue())); // pledgedCollateralvalue
+                rowData.add(detl.getCollPldgMrktVal().getIsoCurrCd()); // pledgedCollateralCurrency
+                rowData.add(String.valueOf(detl.getCollPldgFeeRate())); // pledgedCollateralFee
+                rowData.add(String.valueOf(detl.getCollPldgCurntCommissAmnt().getValue())); // pledged CollateralCurrent Amount
+                rowData.add(detl.getCollPldgCurntCommissAmnt().getIsoCurrCd()); // pledgedCollateral CurrentCurrency
+                rowData.add(String.valueOf(detl.getCollPldgAccrCommissAmnt().getValue())); // pledgedCollateralAccuralAmount
+                rowData.add(detl.getCollPldgAccrCommissAmnt().getIsoCurrCd()); // pledgedCollateralAccuralCurrency
+                rowData.add(detl.getCurntCommissStartDt()); // comissionStartDate
+                rowData.add(detl.getCurntCommissEndDt()); // comissionEndDate
+                rowData.add(secLendCommissRep.getAcct().getAcctId()); // settlement Depot ID
+                rowData.add(secLendCommissRep.getAcct().getAcctNm()); // settlement DepotAccount
+                rowData.add(""); // Root Cause (empty as not in XML)
+                rowData.add(""); // Commentary (empty as not in XML)
+                rowData.add("AUTO BORROW"); // Message Type (hardcoded)
 
                 writer.write(String.join("|", rowData) + "\n");
             }
         }
     }
 
-    private Document loadXmlDocument() throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        return builder.parse(new File(xmlFilePath));
-    }
-
-    private String evaluateXPath(XPath xPath, Document doc, String xpath, int index) throws XPathExpressionException {
-        xpath = xpath.replace("[1]", "[" + index + "]");
-        Node node = (Node) xPath.compile(xpath).evaluate(doc, XPathConstants.NODE);
-        return node != null ? node.getTextContent() : "";
+    private SecLendCommissRep loadXmlDocument() throws Exception {
+        JAXBContext jaxbContext = JAXBContext.newInstance(SecLendCommissRep.class);
+        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+        return (SecLendCommissRep) unmarshaller.unmarshal(new File(xmlFilePath));
     }
 
     private List<String> getHeaders() {
         List<String> headers = new ArrayList<>();
-        headers.add("Field Name");
-        headers.add("Help");
         headers.add("businessDate");
-        // Add all other headers...
-        headers.add("Message Type");
+        headers.add("tradeTicket");
+        headers.add("tradeTag");
+        headers.add("externalTradeID");
+        headers.add("activityType");
+        headers.add("buyOrSell");
+        headers.add("tradeDate");
+        headers.add("valueDate");
+        headers.add("ISIN");
+        headers.add("instrumentType");
+        headers.add("securityName");
+        headers.add("nominalAmount");
+        headers.add("netConsiderationoutstanding");
+        headers.add("currency");
+        headers.add("bondAccuralInterest");
+        headers.add("firstCurrency");
+        headers.add("SecondCurrency");
+        headers.add("exchangeRate");
+        headers.add("feeRate");
+        headers.add("dividendCoupon");
+        headers.add("handlingFee");
+        headers.add("handlingCurrency");
+        headers.add("commissionAmount");
+        headers.add("commissionCurrency");
+        headers.add("accuralCommissionAmount");
+        headers.add("accuralCommissionCurrency");
+        headers.add("pledgedCollateralvalue");
+        headers.add("pledgedCollateralCurrency");
+        headers.add("pledgedCollateralFee");
+        headers.add("pledgedCollateralCurrentAmount");
+        headers.add("pledgedCollateralCurrentCurrency");
+        headers.add("pledgedCollateralAccuralAmount");
+        headers.add("pledgedCollateralAccuralCurrency");
+        headers.add("comissionStartDate");
+        headers.add("comissionEndDate");
+        headers.add("settlementDepotID");
+        headers.add("settlementDepotAccount");
+        headers.add("RootCause");
+        headers.add("Commentary");
+        headers.add("MessageType");
         return headers;
-    }
-
-    private List<String> getXpaths() {
-        List<String> xpaths = new ArrayList<>();
-        xpaths.add("/SecLendCommissRep/@tmstmp");
-        xpaths.add("/SecLendCommissRep/SecLendCommissRep.info/SecLendCommiss.section[1]/SecLendCommissDetl[1]/LoanRef");
-        // Add all other XPaths...
-        xpaths.add("/SecLendCommissRep/Acct/AcctNm");
-        return xpaths;
-    }
-}
-
-package com.example.xmlparser.controller;
-
-import com.example.xmlparser.service.XmlToCsvService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
-@RequestMapping("/api")
-public class XmlParserController {
-
-    @Autowired
-    private XmlToCsvService xmlToCsvService;
-
-    @GetMapping("/convert-xml-to-csv")
-    public ResponseEntity<String> convertXmlToCsv() {
-        try {
-            xmlToCsvService.convertXmlToCsv();
-            return ResponseEntity.ok("CSV file created successfully");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().body("Error creating CSV file: " + e.getMessage());
-        }
     }
 }
