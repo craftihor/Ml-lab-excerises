@@ -268,3 +268,553 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 }
+
+
+import java.util.HashMap;
+import java.util.Map;
+public class AccrCommissAmnt {
+    private Double content;
+    private String isoCurrCd;
+    public Double getContent() {
+        return content;
+    }
+    public void setContent(Double content) {
+        this.content = content;
+    }
+    public String getIsoCurrCd() {
+        return isoCurrCd;
+    }
+    public void setIsoCurrCd(String isoCurrCd) {
+        this.isoCurrCd = isoCurrCd;
+    }
+}
+package javainuse;
+import java.util.HashMap;
+import java.util.Map;
+public class CollPldgAccrCommissAmnt {
+    private Double content;
+    private String isoCurrCd;
+    public Double getContent() {
+        return content;
+    }
+    public void setContent(Double content) {
+        this.content = content;
+    }
+    public String getIsoCurrCd() {
+        return isoCurrCd;
+    }
+    public void setIsoCurrCd(String isoCurrCd) {
+        this.isoCurrCd = isoCurrCd;
+    }
+}
+package javainuse;
+import java.util.HashMap;
+import java.util.Map;
+public class CollPldgCurntCommissAmnt {
+    private Double content;
+    private String isoCurrCd;
+    public Double getContent() {
+        return content;
+    }
+    public void setContent(Double content) {
+        this.content = content;
+    }
+    public String getIsoCurrCd() {
+        return isoCurrCd;
+    }
+    public void setIsoCurrCd(String isoCurrCd) {
+        this.isoCurrCd = isoCurrCd;
+    }
+}
+package javainuse;
+import java.util.HashMap;
+import java.util.Map;
+public class CollPldgMrktVal {
+    private Double content;
+    private String isoCurrCd;
+    public Double getContent() {
+        return content;
+    }
+    public void setContent(Double content) {
+        this.content = content;
+    }
+    public String getIsoCurrCd() {
+        return isoCurrCd;
+    }
+    public void setIsoCurrCd(String isoCurrCd) {
+        this.isoCurrCd = isoCurrCd;
+    }
+}
+package javainuse;
+import java.util.HashMap;
+import java.util.Map;
+public class CurntCommissAmnt {
+    private Double content;
+    private String isoCurrCd;
+    public Double getContent() {
+        return content;
+    }
+    public void setContent(Double content) {
+        this.content = content;
+    }
+    public String getIsoCurrCd() {
+        return isoCurrCd;
+    }
+    public void setIsoCurrCd(String isoCurrCd) {
+        this.isoCurrCd = isoCurrCd;
+    }
+}
+package javainuse;
+import java.util.HashMap;
+import java.util.Map;
+public class CustRepOptSubscr {
+    private Integer schdId;
+    private Integer tmplId;
+    private Integer tmplDetlId;
+    private String repSubscrim;
+    public Integer getSchdId() {
+        return schdId;
+    }
+    public void setSchdId(Integer schdId) {
+        this.schdId = schdId;
+    }
+    public Integer getTmplId() {
+        return tmplId;
+    }
+    public void setTmplId(Integer tmplId) {
+        this.tmplId = tmplId;
+    }
+    public Integer getTmplDetlId() {
+        return tmplDetlId;
+    }
+    public void setTmplDetlId(Integer tmplDetlId) {
+        this.tmplDetlId = tmplDetlId;
+    }
+    public String getRepSubscrim() {
+        return repSubscrim;
+    }
+    public void setRepSubscrim(String repSubscrim) {
+        this.repSubscrim = repSubscrim;
+    }
+}
+package javainuse;
+import java.util.HashMap;
+import java.util.Map;
+public class HdlgFeeAmnt {
+    private Integer content;
+    private String isoCurrCd;
+    public Integer getContent() {
+        return content;
+    }
+    public void setContent(Integer content) {
+        this.content = content;
+    }
+    public String getIsoCurrCd() {
+        return isoCurrCd;
+    }
+    public void setIsoCurrCd(String isoCurrCd) {
+        this.isoCurrCd = isoCurrCd;
+    }
+}
+package javainuse;
+import java.util.HashMap;
+import java.util.Map;
+public class LoanQty {
+    private String qtyTyp;
+    private Integer content;
+    public String getQtyTyp() {
+        return qtyTyp;
+    }
+    public void setQtyTyp(String qtyTyp) {
+        this.qtyTyp = qtyTyp;
+    }
+    public Integer getContent() {
+        return content;
+    }
+    public void setContent(Integer content) {
+        this.content = content;
+    }
+}
+package javainuse;
+import java.util.HashMap;
+import java.util.Map;
+public class LoanVal {
+    private Double content;
+    private String isoCurrCd;
+    public Double getContent() {
+        return content;
+    }
+    public void setContent(Double content) {
+        this.content = content;
+    }
+    public String getIsoCurrCd() {
+        return isoCurrCd;
+    }
+    public void setIsoCurrCd(String isoCurrCd) {
+        this.isoCurrCd = isoCurrCd;
+    }
+}
+package javainuse;
+import java.util.HashMap;
+import java.util.Map;
+public class Root {
+    private SecLendCommissiep secLendCommissiep;
+    public SecLendCommissiep getSecLendCommissiep() {
+        return secLendCommissiep;
+    }
+    public void setSecLendCommissiep(SecLendCommissiep secLendCommissiep) {
+        this.secLendCommissiep = secLendCommissiep;
+    }
+}
+package javainuse;
+import java.util.HashMap;
+import java.util.Map;
+public class SecInstr {
+    private String commonCd;
+    private String secNm;
+    private String isinCd;
+    private String instrTyp;
+    public String getCommonCd() {
+        return commonCd;
+    }
+    public void setCommonCd(String commonCd) {
+        this.commonCd = commonCd;
+    }
+    public String getSecNm() {
+        return secNm;
+    }
+    public void setSecNm(String secNm) {
+        this.secNm = secNm;
+    }
+    public String getIsinCd() {
+        return isinCd;
+    }
+    public void setIsinCd(String isinCd) {
+        this.isinCd = isinCd;
+    }
+    public String getInstrTyp() {
+        return instrTyp;
+    }
+    public void setInstrTyp(String instrTyp) {
+        this.instrTyp = instrTyp;
+    }
+}
+package javainuse;
+import java.util.HashMap;
+import java.util.Map;
+public class SecLendCommissDetl {
+    private String lenBorrInd;
+    private Double collPldgFeeRate;
+    private String curntCommissEndDt;
+    private CollPldgAccrCommissAmnt collPldgAccrCommissAmnt;
+    private Double feeRate;
+    private String loanClsgDt;
+    private Integer divCoupReq;
+    private AccrCommissAmnt accrCommissAmnt;
+    private CollPldgCurntCommissAmnt collPldgCurntCommissAmnt;
+    private String uTI;
+    private LoanQty loanQty;
+    private String loanTyp;
+    private String loanRef;
+    private XchgRate xchgRate;
+    private CurntCommissAmnt curntCommissAmnt;
+    private CollPldgMrktVal collPldgMrktVal;
+    private String streetChgd;
+    private String curntCommissStartDt;
+    private Double bondPrcAccrint;
+    private HdlgFeeAmnt hdlgFeeAmnt;
+    private LoanVal loanVal;
+    private String extRef;
+    private String loanOpngDt;
+    public String getLenBorrInd() {
+        return lenBorrInd;
+    }
+    public void setLenBorrInd(String lenBorrInd) {
+        this.lenBorrInd = lenBorrInd;
+    }
+    public Double getCollPldgFeeRate() {
+        return collPldgFeeRate;
+    }
+    public void setCollPldgFeeRate(Double collPldgFeeRate) {
+        this.collPldgFeeRate = collPldgFeeRate;
+    }
+    public String getCurntCommissEndDt() {
+        return curntCommissEndDt;
+    }
+    public void setCurntCommissEndDt(String curntCommissEndDt) {
+        this.curntCommissEndDt = curntCommissEndDt;
+    }
+    public CollPldgAccrCommissAmnt getCollPldgAccrCommissAmnt() {
+        return collPldgAccrCommissAmnt;
+    }
+    public void setCollPldgAccrCommissAmnt(CollPldgAccrCommissAmnt collPldgAccrCommissAmnt) {
+        this.collPldgAccrCommissAmnt = collPldgAccrCommissAmnt;
+    }
+    public Double getFeeRate() {
+        return feeRate;
+    }
+    public void setFeeRate(Double feeRate) {
+        this.feeRate = feeRate;
+    }
+    public String getLoanClsgDt() {
+        return loanClsgDt;
+    }
+    public void setLoanClsgDt(String loanClsgDt) {
+        this.loanClsgDt = loanClsgDt;
+    }
+    public Integer getDivCoupReq() {
+        return divCoupReq;
+    }
+    public void setDivCoupReq(Integer divCoupReq) {
+        this.divCoupReq = divCoupReq;
+    }
+    public AccrCommissAmnt getAccrCommissAmnt() {
+        return accrCommissAmnt;
+    }
+    public void setAccrCommissAmnt(AccrCommissAmnt accrCommissAmnt) {
+        this.accrCommissAmnt = accrCommissAmnt;
+    }
+    public CollPldgCurntCommissAmnt getCollPldgCurntCommissAmnt() {
+        return collPldgCurntCommissAmnt;
+    }
+    public void setCollPldgCurntCommissAmnt(CollPldgCurntCommissAmnt collPldgCurntCommissAmnt) {
+        this.collPldgCurntCommissAmnt = collPldgCurntCommissAmnt;
+    }
+    public String getUTI() {
+        return uTI;
+    }
+    public void setUTI(String uTI) {
+        this.uTI = uTI;
+    }
+    public LoanQty getLoanQty() {
+        return loanQty;
+    }
+    public void setLoanQty(LoanQty loanQty) {
+        this.loanQty = loanQty;
+    }
+    public String getLoanTyp() {
+        return loanTyp;
+    }
+    public void setLoanTyp(String loanTyp) {
+        this.loanTyp = loanTyp;
+    }
+    public String getLoanRef() {
+        return loanRef;
+    }
+    public void setLoanRef(String loanRef) {
+        this.loanRef = loanRef;
+    }
+    public XchgRate getXchgRate() {
+        return xchgRate;
+    }
+    public void setXchgRate(XchgRate xchgRate) {
+        this.xchgRate = xchgRate;
+    }
+    public CurntCommissAmnt getCurntCommissAmnt() {
+        return curntCommissAmnt;
+    }
+    public void setCurntCommissAmnt(CurntCommissAmnt curntCommissAmnt) {
+        this.curntCommissAmnt = curntCommissAmnt;
+    }
+    public CollPldgMrktVal getCollPldgMrktVal() {
+        return collPldgMrktVal;
+    }
+    public void setCollPldgMrktVal(CollPldgMrktVal collPldgMrktVal) {
+        this.collPldgMrktVal = collPldgMrktVal;
+    }
+    public String getStreetChgd() {
+        return streetChgd;
+    }
+    public void setStreetChgd(String streetChgd) {
+        this.streetChgd = streetChgd;
+    }
+    public String getCurntCommissStartDt() {
+        return curntCommissStartDt;
+    }
+    public void setCurntCommissStartDt(String curntCommissStartDt) {
+        this.curntCommissStartDt = curntCommissStartDt;
+    }
+    public Double getBondPrcAccrint() {
+        return bondPrcAccrint;
+    }
+    public void setBondPrcAccrint(Double bondPrcAccrint) {
+        this.bondPrcAccrint = bondPrcAccrint;
+    }
+    public HdlgFeeAmnt getHdlgFeeAmnt() {
+        return hdlgFeeAmnt;
+    }
+    public void setHdlgFeeAmnt(HdlgFeeAmnt hdlgFeeAmnt) {
+        this.hdlgFeeAmnt = hdlgFeeAmnt;
+    }
+    public LoanVal getLoanVal() {
+        return loanVal;
+    }
+    public void setLoanVal(LoanVal loanVal) {
+        this.loanVal = loanVal;
+    }
+    public String getExtRef() {
+        return extRef;
+    }
+    public void setExtRef(String extRef) {
+        this.extRef = extRef;
+    }
+    public String getLoanOpngDt() {
+        return loanOpngDt;
+    }
+    public void setLoanOpngDt(String loanOpngDt) {
+        this.loanOpngDt = loanOpngDt;
+    }
+}
+package javainuse;
+import java.util.HashMap;
+import java.util.Map;
+public class SecLendCommissRepInfo {
+    private XchgRate_ xchgRate;
+    public XchgRate_ getXchgRate() {
+        return xchgRate;
+    }
+    public void setXchgRate(XchgRate_ xchgRate) {
+        this.xchgRate = xchgRate;
+    }
+}
+package javainuse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+public class SecLendCommissSection {
+    private List<SecLendCommissDetl> secLendCommissDetl = new ArrayList<SecLendCommissDetl>();
+    private SecInstr secInstr;
+    public List<SecLendCommissDetl> getSecLendCommissDetl() {
+        return secLendCommissDetl;
+    }
+    public void setSecLendCommissDetl(List<SecLendCommissDetl> secLendCommissDetl) {
+        this.secLendCommissDetl = secLendCommissDetl;
+    }
+    public SecInstr getSecInstr() {
+        return secInstr;
+    }
+    public void setSecInstr(SecInstr secInstr) {
+        this.secInstr = secInstr;
+    }
+}
+package javainuse;
+import java.util.HashMap;
+import java.util.Map;
+public class SecLendCommissiep {
+    private String tmstmp;
+    private String repActvFlg;
+    private CustRepOptSubscr custRepOptSubscr;
+    private String stentNbr;
+    private Integer xmlId;
+    private SecLendCommissSection secLendCommissSection;
+    private SecLendCommissRepInfo secLendCommissRepInfo;
+    private String repFreq;
+    private String repMode;
+    public String getTmstmp() {
+        return tmstmp;
+    }
+    public void setTmstmp(String tmstmp) {
+        this.tmstmp = tmstmp;
+    }
+    public String getRepActvFlg() {
+        return repActvFlg;
+    }
+    public void setRepActvFlg(String repActvFlg) {
+        this.repActvFlg = repActvFlg;
+    }
+    public CustRepOptSubscr getCustRepOptSubscr() {
+        return custRepOptSubscr;
+    }
+    public void setCustRepOptSubscr(CustRepOptSubscr custRepOptSubscr) {
+        this.custRepOptSubscr = custRepOptSubscr;
+    }
+    public String getStentNbr() {
+        return stentNbr;
+    }
+    public void setStentNbr(String stentNbr) {
+        this.stentNbr = stentNbr;
+    }
+    public Integer getXmlId() {
+        return xmlId;
+    }
+    public void setXmlId(Integer xmlId) {
+        this.xmlId = xmlId;
+    }
+    public SecLendCommissSection getSecLendCommissSection() {
+        return secLendCommissSection;
+    }
+    public void setSecLendCommissSection(SecLendCommissSection secLendCommissSection) {
+        this.secLendCommissSection = secLendCommissSection;
+    }
+    public SecLendCommissRepInfo getSecLendCommissRepInfo() {
+        return secLendCommissRepInfo;
+    }
+    public void setSecLendCommissRepInfo(SecLendCommissRepInfo secLendCommissRepInfo) {
+        this.secLendCommissRepInfo = secLendCommissRepInfo;
+    }
+    public String getRepFreq() {
+        return repFreq;
+    }
+    public void setRepFreq(String repFreq) {
+        this.repFreq = repFreq;
+    }
+    public String getRepMode() {
+        return repMode;
+    }
+    public void setRepMode(String repMode) {
+        this.repMode = repMode;
+    }
+}
+package javainuse;
+import java.util.HashMap;
+import java.util.Map;
+public class XchgRate {
+    private String recpIsoCurrCd;
+    private String frstIsoCurrCd;
+    private Double content;
+    public String getRecpIsoCurrCd() {
+        return recpIsoCurrCd;
+    }
+    public void setRecpIsoCurrCd(String recpIsoCurrCd) {
+        this.recpIsoCurrCd = recpIsoCurrCd;
+    }
+    public String getFrstIsoCurrCd() {
+        return frstIsoCurrCd;
+    }
+    public void setFrstIsoCurrCd(String frstIsoCurrCd) {
+        this.frstIsoCurrCd = frstIsoCurrCd;
+    }
+    public Double getContent() {
+        return content;
+    }
+    public void setContent(Double content) {
+        this.content = content;
+    }
+}
+package javainuse;
+import java.util.HashMap;
+import java.util.Map;
+public class XchgRate_ {
+    private String recpIsoCurrCd;
+    private String frstIsoCurrCd;
+    private Double content;
+    public String getRecpIsoCurrCd() {
+        return recpIsoCurrCd;
+    }
+    public void setRecpIsoCurrCd(String recpIsoCurrCd) {
+        this.recpIsoCurrCd = recpIsoCurrCd;
+    }
+    public String getFrstIsoCurrCd() {
+        return frstIsoCurrCd;
+    }
+    public void setFrstIsoCurrCd(String frstIsoCurrCd) {
+        this.frstIsoCurrCd = frstIsoCurrCd;
+    }
+    public Double getContent() {
+        return content;
+    }
+    public void setContent(Double content) {
+        this.content = content;
+    }
+}
