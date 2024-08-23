@@ -1,198 +1,270 @@
+// SecLendCommissiep.java
+package com.example.xmlparser.model;
+
+import jakarta.xml.bind.annotation.*;
 import java.util.List;
 
-public class SecLendCommiss {
-
+@XmlRootElement(name = "SecLendCommissiep")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class SecLendCommissiep {
+    @XmlAttribute
     private String xmlId;
+    @XmlAttribute
     private String tmstmp;
+    @XmlAttribute
     private String repFreq;
+    @XmlAttribute
     private String repMode;
+    @XmlAttribute
     private String repActvFlg;
+
+    @XmlElement(name = "CustRepOptSubscr")
     private CustRepOptSubscr custRepOptSubscr;
+
+    @XmlElement(name = "StentNbr")
     private String stentNbr;
+
+    @XmlElement(name = "SecLendCommissRep.info")
+    private SecLendCommissRepInfo secLendCommissRepInfo;
+
+    @XmlElement(name = "SecLendCommiss.section")
+    private SecLendCommissSection secLendCommissSection;
+
+    // Getters and setters
+}
+
+// CustRepOptSubscr.java
+package com.example.xmlparser.model;
+
+import jakarta.xml.bind.annotation.*;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+public class CustRepOptSubscr {
+    @XmlAttribute
+    private String schdId;
+    @XmlAttribute
+    private String tmplId;
+    @XmlAttribute
+    private String tmplDetlId;
+
+    @XmlElement(name = "RepSubscrim")
+    private String repSubscrim;
+
+    // Getters and setters
+}
+
+// SecLendCommissRepInfo.java
+package com.example.xmlparser.model;
+
+import jakarta.xml.bind.annotation.*;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+public class SecLendCommissRepInfo {
+    @XmlElement(name = "XchgRate")
     private XchgRate xchgRate;
-    private List<SecLendCommissDetl> secLendCommissDetlList;
 
-    // Getters and Setters
+    // Getters and setters
+}
 
-    public static class CustRepOptSubscr {
-        private String schdId;
-        private String tmplId;
-        private String tmplDetlId;
-        private String repSubscrim;
+// XchgRate.java
+package com.example.xmlparser.model;
 
-        // Getters and Setters
+import jakarta.xml.bind.annotation.*;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+public class XchgRate {
+    @XmlAttribute
+    private String frstIsoCurrCd;
+    @XmlAttribute
+    private String recpIsoCurrCd;
+    @XmlValue
+    private double value;
+
+    // Getters and setters
+}
+
+// SecLendCommissSection.java
+package com.example.xmlparser.model;
+
+import jakarta.xml.bind.annotation.*;
+import java.util.List;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+public class SecLendCommissSection {
+    @XmlElement(name = "SecInstr")
+    private SecInstr secInstr;
+
+    @XmlElement(name = "SecLendCommissDetl")
+    private List<SecLendCommissDetl> secLendCommissDetl;
+
+    // Getters and setters
+}
+
+// SecInstr.java
+package com.example.xmlparser.model;
+
+import jakarta.xml.bind.annotation.*;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+public class SecInstr {
+    @XmlAttribute
+    private String isinCd;
+    @XmlAttribute
+    private String commonCd;
+    @XmlAttribute
+    private String instrTyp;
+
+    @XmlElement(name = "SecNm")
+    private String secNm;
+
+    // Getters and setters
+}
+
+// SecLendCommissDetl.java
+package com.example.xmlparser.model;
+
+import jakarta.xml.bind.annotation.*;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+public class SecLendCommissDetl {
+    @XmlAttribute
+    private String loanTyp;
+    @XmlAttribute
+    private String lenBorrInd;
+    @XmlAttribute
+    private String streetChgd;
+
+    @XmlElement(name = "LoanRef")
+    private String loanRef;
+    @XmlElement(name = "UTI")
+    private String uti;
+    @XmlElement(name = "ExtRef")
+    private String extRef;
+    @XmlElement(name = "LoanOpngDt")
+    private String loanOpngDt;
+    @XmlElement(name = "LoanClsgDt")
+    private String loanClsgDt;
+    @XmlElement(name = "LoanQty")
+    private LoanQty loanQty;
+    @XmlElement(name = "LoanVal")
+    private LoanVal loanVal;
+    @XmlElement(name = "BondPrcAccrint")
+    private double bondPrcAccrint;
+    @XmlElement(name = "XchgRate")
+    private XchgRate xchgRate;
+    @XmlElement(name = "FeeRate")
+    private double feeRate;
+    @XmlElement(name = "DivCoupReq")
+    private double divCoupReq;
+    @XmlElement(name = "HdlgFeeAmnt")
+    private HdlgFeeAmnt hdlgFeeAmnt;
+    @XmlElement(name = "CurntCommissAmnt")
+    private CurntCommissAmnt curntCommissAmnt;
+    @XmlElement(name = "AccrCommissAmnt")
+    private AccrCommissAmnt accrCommissAmnt;
+    @XmlElement(name = "CollPldgMrktVal")
+    private CollPldgMrktVal collPldgMrktVal;
+    @XmlElement(name = "CollPldgFeeRate")
+    private double collPldgFeeRate;
+    @XmlElement(name = "CollPldgCurntCommissAmnt")
+    private CollPldgCurntCommissAmnt collPldgCurntCommissAmnt;
+    @XmlElement(name = "CollPldgAccrCommissAmnt")
+    private CollPldgAccrCommissAmnt collPldgAccrCommissAmnt;
+    @XmlElement(name = "CurntCommissStartDt")
+    private String curntCommissStartDt;
+    @XmlElement(name = "CurntCommissEndDt")
+    private String curntCommissEndDt;
+
+    // Getters and setters
+}
+
+// LoanQty.java
+package com.example.xmlparser.model;
+
+import jakarta.xml.bind.annotation.*;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+public class LoanQty {
+    @XmlAttribute
+    private String qtyTyp;
+    @XmlValue
+    private double value;
+
+    // Getters and setters
+}
+
+// LoanVal.java, HdlgFeeAmnt.java, CurntCommissAmnt.java, AccrCommissAmnt.java, CollPldgMrktVal.java, CollPldgCurntCommissAmnt.java, CollPldgAccrCommissAmnt.java
+// Create similar classes for these elements with isoCurrCd attribute and value
+
+// XmlParserService.java
+package com.example.xmlparser.service;
+
+import com.example.xmlparser.model.SecLendCommissiep;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.io.File;
+
+@Service
+public class XmlParserService {
+
+    @Value("${xml.file.path}")
+    private String xmlFilePath;
+
+    public SecLendCommissiep parseXml() throws JAXBException {
+        File xmlFile = new File(xmlFilePath);
+        JAXBContext jaxbContext = JAXBContext.newInstance(SecLendCommissiep.class);
+        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+        return (SecLendCommissiep) unmarshaller.unmarshal(xmlFile);
     }
+}
 
-    public static class XchgRate {
-        private String frstIsoCurrCd;
-        private String recpIsoCurrCd;
-        private double value;
+// XmlParserController.java
+package com.example.xmlparser.controller;
 
-        // Getters and Setters
-    }
+import com.example.xmlparser.model.SecLendCommissiep;
+import com.example.xmlparser.service.XmlParserService;
+import jakarta.xml.bind.JAXBException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-    public static class SecLendCommissDetl {
-        private String loanTyp;
-        private String lenBorrInd;
-        private String streetChgd;
-        private String loanRef;
-        private String uti;
-        private String extRef;
-        private String loanDpngDt;
-        private String loanOpngDt;
-        private String loanClsgDt;
-        private LoanQty loanQty;
-        private LoanVal loanVal;
-        private double bondPrcAccrInt;
-        private XchgRate xchgRate;
-        private double feeRate;
-        private double divCoupReq;
-        private HdlgFeeAmnt hdlgFeeAmnt;
-        private CurntCommissAmnt curntCommissAmnt;
-        private AccrCommissAmnt accrCommissAmnt;
-        private CollPldgMrktVal collPldgMrktVal;
-        private double collPldgFeeRate;
-        private CollPldgCurntCommissAmnt collPldgCurntCommissAmnt;
-        private CollPldgAccrCommissAmnt collPldgAccrCommissAmnt;
-        private String curntCommissStartDt;
-        private String curntCommissEndDt;
+@RestController
+@RequestMapping("/api")
+public class XmlParserController {
 
-        // Getters and Setters
+    @Autowired
+    private XmlParserService xmlParserService;
 
-        public static class LoanQty {
-            private String qtyTyp;
-            private double value;
-
-            // Getters and Setters
-        }
-
-        public static class LoanVal {
-            private String isoCurrCd;
-            private double value;
-
-            // Getters and Setters
-        }
-
-        public static class HdlgFeeAmnt {
-            private String isoCurrCd;
-            private double value;
-
-            // Getters and Setters
-        }
-
-        public static class CurntCommissAmnt {
-            private String isoCurrCd;
-            private double value;
-
-            // Getters and Setters
-        }
-
-        public static class AccrCommissAmnt {
-            private String isoCurrCd;
-            private double value;
-
-            // Getters and Setters
-        }
-
-        public static class CollPldgMrktVal {
-            private String isoCurrCd;
-            private double value;
-
-            // Getters and Setters
-        }
-
-        public static class CollPldgCurntCommissAmnt {
-            private String isoCurrCd;
-            private double value;
-
-            // Getters and Setters
-        }
-
-        public static class CollPldgAccrCommissAmnt {
-            private String isoCurrCd;
-            private double value;
-
-            // Getters and Setters
+    @GetMapping("/parse-xml")
+    public ResponseEntity<SecLendCommissiep> parseXml() {
+        try {
+            SecLendCommissiep result = xmlParserService.parseXml();
+            return ResponseEntity.ok(result);
+        } catch (JAXBException e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
         }
     }
 }
 
+server.port=8080
+xml.file.path=/path/to/your/xml/file.xml
 
-package com.example.xmltocsv;
+// Application.java
+package com.example.xmlparser;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.opencsv.CSVWriter;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.List;
-
 @SpringBootApplication
-public class XmlToCsvApplication implements CommandLineRunner {
-
-    private static final String XML_FILE_PATH = "src/main/resources/input.xml";
-    private static final String CSV_FILE_PATH = "src/main/resources/output.csv";
-
+public class Application {
     public static void main(String[] args) {
-        SpringApplication.run(XmlToCsvApplication.class, args);
-    }
-
-    @Override
-    public void run(String... args) throws Exception {
-        // Read XML and convert it to POJO
-        SecLendCommiss secLendCommiss = readXml();
-
-        // Write POJO data to CSV
-        writeCsv(secLendCommiss);
-    }
-
-    private SecLendCommiss readXml() throws IOException {
-        XmlMapper xmlMapper = new XmlMapper();
-        return xmlMapper.readValue(new File(XML_FILE_PATH), SecLendCommiss.class);
-    }
-
-    private void writeCsv(SecLendCommiss secLendCommiss) throws IOException {
-        try (CSVWriter writer = new CSVWriter(new FileWriter(CSV_FILE_PATH))) {
-            // Write header
-            writer.writeNext(new String[]{
-                    "xmlId", "tmstmp", "repFreq", "repMode", "repActvFlg",
-                    "schdId", "tmplId", "tmplDetlId", "RepSubscrim",
-                    "StentNbr", "frstIsoCurrCd", "recpIsoCurrCd", "xchgRate"
-            });
-
-            // Write data
-            writer.writeNext(new String[]{
-                    secLendCommiss.getXmlId(), secLendCommiss.getTmstmp(), secLendCommiss.getRepFreq(),
-                    secLendCommiss.getRepMode(), secLendCommiss.getRepActvFlg(),
-                    secLendCommiss.getCustRepOptSubscr().getSchdId(),
-                    secLendCommiss.getCustRepOptSubscr().getTmplId(),
-                    secLendCommiss.getCustRepOptSubscr().getTmplDetlId(),
-                    secLendCommiss.getCustRepOptSubscr().getRepSubscrim(),
-                    secLendCommiss.getStentNbr(), 
-                    secLendCommiss.getInfo().getXchgRate().getFrstIsoCurrCd(), 
-                    secLendCommiss.getInfo().getXchgRate().getRecpIsoCurrCd(),
-                    String.valueOf(secLendCommiss.getInfo().getXchgRate().getXchgRate())
-            });
-
-            // If you have multiple details, iterate through them and write to the CSV
-            for (SecLendCommissDetl detl : secLendCommiss.getSection().getDetls()) {
-                writer.writeNext(new String[]{
-                        detl.getLoanRef(), detl.getUti(), detl.getExtRef(),
-                        detl.getLoanDpngDt(), detl.getLoanOpngDt(), detl.getLoanClsgDt(),
-                        String.valueOf(detl.getLoanQty().getQty()), 
-                        String.valueOf(detl.getLoanVal().getVal()),
-                        String.valueOf(detl.getBondPrcAccrint()), 
-                        String.valueOf(detl.getFeeRate()),
-                        String.valueOf(detl.getDivCoupReq()), 
-                        String.valueOf(detl.getHdlgFeeAmnt().getAmount()),
-                        String.valueOf(detl.getCurntCommissAmnt().getAmount()),
-                        String.valueOf(detl.getAccrCommissAmnt().getAmount())
-                });
-            }
-        }
+        SpringApplication.run(Application.class, args);
     }
 }
