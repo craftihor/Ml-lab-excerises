@@ -516,3 +516,164 @@ private JSONObject getHeaderMetadata() {
 
     return metadata;
 }
+
+
+import com.google.gson.JsonObject;
+
+private JsonObject getStructuredMetadata() {
+    JsonObject metadata = new JsonObject();
+    JsonObject fields = new JsonObject();
+
+    // Example for each header field with the structure provided
+
+    // businessDate
+    JsonObject businessDate = new JsonObject();
+    businessDate.addProperty("dataType", "String");
+    businessDate.addProperty("position", 1);
+    businessDate.addProperty("displayName", "Business Date");
+    businessDate.addProperty("sourceFormat", "");
+    businessDate.addProperty("displayFormat", "");
+    businessDate.addProperty("filter", true);
+    businessDate.addProperty("exceptionDetailscreen", true);
+    businessDate.addProperty("displayAttribute", true);
+    fields.add("businessDate", businessDate);
+
+    // tradeTicket
+    JsonObject tradeTicket = new JsonObject();
+    tradeTicket.addProperty("dataType", "String");
+    tradeTicket.addProperty("position", 2);
+    tradeTicket.addProperty("displayName", "Trade Ticket");
+    tradeTicket.addProperty("sourceFormat", "");
+    tradeTicket.addProperty("displayFormat", "");
+    tradeTicket.addProperty("filter", true);
+    tradeTicket.addProperty("exceptionDetailscreen", true);
+    tradeTicket.addProperty("displayAttribute", true);
+    fields.add("tradeTicket", tradeTicket);
+
+    // tradeTag
+    JsonObject tradeTag = new JsonObject();
+    tradeTag.addProperty("dataType", "String");
+    tradeTag.addProperty("position", 3);
+    tradeTag.addProperty("displayName", "Trade Tag");
+    tradeTag.addProperty("sourceFormat", "");
+    tradeTag.addProperty("displayFormat", "");
+    tradeTag.addProperty("filter", true);
+    tradeTag.addProperty("exceptionDetailscreen", true);
+    tradeTag.addProperty("displayAttribute", true);
+    fields.add("tradeTag", tradeTag);
+
+    // externalTradeID
+    JsonObject externalTradeID = new JsonObject();
+    externalTradeID.addProperty("dataType", "String");
+    externalTradeID.addProperty("position", 4);
+    externalTradeID.addProperty("displayName", "External Trade ID");
+    externalTradeID.addProperty("sourceFormat", "");
+    externalTradeID.addProperty("displayFormat", "");
+    externalTradeID.addProperty("filter", true);
+    externalTradeID.addProperty("exceptionDetailscreen", true);
+    externalTradeID.addProperty("displayAttribute", true);
+    fields.add("externalTradeID", externalTradeID);
+
+    // activityType
+    JsonObject activityType = new JsonObject();
+    activityType.addProperty("dataType", "String");
+    activityType.addProperty("position", 5);
+    activityType.addProperty("displayName", "Activity Type");
+    activityType.addProperty("sourceFormat", "");
+    activityType.addProperty("displayFormat", "");
+    activityType.addProperty("filter", true);
+    activityType.addProperty("exceptionDetailscreen", true);
+    activityType.addProperty("displayAttribute", true);
+    fields.add("activityType", activityType);
+
+    // buyOrSell
+    JsonObject buyOrSell = new JsonObject();
+    buyOrSell.addProperty("dataType", "String");
+    buyOrSell.addProperty("position", 6);
+    buyOrSell.addProperty("displayName", "Buy or Sell");
+    buyOrSell.addProperty("sourceFormat", "");
+    buyOrSell.addProperty("displayFormat", "");
+    buyOrSell.addProperty("filter", true);
+    buyOrSell.addProperty("exceptionDetailscreen", true);
+    buyOrSell.addProperty("displayAttribute", true);
+    fields.add("buyOrSell", buyOrSell);
+
+    // tradeDate
+    JsonObject tradeDate = new JsonObject();
+    tradeDate.addProperty("dataType", "String");
+    tradeDate.addProperty("position", 7);
+    tradeDate.addProperty("displayName", "Trade Date");
+    tradeDate.addProperty("sourceFormat", "");
+    tradeDate.addProperty("displayFormat", "");
+    tradeDate.addProperty("filter", true);
+    tradeDate.addProperty("exceptionDetailscreen", true);
+    tradeDate.addProperty("displayAttribute", true);
+    fields.add("tradeDate", tradeDate);
+
+    // valueDate
+    JsonObject valueDate = new JsonObject();
+    valueDate.addProperty("dataType", "String");
+    valueDate.addProperty("position", 8);
+    valueDate.addProperty("displayName", "Value Date");
+    valueDate.addProperty("sourceFormat", "");
+    valueDate.addProperty("displayFormat", "");
+    valueDate.addProperty("filter", true);
+    valueDate.addProperty("exceptionDetailscreen", true);
+    valueDate.addProperty("displayAttribute", true);
+    fields.add("valueDate", valueDate);
+
+    // ISIN
+    JsonObject ISIN = new JsonObject();
+    ISIN.addProperty("dataType", "String");
+    ISIN.addProperty("position", 9);
+    ISIN.addProperty("displayName", "ISIN");
+    ISIN.addProperty("sourceFormat", "");
+    ISIN.addProperty("displayFormat", "");
+    ISIN.addProperty("filter", true);
+    ISIN.addProperty("exceptionDetailscreen", true);
+    ISIN.addProperty("displayAttribute", true);
+    fields.add("ISIN", ISIN);
+
+    // instrumentType
+    JsonObject instrumentType = new JsonObject();
+    instrumentType.addProperty("dataType", "String");
+    instrumentType.addProperty("position", 10);
+    instrumentType.addProperty("displayName", "Instrument Type");
+    instrumentType.addProperty("sourceFormat", "");
+    instrumentType.addProperty("displayFormat", "");
+    instrumentType.addProperty("filter", true);
+    instrumentType.addProperty("exceptionDetailscreen", true);
+    instrumentType.addProperty("displayAttribute", true);
+    fields.add("instrumentType", instrumentType);
+
+    // securityName
+    JsonObject securityName = new JsonObject();
+    securityName.addProperty("dataType", "String");
+    securityName.addProperty("position", 11);
+    securityName.addProperty("displayName", "Security Name");
+    securityName.addProperty("sourceFormat", "");
+    securityName.addProperty("displayFormat", "");
+    securityName.addProperty("filter", true);
+    securityName.addProperty("exceptionDetailscreen", true);
+    securityName.addProperty("displayAttribute", true);
+    fields.add("securityName", securityName);
+
+    // nominalAmount
+    JsonObject nominalAmount = new JsonObject();
+    nominalAmount.addProperty("dataType", "String");
+    nominalAmount.addProperty("position", 12);
+    nominalAmount.addProperty("displayName", "Nominal Amount");
+    nominalAmount.addProperty("sourceFormat", "");
+    nominalAmount.addProperty("displayFormat", "");
+    nominalAmount.addProperty("filter", true);
+    nominalAmount.addProperty("exceptionDetailscreen", true);
+    nominalAmount.addProperty("displayAttribute", true);
+    fields.add("nominalAmount", nominalAmount);
+
+    // Add the remaining fields following the same pattern...
+
+    // Attach fields to metadata
+    metadata.add("fields", fields);
+
+    return metadata;
+}
