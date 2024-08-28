@@ -134,3 +134,52 @@ public class XmlToCsvService {
         return headers;
     }
 }
+
+
+
+private List<List<Object>> getHeaderMetadata() {
+    List<List<Object>> headerMetadata = new ArrayList<>();
+
+    headerMetadata.add(List.of("String", "businessDate", true, "", "", true));
+    headerMetadata.add(List.of("String", "tradeTicket", true, "", "", true));
+    headerMetadata.add(List.of("String", "tradeTag", true, "", "", true));
+    headerMetadata.add(List.of("String", "externalTradeID", true, "", "", true));
+    headerMetadata.add(List.of("String", "activityType", true, "", "", true));
+    headerMetadata.add(List.of("String", "buyOrSell", true, "", "", true));
+    headerMetadata.add(List.of("String", "tradeDate", true, "", "", true));
+    headerMetadata.add(List.of("String", "valueDate", true, "", "", true));
+    headerMetadata.add(List.of("String", "ISIN", true, "", "", true));
+    headerMetadata.add(List.of("String", "instrumentType", true, "", "", true));
+    headerMetadata.add(List.of("String", "securityName", true, "", "", true));
+    headerMetadata.add(List.of("Double", "nominalAmount", true, "", "", true));
+    headerMetadata.add(List.of("Double", "netConsiderationoutstanding", true, "", "", true));
+    headerMetadata.add(List.of("String", "currency", true, "", "", true));
+    headerMetadata.add(List.of("Double", "bondAccuralInterest", true, "", "", true));
+    headerMetadata.add(List.of("String", "firstCurrency", true, "", "", true));
+    headerMetadata.add(List.of("String", "SecondCurrency", true, "", "", true));
+    headerMetadata.add(List.of("Double", "exchangeRate", true, "", "", true));
+    headerMetadata.add(List.of("Double", "feeRate", true, "", "", true));
+    headerMetadata.add(List.of("Double", "dividendCoupon", true, "", "", true));
+    headerMetadata.add(List.of("Double", "handlingFee", true, "", "", true));
+    headerMetadata.add(List.of("String", "handlingCurrency", true, "", "", true));
+    headerMetadata.add(List.of("Double", "commissionAmount", true, "", "", true));
+    headerMetadata.add(List.of("String", "commissionCurrency", true, "", "", true));
+    headerMetadata.add(List.of("Double", "accuralCommissionAmount", true, "", "", true));
+    headerMetadata.add(List.of("String", "accuralCommissionCurrency", true, "", "", true));
+    headerMetadata.add(List.of("Double", "pledgedCollateralvalue", true, "", "", true));
+    headerMetadata.add(List.of("String", "pledgedCollateralCurrency", true, "", "", true));
+    headerMetadata.add(List.of("Double", "pledgedCollateralFee", true, "", "", true));
+    headerMetadata.add(List.of("Double", "pledgedCollateralCurrentAmount", true, "", "", true));
+    headerMetadata.add(List.of("String", "pledgedCollateralCurrentCurrency", true, "", "", true));
+    headerMetadata.add(List.of("Double", "pledgedCollateralAccuralAmount", true, "", "", true));
+    headerMetadata.add(List.of("String", "pledgedCollateralAccuralCurrency", true, "", "", true));
+    headerMetadata.add(List.of("String", "comissionStartDate", true, "", "", true));
+    headerMetadata.add(List.of("String", "comissionEndDate", true, "", "", true));
+    headerMetadata.add(List.of("String", "settlementDepotID", true, "", "", true));
+    headerMetadata.add(List.of("String", "settlementDepotAccount", true, "", "", true));
+    headerMetadata.add(List.of("String", "RootCause", true, "", "", true));
+    headerMetadata.add(List.of("String", "Commentary", true, "", "", true));
+    headerMetadata.add(List.of("String", "MessageType", true, "", "", true));
+
+    return headerMetadata;
+}
