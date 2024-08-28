@@ -677,3 +677,365 @@ private JsonObject getStructuredMetadata() {
 
     return metadata;
 }
+
+
+import com.google.gson.JsonObject;
+
+private JsonObject getStructuredMetadata() {
+    JsonObject metadata = new JsonObject();
+    JsonObject fields = new JsonObject();
+
+    // Continue adding fields after the ones previously shown
+
+    // netConsiderationoutstanding
+    JsonObject netConsiderationoutstanding = new JsonObject();
+    netConsiderationoutstanding.addProperty("dataType", "String");
+    netConsiderationoutstanding.addProperty("position", 13);
+    netConsiderationoutstanding.addProperty("displayName", "Net Consideration Outstanding");
+    netConsiderationoutstanding.addProperty("sourceFormat", "");
+    netConsiderationoutstanding.addProperty("displayFormat", "");
+    netConsiderationoutstanding.addProperty("filter", true);
+    netConsiderationoutstanding.addProperty("exceptionDetailscreen", true);
+    netConsiderationoutstanding.addProperty("displayAttribute", true);
+    fields.add("netConsiderationoutstanding", netConsiderationoutstanding);
+
+    // currency
+    JsonObject currency = new JsonObject();
+    currency.addProperty("dataType", "String");
+    currency.addProperty("position", 14);
+    currency.addProperty("displayName", "Currency");
+    currency.addProperty("sourceFormat", "");
+    currency.addProperty("displayFormat", "");
+    currency.addProperty("filter", true);
+    currency.addProperty("exceptionDetailscreen", true);
+    currency.addProperty("displayAttribute", true);
+    fields.add("currency", currency);
+
+    // bondAccuralInterest
+    JsonObject bondAccuralInterest = new JsonObject();
+    bondAccuralInterest.addProperty("dataType", "String");
+    bondAccuralInterest.addProperty("position", 15);
+    bondAccuralInterest.addProperty("displayName", "Bond Accrual Interest");
+    bondAccuralInterest.addProperty("sourceFormat", "");
+    bondAccuralInterest.addProperty("displayFormat", "");
+    bondAccuralInterest.addProperty("filter", true);
+    bondAccuralInterest.addProperty("exceptionDetailscreen", true);
+    bondAccuralInterest.addProperty("displayAttribute", true);
+    fields.add("bondAccuralInterest", bondAccuralInterest);
+
+    // firstCurrency
+    JsonObject firstCurrency = new JsonObject();
+    firstCurrency.addProperty("dataType", "String");
+    firstCurrency.addProperty("position", 16);
+    firstCurrency.addProperty("displayName", "First Currency");
+    firstCurrency.addProperty("sourceFormat", "");
+    firstCurrency.addProperty("displayFormat", "");
+    firstCurrency.addProperty("filter", true);
+    firstCurrency.addProperty("exceptionDetailscreen", true);
+    firstCurrency.addProperty("displayAttribute", true);
+    fields.add("firstCurrency", firstCurrency);
+
+    // SecondCurrency
+    JsonObject SecondCurrency = new JsonObject();
+    SecondCurrency.addProperty("dataType", "String");
+    SecondCurrency.addProperty("position", 17);
+    SecondCurrency.addProperty("displayName", "Second Currency");
+    SecondCurrency.addProperty("sourceFormat", "");
+    SecondCurrency.addProperty("displayFormat", "");
+    SecondCurrency.addProperty("filter", true);
+    SecondCurrency.addProperty("exceptionDetailscreen", true);
+    SecondCurrency.addProperty("displayAttribute", true);
+    fields.add("SecondCurrency", SecondCurrency);
+
+    // exchangeRate
+    JsonObject exchangeRate = new JsonObject();
+    exchangeRate.addProperty("dataType", "String");
+    exchangeRate.addProperty("position", 18);
+    exchangeRate.addProperty("displayName", "Exchange Rate");
+    exchangeRate.addProperty("sourceFormat", "");
+    exchangeRate.addProperty("displayFormat", "");
+    exchangeRate.addProperty("filter", true);
+    exchangeRate.addProperty("exceptionDetailscreen", true);
+    exchangeRate.addProperty("displayAttribute", true);
+    fields.add("exchangeRate", exchangeRate);
+
+    // feeRate
+    JsonObject feeRate = new JsonObject();
+    feeRate.addProperty("dataType", "String");
+    feeRate.addProperty("position", 19);
+    feeRate.addProperty("displayName", "Fee Rate");
+    feeRate.addProperty("sourceFormat", "");
+    feeRate.addProperty("displayFormat", "");
+    feeRate.addProperty("filter", true);
+    feeRate.addProperty("exceptionDetailscreen", true);
+    feeRate.addProperty("displayAttribute", true);
+    fields.add("feeRate", feeRate);
+
+    // dividendCoupon
+    JsonObject dividendCoupon = new JsonObject();
+    dividendCoupon.addProperty("dataType", "String");
+    dividendCoupon.addProperty("position", 20);
+    dividendCoupon.addProperty("displayName", "Dividend Coupon");
+    dividendCoupon.addProperty("sourceFormat", "");
+    dividendCoupon.addProperty("displayFormat", "");
+    dividendCoupon.addProperty("filter", true);
+    dividendCoupon.addProperty("exceptionDetailscreen", true);
+    dividendCoupon.addProperty("displayAttribute", true);
+    fields.add("dividendCoupon", dividendCoupon);
+
+    // handlingFee
+    JsonObject handlingFee = new JsonObject();
+    handlingFee.addProperty("dataType", "String");
+    handlingFee.addProperty("position", 21);
+    handlingFee.addProperty("displayName", "Handling Fee");
+    handlingFee.addProperty("sourceFormat", "");
+    handlingFee.addProperty("displayFormat", "");
+    handlingFee.addProperty("filter", true);
+    handlingFee.addProperty("exceptionDetailscreen", true);
+    handlingFee.addProperty("displayAttribute", true);
+    fields.add("handlingFee", handlingFee);
+
+    // handlingCurrency
+    JsonObject handlingCurrency = new JsonObject();
+    handlingCurrency.addProperty("dataType", "String");
+    handlingCurrency.addProperty("position", 22);
+    handlingCurrency.addProperty("displayName", "Handling Currency");
+    handlingCurrency.addProperty("sourceFormat", "");
+    handlingCurrency.addProperty("displayFormat", "");
+    handlingCurrency.addProperty("filter", true);
+    handlingCurrency.addProperty("exceptionDetailscreen", true);
+    handlingCurrency.addProperty("displayAttribute", true);
+    fields.add("handlingCurrency", handlingCurrency);
+
+    // commissionAmount
+    JsonObject commissionAmount = new JsonObject();
+    commissionAmount.addProperty("dataType", "String");
+    commissionAmount.addProperty("position", 23);
+    commissionAmount.addProperty("displayName", "Commission Amount");
+    commissionAmount.addProperty("sourceFormat", "");
+    commissionAmount.addProperty("displayFormat", "");
+    commissionAmount.addProperty("filter", true);
+    commissionAmount.addProperty("exceptionDetailscreen", true);
+    commissionAmount.addProperty("displayAttribute", true);
+    fields.add("commissionAmount", commissionAmount);
+
+    // commissionCurrency
+    JsonObject commissionCurrency = new JsonObject();
+    commissionCurrency.addProperty("dataType", "String");
+    commissionCurrency.addProperty("position", 24);
+    commissionCurrency.addProperty("displayName", "Commission Currency");
+    commissionCurrency.addProperty("sourceFormat", "");
+    commissionCurrency.addProperty("displayFormat", "");
+    commissionCurrency.addProperty("filter", true);
+    commissionCurrency.addProperty("exceptionDetailscreen", true);
+    commissionCurrency.addProperty("displayAttribute", true);
+    fields.add("commissionCurrency", commissionCurrency);
+
+    // accuralCommissionAmount
+    JsonObject accuralCommissionAmount = new JsonObject();
+    accuralCommissionAmount.addProperty("dataType", "String");
+    accuralCommissionAmount.addProperty("position", 25);
+    accuralCommissionAmount.addProperty("displayName", "Accrual Commission Amount");
+    accuralCommissionAmount.addProperty("sourceFormat", "");
+    accuralCommissionAmount.addProperty("displayFormat", "");
+    accuralCommissionAmount.addProperty("filter", true);
+    accuralCommissionAmount.addProperty("exceptionDetailscreen", true);
+    accuralCommissionAmount.addProperty("displayAttribute", true);
+    fields.add("accuralCommissionAmount", accuralCommissionAmount);
+
+    // accuralCommissionCurrency
+    JsonObject accuralCommissionCurrency = new JsonObject();
+    accuralCommissionCurrency.addProperty("dataType", "String");
+    accuralCommissionCurrency.addProperty("position", 26);
+    accuralCommissionCurrency.addProperty("displayName", "Accrual Commission Currency");
+    accuralCommissionCurrency.addProperty("sourceFormat", "");
+    accuralCommissionCurrency.addProperty("displayFormat", "");
+    accuralCommissionCurrency.addProperty("filter", true);
+    accuralCommissionCurrency.addProperty("exceptionDetailscreen", true);
+    accuralCommissionCurrency.addProperty("displayAttribute", true);
+    fields.add("accuralCommissionCurrency", accuralCommissionCurrency);
+
+    // pledgedCollateralvalue
+    JsonObject pledgedCollateralvalue = new JsonObject();
+    pledgedCollateralvalue.addProperty("dataType", "String");
+    pledgedCollateralvalue.addProperty("position", 27);
+    pledgedCollateralvalue.addProperty("displayName", "Pledged Collateral Value");
+    pledgedCollateralvalue.addProperty("sourceFormat", "");
+    pledgedCollateralvalue.addProperty("displayFormat", "");
+    pledgedCollateralvalue.addProperty("filter", true);
+    pledgedCollateralvalue.addProperty("exceptionDetailscreen", true);
+    pledgedCollateralvalue.addProperty("displayAttribute", true);
+    fields.add("pledgedCollateralvalue", pledgedCollateralvalue);
+
+    // pledgedCollateralCurrency
+    JsonObject pledgedCollateralCurrency = new JsonObject();
+    pledgedCollateralCurrency.addProperty("dataType", "String");
+    pledgedCollateralCurrency.addProperty("position", 28);
+    pledgedCollateralCurrency.addProperty("displayName", "Pledged Collateral Currency");
+    pledgedCollateralCurrency.addProperty("sourceFormat", "");
+    pledgedCollateralCurrency.addProperty("displayFormat", "");
+    pledgedCollateralCurrency.addProperty("filter", true);
+    pledgedCollateralCurrency.addProperty("exceptionDetailscreen", true);
+    pledgedCollateralCurrency.addProperty("dis
+
+// pledgedCollateralCurrency
+    JsonObject pledgedCollateralCurrency = new JsonObject();
+    pledgedCollateralCurrency.addProperty("dataType", "String");
+    pledgedCollateralCurrency.addProperty("position", 28);
+    pledgedCollateralCurrency.addProperty("displayName", "Pledged Collateral Currency");
+    pledgedCollateralCurrency.addProperty("sourceFormat", "");
+    pledgedCollateralCurrency.addProperty("displayFormat", "");
+    pledgedCollateralCurrency.addProperty("filter", true);
+    pledgedCollateralCurrency.addProperty("exceptionDetailscreen", true);
+    pledgedCollateralCurrency.addProperty("displayAttribute", true);
+    fields.add("pledgedCollateralCurrency", pledgedCollateralCurrency);
+
+    // pledgedCollateralFee
+    JsonObject pledgedCollateralFee = new JsonObject();
+    pledgedCollateralFee.addProperty("dataType", "String");
+    pledgedCollateralFee.addProperty("position", 29);
+    pledgedCollateralFee.addProperty("displayName", "Pledged Collateral Fee");
+    pledgedCollateralFee.addProperty("sourceFormat", "");
+    pledgedCollateralFee.addProperty("displayFormat", "");
+    pledgedCollateralFee.addProperty("filter", true);
+    pledgedCollateralFee.addProperty("exceptionDetailscreen", true);
+    pledgedCollateralFee.addProperty("displayAttribute", true);
+    fields.add("pledgedCollateralFee", pledgedCollateralFee);
+
+    // pledgedCollateralCurrentAmount
+    JsonObject pledgedCollateralCurrentAmount = new JsonObject();
+    pledgedCollateralCurrentAmount.addProperty("dataType", "String");
+    pledgedCollateralCurrentAmount.addProperty("position", 30);
+    pledgedCollateralCurrentAmount.addProperty("displayName", "Pledged Collateral Current Amount");
+    pledgedCollateralCurrentAmount.addProperty("sourceFormat", "");
+    pledgedCollateralCurrentAmount.addProperty("displayFormat", "");
+    pledgedCollateralCurrentAmount.addProperty("filter", true);
+    pledgedCollateralCurrentAmount.addProperty("exceptionDetailscreen", true);
+    pledgedCollateralCurrentAmount.addProperty("displayAttribute", true);
+    fields.add("pledgedCollateralCurrentAmount", pledgedCollateralCurrentAmount);
+
+    // pledgedCollateralCurrentCurrency
+    JsonObject pledgedCollateralCurrentCurrency = new JsonObject();
+    pledgedCollateralCurrentCurrency.addProperty("dataType", "String");
+    pledgedCollateralCurrentCurrency.addProperty("position", 31);
+    pledgedCollateralCurrentCurrency.addProperty("displayName", "Pledged Collateral Current Currency");
+    pledgedCollateralCurrentCurrency.addProperty("sourceFormat", "");
+    pledgedCollateralCurrentCurrency.addProperty("displayFormat", "");
+    pledgedCollateralCurrentCurrency.addProperty("filter", true);
+    pledgedCollateralCurrentCurrency.addProperty("exceptionDetailscreen", true);
+    pledgedCollateralCurrentCurrency.addProperty("displayAttribute", true);
+    fields.add("pledgedCollateralCurrentCurrency", pledgedCollateralCurrentCurrency);
+
+    // pledgedCollateralAccrualAmount
+    JsonObject pledgedCollateralAccrualAmount = new JsonObject();
+    pledgedCollateralAccrualAmount.addProperty("dataType", "String");
+    pledgedCollateralAccrualAmount.addProperty("position", 32);
+    pledgedCollateralAccrualAmount.addProperty("displayName", "Pledged Collateral Accrual Amount");
+    pledgedCollateralAccrualAmount.addProperty("sourceFormat", "");
+    pledgedCollateralAccrualAmount.addProperty("displayFormat", "");
+    pledgedCollateralAccrualAmount.addProperty("filter", true);
+    pledgedCollateralAccrualAmount.addProperty("exceptionDetailscreen", true);
+    pledgedCollateralAccrualAmount.addProperty("displayAttribute", true);
+    fields.add("pledgedCollateralAccrualAmount", pledgedCollateralAccrualAmount);
+
+    // pledgedCollateralAccrualCurrency
+    JsonObject pledgedCollateralAccrualCurrency = new JsonObject();
+    pledgedCollateralAccrualCurrency.addProperty("dataType", "String");
+    pledgedCollateralAccrualCurrency.addProperty("position", 33);
+    pledgedCollateralAccrualCurrency.addProperty("displayName", "Pledged Collateral Accrual Currency");
+    pledgedCollateralAccrualCurrency.addProperty("sourceFormat", "");
+    pledgedCollateralAccrualCurrency.addProperty("displayFormat", "");
+    pledgedCollateralAccrualCurrency.addProperty("filter", true);
+    pledgedCollateralAccrualCurrency.addProperty("exceptionDetailscreen", true);
+    pledgedCollateralAccrualCurrency.addProperty("displayAttribute", true);
+    fields.add("pledgedCollateralAccrualCurrency", pledgedCollateralAccrualCurrency);
+
+    // comissionStartDate
+    JsonObject comissionStartDate = new JsonObject();
+    comissionStartDate.addProperty("dataType", "String");
+    comissionStartDate.addProperty("position", 34);
+    comissionStartDate.addProperty("displayName", "Commission Start Date");
+    comissionStartDate.addProperty("sourceFormat", "");
+    comissionStartDate.addProperty("displayFormat", "");
+    comissionStartDate.addProperty("filter", true);
+    comissionStartDate.addProperty("exceptionDetailscreen", true);
+    comissionStartDate.addProperty("displayAttribute", true);
+    fields.add("comissionStartDate", comissionStartDate);
+
+    // comissionEndDate
+    JsonObject comissionEndDate = new JsonObject();
+    comissionEndDate.addProperty("dataType", "String");
+    comissionEndDate.addProperty("position", 35);
+    comissionEndDate.addProperty("displayName", "Commission End Date");
+    comissionEndDate.addProperty("sourceFormat", "");
+    comissionEndDate.addProperty("displayFormat", "");
+    comissionEndDate.addProperty("filter", true);
+    comissionEndDate.addProperty("exceptionDetailscreen", true);
+    comissionEndDate.addProperty("displayAttribute", true);
+    fields.add("comissionEndDate", comissionEndDate);
+
+    // settlementDepotID
+    JsonObject settlementDepotID = new JsonObject();
+    settlementDepotID.addProperty("dataType", "String");
+    settlementDepotID.addProperty("position", 36);
+    settlementDepotID.addProperty("displayName", "Settlement Depot ID");
+    settlementDepotID.addProperty("sourceFormat", "");
+    settlementDepotID.addProperty("displayFormat", "");
+    settlementDepotID.addProperty("filter", true);
+    settlementDepotID.addProperty("exceptionDetailscreen", true);
+    settlementDepotID.addProperty("displayAttribute", true);
+    fields.add("settlementDepotID", settlementDepotID);
+
+    // settlementDepotAccount
+    JsonObject settlementDepotAccount = new JsonObject();
+    settlementDepotAccount.addProperty("dataType", "String");
+    settlementDepotAccount.addProperty("position", 37);
+    settlementDepotAccount.addProperty("displayName", "Settlement Depot Account");
+    settlementDepotAccount.addProperty("sourceFormat", "");
+    settlementDepotAccount.addProperty("displayFormat", "");
+    settlementDepotAccount.addProperty("filter", true);
+    settlementDepotAccount.addProperty("exceptionDetailscreen", true);
+    settlementDepotAccount.addProperty("displayAttribute", true);
+    fields.add("settlementDepotAccount", settlementDepotAccount);
+
+    // RootCause
+    JsonObject RootCause = new JsonObject();
+    RootCause.addProperty("dataType", "String");
+    RootCause.addProperty("position", 38);
+    RootCause.addProperty("displayName", "Root Cause");
+    RootCause.addProperty("sourceFormat", "");
+    RootCause.addProperty("displayFormat", "");
+    RootCause.addProperty("filter", true);
+    RootCause.addProperty("exceptionDetailscreen", true);
+    RootCause.addProperty("displayAttribute", true);
+    fields.add("RootCause", RootCause);
+
+    // Commentary
+    JsonObject Commentary = new JsonObject();
+    Commentary.addProperty("dataType", "String");
+    Commentary.addProperty("position", 39);
+    Commentary.addProperty("displayName", "Commentary");
+    Commentary.addProperty("sourceFormat", "");
+    Commentary.addProperty("displayFormat", "");
+    Commentary.addProperty("filter", true);
+    Commentary.addProperty("exceptionDetailscreen", true);
+    Commentary.addProperty("displayAttribute", true);
+    fields.add("Commentary", Commentary);
+
+    // MessageType
+    JsonObject MessageType = new JsonObject();
+    MessageType.addProperty("dataType", "String");
+    MessageType.addProperty("position", 40);
+    MessageType.addProperty("displayName", "Message Type");
+    MessageType.addProperty("sourceFormat", "");
+    MessageType.addProperty("displayFormat", "");
+    MessageType.addProperty("filter", true);
+    MessageType.addProperty("exceptionDetailscreen", true);
+    MessageType.addProperty("displayAttribute", true);
+    fields.add("MessageType", MessageType);
+
+    // Attach fields to metadata
+    metadata.add("fields", fields);
+
+    return metadata;
+}
