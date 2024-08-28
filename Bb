@@ -1,4 +1,4 @@
-package com.example.xmlparser.service;
+yypackage com.example.xmlparser.service;
 
 import com.example.xmlparser.model.*;
 import jakarta.xml.bind.JAXBContext;
@@ -182,4 +182,337 @@ private List<List<Object>> getHeaderMetadata() {
     headerMetadata.add(List.of("String", "MessageType", true, "", "", true));
 
     return headerMetadata;
+}
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+private JSONObject getHeaderMetadata() {
+    JSONObject metadata = new JSONObject();
+
+    JSONArray headers = new JSONArray();
+    
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "businessDate")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "tradeTicket")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "tradeTag")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "externalTradeID")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "activityType")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "buyOrSell")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "tradeDate")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "valueDate")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "ISIN")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "instrumentType")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "securityName")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "Double")
+        .put("displayName", "nominalAmount")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "Double")
+        .put("displayName", "netConsiderationoutstanding")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "currency")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "Double")
+        .put("displayName", "bondAccuralInterest")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "firstCurrency")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "SecondCurrency")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "Double")
+        .put("displayName", "exchangeRate")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "Double")
+        .put("displayName", "feeRate")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "Double")
+        .put("displayName", "dividendCoupon")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "Double")
+        .put("displayName", "handlingFee")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "handlingCurrency")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "Double")
+        .put("displayName", "commissionAmount")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "commissionCurrency")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "Double")
+        .put("displayName", "accuralCommissionAmount")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "accuralCommissionCurrency")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "Double")
+        .put("displayName", "pledgedCollateralvalue")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "pledgedCollateralCurrency")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "Double")
+        .put("displayName", "pledgedCollateralFee")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "Double")
+        .put("displayName", "pledgedCollateralCurrentAmount")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "pledgedCollateralCurrentCurrency")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "Double")
+        .put("displayName", "pledgedCollateralAccuralAmount")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "pledgedCollateralAccuralCurrency")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "comissionStartDate")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "comissionEndDate")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "settlementDepotID")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "settlementDepotAccount")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "RootCause")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "Commentary")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    headers.put(new JSONObject()
+        .put("dataType", "String")
+        .put("displayName", "MessageType")
+        .put("filter", true)
+        .put("sourceFormat", "")
+        .put("displayFormat", "")
+        .put("exceptionDetailScreen", true));
+
+    metadata.put("headers", headers);
+
+    return metadata;
 }
