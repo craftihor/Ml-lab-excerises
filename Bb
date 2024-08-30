@@ -1039,3 +1039,409 @@ private JsonObject getStructuredMetadata() {
 
     return metadata;
 }
+
+
+{
+  "fields": {
+    "tradeTag": {
+      "dataType": "String",
+      "position": 4,
+      "displayName": "Trade Tag",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "businessDate": {
+      "dataType": "String",
+      "position": 0,
+      "displayName": "Business Date",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "tradeTicket": {
+      "dataType": "String",
+      "position": 1,
+      "displayName": "Trade Ticket",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "externalTradeID": {
+      "dataType": "String",
+      "position": 2,
+      "displayName": "External Trade ID",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "activityType": {
+      "dataType": "String",
+      "position": 3,
+      "displayName": "Activity Type",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "buyOrSell": {
+      "dataType": "String",
+      "position": 5,
+      "displayName": "Buy or Sell",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "tradeDate": {
+      "dataType": "String",
+      "position": 6,
+      "displayName": "Trade Date",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "valueDate": {
+      "dataType": "String",
+      "position": 7,
+      "displayName": "Value Date",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "ISIN": {
+      "dataType": "String",
+      "position": 8,
+      "displayName": "ISIN",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "instrumentType": {
+      "dataType": "String",
+      "position": 9,
+      "displayName": "Instrument Type",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "securityName": {
+      "dataType": "String",
+      "position": 10,
+      "displayName": "Security Name",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "nominalAmount": {
+      "dataType": "String",
+      "position": 11,
+      "displayName": "Nominal Amount",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "netConsiderationoutstanding": {
+      "dataType": "String",
+      "position": 12,
+      "displayName": "Net Consideration Outstanding",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "currency": {
+      "dataType": "String",
+      "position": 13,
+      "displayName": "Currency",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "bondAccuralInterest": {
+      "dataType": "String",
+      "position": 14,
+      "displayName": "Bond Accural Interest",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "firstCurrency": {
+      "dataType": "String",
+      "position": 15,
+      "displayName": "First Currency",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "SecondCurrency": {
+      "dataType": "String",
+      "position": 16,
+      "displayName": "Second Currency",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "exchangeRate": {
+      "dataType": "String",
+      "position": 17,
+      "displayName": "Exchange Rate",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "feeRate": {
+      "dataType": "String",
+      "position": 18,
+      "displayName": "Fee Rate",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "dividendCoupon": {
+      "dataType": "String",
+      "position": 19,
+      "displayName": "Dividend Coupon",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "handlingFee": {
+      "dataType": "String",
+      "position": 20,
+      "displayName": "Handling Fee",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "handlingCurrency": {
+      "dataType": "String",
+      "position": 21,
+      "displayName": "Handling Currency",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "commissionAmount": {
+      "dataType": "String",
+      "position": 22,
+      "displayName": "Commission Amount",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "commissionCurrency": {
+      "dataType": "String",
+      "position": 23,
+      "displayName": "Commission Currency",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "accuralCommissionAmount": {
+      "dataType": "String",
+      "position": 24,
+      "displayName": "Accural Commission Amount",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "accuralCommissionCurrency": {
+      "dataType": "String",
+      "position": 25,
+      "displayName": "Accural Commission Currency",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "pledgedCollateralvalue": {
+      "dataType": "String",
+      "position": 26,
+      "displayName": "Pledged Collateral Value",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "pledgedCollateralCurrency": {
+      "dataType": "String",
+      "position": 27,
+      "displayName": "Pledged Collateral Currency",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "pledgedCollateralFee": {
+      "dataType": "String",
+      "position": 28,
+      "displayName": "Pledged Collateral Fee",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "pledgedCollateralCurrentAmount": {
+      "dataType": "String",
+      "position": 29,
+      "displayName": "Pledged Collateral Current Amount",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "pledgedCollateralCurrentCurrency": {
+      "dataType": "String",
+      "position": 30,
+      "displayName": Pledged Collateral Current Currency",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "pledgedCollateralAccuralAmount": {
+      "dataType": "String",
+      "position": 31,
+      "displayName": "Pledged Collateral Accrual Amount",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "pledgedCollateralAccuralCurrency": {
+      "dataType": "String",
+      "position": 32,
+      "displayName": "Pledged Collateral Accrual Currency",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "comissionStartDate": {
+      "dataType": "String",
+      "position": 33,
+      "displayName": "Commission Start Date",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "comissionEndDate": {
+      "dataType": "String",
+      "position": 34,
+      "displayName": "Commission End Date",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "settlementDepotID": {
+      "dataType": "String",
+      "position": 35,
+      "displayName": "Settlement Depot ID",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "settlementDepotAccount": {
+      "dataType": "String",
+      "position": 36,
+      "displayName": "Settlement Depot Account",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    },
+    "RootCause": {
+      "dataType": "String",
+      "position": 37,
+      "displayName": "Root Cause",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": false,
+      "exceptionDetailscreen": false,
+      "displayAttribute": false
+    },
+    "Commentary": {
+      "dataType": "String",
+      "position": 38,
+      "displayName": "Commentary",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": false,
+      "exceptionDetailscreen": false,
+      "displayAttribute": false
+    },
+    "MessageType": {
+      "dataType": "String",
+      "position": 39,
+      "displayName": "Message Type",
+      "sourceFormat": "",
+      "displayFormat": "",
+      "filter": true,
+      "exceptionDetailscreen": true,
+      "displayAttribute": true
+    }
+  }
+}
