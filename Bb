@@ -343,3 +343,99 @@ public class XMLToCSVWithXPath {
         }
     }
 }
+
+
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
+public class XMLToCSVWithBacktracking {
+
+    public static void main(String[] args) {
+        try {
+            // Parse the XML file
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse("input.xml");
+            Element root = doc.getDocumentElement();
+
+            // Prepare CSV writer
+            FileWriter out = new FileWriter("output.csv");
+            CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT);
+
+            // Write headers
+            // Placeholder header generation (adapt as needed)
+            printer.printRecord("XPath", "Value");
+
+            // Initialize stack and data structures for backtracking
+            Stack<Map<String, String>> stack = new Stack<>();
+            stack.push(new LinkedHashMap<>()); // Start with empty map for root
+            traverseAndBacktrack(root, "", stack, printer);
+
+            // Close CSV writer
+            printer.flush();
+            printer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void traverseAndBacktrack(Element element, String currentPath, Stack<Map<String, String>> stack, CSVPrinter printer) throws Exception {
+        // Save current state for backtracking
+        Map<String, String> currentData = stack.peek();
+
+        String tagName = element.getTagName();
+        String newPath = currentPath.isEmpty() ? tagName : currentPath + "/" + tagName;
+
+        // Process element attributes
+        for (int i = 0; i < element.getAttributes().getLength(); i++) {
+            Node attr = element.getAttributes().item(i);
+            String attrPath = newPath + "/@" + attr.getNodeName();
+            currentData.put(attrPath, attr.getNodeValue());
+        }
+
+        // Process child elements
+        NodeList childNodes = element.getChildNodes();
+        boolean hasChildElements = false;
+        boolean isSecLendCommissDetl = "SecLendCommissDetl".equals(tagName);
+
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node node = childNodes.item(i);
+
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                hasChildElements = true;
+                if (isSecLendCommissDetl) {
+                    // Save current data and push a new map for the next section
+                    Map<String, String> newData = new LinkedHashMap<>(currentData);
+                    stack.push(newData);
+                }
+                traverseAndBacktrack((Element) node, newPath, stack, printer);
+                if (isSecLendCommissDetl) {
+                    // Process and write the data when backtracking from SecLendCommissDetl
+                    printer.printRecord(stack.pop().values());
+                }
+            } else if (node.getNodeType() == Node.TEXT_NODE) {
+                String text = node.getTextContent().trim();
+                if (!text.isEmpty()) {
+                    currentData.put(newPath, text);
+                }
+            }
+        }
+
+        // If this is a leaf node and not SecLendCommissDetl, record the data
+        if (!hasChildElements && !isSecLendCommissDetl) {
+            printer.printRecord(currentData.values());
+        }
+    }
+}
