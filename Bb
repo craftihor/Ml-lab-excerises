@@ -1,4 +1,4 @@
-import com.mongodb.client.MongoClients;
+moimport com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
@@ -97,5 +97,76 @@ public class XmlToCsvService {
             headers.add(fieldMapping.getString("csvHeader"));
         }
         return headers;
+    }
+}
+
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.FileWriter;
+import java.util.HashMap;
+import java.util.Map;
+
+public class XMLToCSVFlattener {
+
+    public static void main(String[] args) {
+        try {
+            // Parse the XML file
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse("input.xml");
+            Element root = doc.getDocumentElement();
+
+            // Prepare CSV writer
+            FileWriter out = new FileWriter("output.csv");
+            CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader());
+
+            // Flatten XML
+            flattenXML(root, new HashMap<>(), printer);
+
+            // Close CSV writer
+            printer.flush();
+            printer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void flattenXML(Element element, Map<String, String> parentData, CSVPrinter printer) throws Exception {
+        Map<String, String> currentData = new HashMap<>(parentData);
+
+        // Process element attributes
+        for (int i = 0; i < element.getAttributes().getLength(); i++) {
+            Node attr = element.getAttributes().item(i);
+            currentData.put(element.getTagName() + "@" + attr.getNodeName(), attr.getNodeValue());
+        }
+
+        // Process child elements
+        NodeList childNodes = element.getChildNodes();
+        boolean hasChildElements = false;
+
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node node = childNodes.item(i);
+
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                hasChildElements = true;
+                flattenXML((Element) node, currentData, printer);
+            } else if (node.getNodeType() == Node.TEXT_NODE) {
+                String text = node.getTextContent().trim();
+                if (!text.isEmpty()) {
+                    currentData.put(element.getTagName(), text);
+                }
+            }
+        }
+
+        if (!hasChildElements) {
+            printer.printRecord(currentData.values());
+        }
     }
 }
