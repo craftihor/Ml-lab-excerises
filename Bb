@@ -503,3 +503,72 @@ public class XMLBacktrackingProcessor {
         processor.outputRecords();
     }
 }
+
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+public class XMLFieldCollector {
+
+    private Set<String> allFields = new LinkedHashSet<>();  // Use LinkedHashSet to maintain order
+
+    public void collectFields(Node node) {
+        if (node == null) return;
+
+        // Add the current node's name to the set
+        if (node.getNodeType() == Node.ELEMENT_NODE) {
+            allFields.add(node.getNodeName());
+
+            // Add attributes of the node to the set
+            NamedNodeMap attributes = node.getAttributes();
+            if (attributes != null) {
+                for (int i = 0; i < attributes.getLength(); i++) {
+                    Node attribute = attributes.item(i);
+                    allFields.add(node.getNodeName() + "@" + attribute.getNodeName());
+                }
+            }
+        }
+
+        // Recursively process child nodes
+        NodeList childNodes = node.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            collectFields(childNodes.item(i));
+        }
+    }
+
+    public Set<String> getAllFieldsInOrder(Document xmlDocument) {
+        // Start the collection process from the root element
+        collectFields(xmlDocument.getDocumentElement());
+        return allFields;
+    }
+
+    public static void main(String[] args) {
+        try {
+            // Parse the XML document
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document xmlDocument = builder.parse("path_to_your_xml_file.xml");
+
+            // Create an instance of the field collector
+            XMLFieldCollector fieldCollector = new XMLFieldCollector();
+
+            // Get all fields and attributes in order
+            Set<String> fieldsInOrder = fieldCollector.getAllFieldsInOrder(xmlDocument);
+
+            // Output the collected fields and attributes
+            for (String field : fieldsInOrder) {
+                System.out.println(field);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
