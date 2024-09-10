@@ -439,3 +439,67 @@ public class XMLToCSVWithBacktracking {
         }
     }
 }
+
+import java.util.*;
+
+public class XMLBacktrackingProcessor {
+
+    private Set<String> allTags = new HashSet<>();
+    private List<Map<String, String>> records = new ArrayList<>();
+
+    public void backtrack(Node node, Map<String, String> currentRecord) {
+        if (node == null) return;
+
+        // Process the current node
+        String tagName = node.getNodeName();
+        String tagValue = node.getTextContent().trim();
+        allTags.add(tagName);  // Add the tag to the set of all tags
+
+        currentRecord.put(tagName, tagValue);  // Store the tag value in the current record
+
+        // Recurse over child nodes
+        NodeList childNodes = node.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            backtrack(childNodes.item(i), currentRecord);
+        }
+    }
+
+    public void processDocument(Document xmlDocument) {
+        NodeList rootChildren = xmlDocument.getDocumentElement().getChildNodes();
+        
+        for (int i = 0; i < rootChildren.getLength(); i++) {
+            Node child = rootChildren.item(i);
+            Map<String, String> currentRecord = new HashMap<>();
+            
+            // Traverse the child node using backtracking
+            backtrack(child, currentRecord);
+
+            // Fill in missing tags with null or empty values
+            for (String tag : allTags) {
+                currentRecord.putIfAbsent(tag, "null");
+            }
+
+            records.add(currentRecord);
+        }
+    }
+
+    public void outputRecords() {
+        // Output all records as pipe-delimited strings
+        for (Map<String, String> record : records) {
+            StringBuilder recordLine = new StringBuilder();
+            for (String tag : allTags) {
+                recordLine.append(record.get(tag)).append("|");
+            }
+            System.out.println(recordLine.toString());
+        }
+    }
+
+    public static void main(String[] args) {
+        // Assume you have parsed the XML into a Document object
+        Document xmlDocument = ...; 
+
+        XMLBacktrackingProcessor processor = new XMLBacktrackingProcessor();
+        processor.processDocument(xmlDocument);
+        processor.outputRecords();
+    }
+}
