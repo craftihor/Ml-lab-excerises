@@ -1,64 +1,117 @@
-public class XmlToCsvConverter {
+public class XMLToCSVWithBacktracking {
 
-    private static final XPathFactory xPathFactory = XPathFactory.newInstance();
+    public static void main(String[] args) {
+        try {
+            // Parse the XML file
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse("input.xml");
+            Element root = doc.getDocumentElement();
 
-    public static void xmlToCsv(String xmlString, String outputFile) throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.parse(new InputSource(new StringReader(xmlString)));
+            // Collect all XPaths
+            Set<String> allXPaths = new LinkedHashSet<>();
+            collectXPaths(root, "", allXPaths);
 
-        // Get all unique XPaths
-        Set<String> allPaths = getAllPaths(doc.getDocumentElement(), "");
-        List<String> sortedPaths = new ArrayList<>(allPaths);
-        Collections.sort(sortedPaths);
+            // Prepare CSV writer
+            BufferedWriter writer = new BufferedWriter(new FileWriter("output.csv"));
 
-        // Write CSV
-        try (PrintWriter writer = new PrintWriter(new File(outputFile))) {
-            // Write header
-            writer.println(String.join(",", sortedPaths));
+            // Write headers
+            writer.write(String.join(",", allXPaths));
+            writer.newLine();
 
-            // Write data
-            NodeList records = doc.getDocumentElement().getChildNodes();
-            for (int i = 0; i < records.getLength(); i++) {
-                if (records.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                    List<String> row = new ArrayList<>();
-                    for (String path : sortedPaths) {
-                        row.add(getElementValue((Element) records.item(i), path));
-                    }
-                    writer.println(String.join(",", row));
+            // Initialize stack and data structures for backtracking
+            Stack<Map<String, String>> stack = new Stack<>();
+            stack.push(new LinkedHashMap<>());
+
+            // Traverse and write data
+            traverseAndBacktrack(root, "", stack, writer, allXPaths);
+
+            // Close CSV writer
+            writer.flush();
+            writer.close();
+
+            System.out.println("CSV file has been created successfully.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void collectXPaths(Element element, String currentPath, Set<String> allXPaths) {
+        String tagName = element.getTagName();
+        String newPath = currentPath.isEmpty() ? tagName : currentPath + "/" + tagName;
+
+        allXPaths.add(newPath);
+
+        // Collect attribute XPaths
+        NamedNodeMap attributes = element.getAttributes();
+        for (int i = 0; i < attributes.getLength(); i++) {
+            Node attr = attributes.item(i);
+            String attrPath = newPath + "/@" + attr.getNodeName();
+            allXPaths.add(attrPath);
+        }
+
+        // Recursively collect child element XPaths
+        NodeList childNodes = element.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node node = childNodes.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                collectXPaths((Element) node, newPath, allXPaths);
+            }
+        }
+    }
+
+    private static void traverseAndBacktrack(Element element, String currentPath, Stack<Map<String, String>> stack, BufferedWriter writer, Set<String> allXPaths) throws IOException {
+        Map<String, String> currentData = stack.peek();
+        String tagName = element.getTagName();
+        String newPath = currentPath.isEmpty() ? tagName : currentPath + "/" + tagName;
+
+        // Process element attributes
+        NamedNodeMap attributes = element.getAttributes();
+        for (int i = 0; i < attributes.getLength(); i++) {
+            Node attr = attributes.item(i);
+            String attrPath = newPath + "/@" + attr.getNodeName();
+            currentData.put(attrPath, attr.getNodeValue());
+        }
+
+        // Process child elements
+        NodeList childNodes = element.getChildNodes();
+        boolean hasChildElements = false;
+        boolean isSecLendCommissDetl = "SecLendCommissDetl".equals(tagName);
+
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node node = childNodes.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                hasChildElements = true;
+                if (isSecLendCommissDetl) {
+                    // Save current data and push a new map for the next section
+                    Map<String, String> newData = new LinkedHashMap<>(currentData);
+                    stack.push(newData);
+                }
+                traverseAndBacktrack((Element) node, newPath, stack, writer, allXPaths);
+                if (isSecLendCommissDetl) {
+                    // Process and write the data when backtracking from SecLendCommissDetl
+                    writeDataToCSV(stack.pop(), writer, allXPaths);
+                }
+            } else if (node.getNodeType() == Node.TEXT_NODE) {
+                String text = node.getTextContent().trim();
+                if (!text.isEmpty()) {
+                    currentData.put(newPath, text);
                 }
             }
         }
-    }
 
-    private static Set<String> getAllPaths(Element element, String currentPath) {
-        Set<String> paths = new HashSet<>();
-        NodeList children = element.getChildNodes();
-        for (int i = 0; i < children.getLength(); i++) {
-            if (children.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                Element child = (Element) children.item(i);
-                String childPath = currentPath + "/" + child.getTagName();
-                paths.add(childPath);
-                paths.addAll(getAllPaths(child, childPath));
-            }
-        }
-        return paths;
-    }
-
-    private static String getElementValue(Element element, String xpath) {
-        try {
-            XPath xPath = xPathFactory.newXPath();
-            Node node = (Node) xPath.evaluate(xpath, element, XPathConstants.NODE);
-            return node != null ? node.getTextContent() : "";
-        } catch (XPathExpressionException e) {
-            return "";
+        // If this is a leaf node and SecLendCommissDetl, record the data
+        if (!hasChildElements && isSecLendCommissDetl) {
+            writeDataToCSV(currentData, writer, allXPaths);
         }
     }
 
-    public static Map<String, String> getRecordValues(Element record, List<String> xpaths) {
-        Map<String, String> values = new HashMap<>();
-        for (String xpath : xpaths) {
-            values.put(xpath, getElementValue(record, xpath));
+    private static void writeDataToCSV(Map<String, String> data, BufferedWriter writer, Set<String> allXPaths) throws IOException {
+        List<String> row = new ArrayList<>();
+        for (String xpath : allXPaths) {
+            row.add(data.getOrDefault(xpath, "").replace(",", "\\,"));  // Escape commas in values
         }
-        return values;
+        writer.write(String.join(",", row));
+        writer.newLine();
     }
+}
