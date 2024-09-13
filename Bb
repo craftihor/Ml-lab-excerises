@@ -185,3 +185,138 @@ private TradeVO setFields(TradeVO tradeVO, JsonObject jsonTemplate, List<String>
     tradeVO.setExData(exData);
     return tradeVO;
 }
+
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
+
+public class XMLToCSVWithBacktracking {
+
+    public static void main(String[] args) {
+        try {
+            // Parse the XML file
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse("input.xml");
+            Element root = doc.getDocumentElement();
+
+            // JSON template with field XPaths and positions (you'll need to initialize this)
+            JsonObject jsonTemplate = new JsonObject(); // Replace this with your actual JSON template
+
+            // Extract the XPaths and positions from the JSON template
+            TreeMap<Integer, String> positionToXpath = extractFieldsWithXpath(jsonTemplate);
+
+            // Prepare CSV writer
+            BufferedWriter writer = new BufferedWriter(new FileWriter("output.csv"));
+
+            // Write headers based on XPaths from the JSON template
+            writer.write(String.join(",", positionToXpath.values()));
+            writer.newLine();
+
+            // Initialize stack and data structures for backtracking
+            Stack<Map<String, String>> stack = new Stack<>();
+            stack.push(new LinkedHashMap<>());
+
+            // Traverse and write data
+            traverseAndBacktrack(root, "", stack, writer, positionToXpath);
+
+            // Close CSV writer
+            writer.flush();
+            writer.close();
+
+            System.out.println("CSV file has been created successfully.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Extract XPaths and positions from the JSON template
+    private static TreeMap<Integer, String> extractFieldsWithXpath(JsonObject jsonTemplate) {
+        TreeMap<Integer, String> positionToXpathMap = new TreeMap<>();
+
+        JsonObject fields = jsonTemplate.getAsJsonObject("fields");
+        for (Map.Entry<String, JsonElement> fieldEntry : fields.entrySet()) {
+            JsonObject fieldObject = fieldEntry.getValue().getAsJsonObject();
+
+            // Extract position and xpath from each field
+            JsonElement positionElement = fieldObject.get("position");
+            JsonElement xpathElement = fieldObject.get("xpath");
+
+            if (positionElement != null && !positionElement.isJsonNull() && positionElement.getAsJsonPrimitive().isNumber()) {
+                int position = positionElement.getAsInt();
+                String xpath = xpathElement != null && !xpathElement.isJsonNull() ? xpathElement.getAsString() : "null";
+
+                // Add to the map
+                positionToXpathMap.put(position, xpath);
+            }
+        }
+
+        return positionToXpathMap;
+    }
+
+    // Traverse and backtrack the XML
+    private static void traverseAndBacktrack(Element element, String currentPath, Stack<Map<String, String>> stack, BufferedWriter writer, TreeMap<Integer, String> positionToXpath) throws IOException {
+        Map<String, String> currentData = stack.peek();
+        String tagName = element.getTagName();
+        String newPath = currentPath.isEmpty() ? tagName : currentPath + "/" + tagName;
+
+        // Process element attributes
+        NamedNodeMap attributes = element.getAttributes();
+        for (int i = 0; i < attributes.getLength(); i++) {
+            Node attr = attributes.item(i);
+            String attrPath = newPath + "/@" + attr.getNodeName();
+            if (positionToXpath.containsValue(attrPath)) {
+                currentData.put(attrPath, attr.getNodeValue());
+            }
+        }
+
+        // Process child elements
+        NodeList childNodes = element.getChildNodes();
+        boolean hasChildElements = false;
+        boolean isSecLendCommissDetl = "SecLendCommissDetl".equals(tagName);
+
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node node = childNodes.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                hasChildElements = true;
+                if (isSecLendCommissDetl) {
+                    // Save current data and push a new map for the next section
+                    Map<String, String> newData = new LinkedHashMap<>(currentData);
+                    stack.push(newData);
+                }
+                traverseAndBacktrack((Element) node, newPath, stack, writer, positionToXpath);
+                if (isSecLendCommissDetl) {
+                    // Process and write the data when backtracking from SecLendCommissDetl
+                    writeDataToCSV(stack.pop(), writer, positionToXpath);
+                }
+            } else if (node.getNodeType() == Node.TEXT_NODE) {
+                String text = node.getTextContent().trim();
+                if (!text.isEmpty()) {
+                    currentData.put(newPath, text);
+                }
+            }
+        }
+
+        // If this is a leaf node and SecLendCommissDetl, record the data
+        if (!hasChildElements && isSecLendCommissDetl) {
+            writeDataToCSV(currentData, writer, positionToXpath);
+        }
+    }
+
+    // Write data to CSV with the specified XPaths from the JSON template
+    private static void writeDataToCSV(Map<String, String> data, BufferedWriter writer, TreeMap<Integer, String> positionToXpath) throws IOException {
+        List<String> row = new ArrayList<>();
+        for (String xpath : positionToXpath.values()) {
+            row.add(data.getOrDefault(xpath, "").replace(",", "\\,"));  // Escape commas in values
+        }
+        writer.write(String.join(",", row));
+        writer.newLine();
+    }
+}
