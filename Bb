@@ -115,3 +115,73 @@ public class XMLToCSVWithBacktracking {
         writer.newLine();
     }
 }
+
+
+private TradeVO setFields(TradeVO tradeVO, JsonObject jsonTemplate, List<String> fieldList, boolean otlFile, BasicDBObject basicDBObject) {
+
+    JsonObject fields = jsonTemplate.get("fields").getAsJsonObject();
+    JsonObject exData = new JsonObject();
+
+    String extype = jsonTemplate.has("extype") && !jsonTemplate.get("extype").isJsonNull() ? jsonTemplate.get("extype").getAsString() : null;
+
+    for (String field : fields.keySet()) {
+        try {
+            JsonObject fieldProperty = fields.getAsJsonObject(field);
+
+            // Default value handling
+            if (Objects.nonNull(fieldProperty.get("defaultValue")) && !fieldProperty.get("defaultValue").isJsonNull()) {
+                exData.add(field, fieldProperty.get("defaultValue"));
+            }
+
+            JsonElement fieldValue = null;
+
+            // Handling based on extype == "clr"
+            if (Objects.nonNull(fieldProperty.get("position")) && !fieldProperty.get("position").isJsonNull()) {
+                if ("clr".equalsIgnoreCase(extype)) {
+                    // Use the position as a column name (string) instead of an integer index
+                    String columnName = fieldProperty.get("position").getAsString();
+                    int index = fieldList.indexOf(columnName);
+
+                    if (index != -1) {
+                        // If a matching column name is found, process it
+                        if (Objects.nonNull(fieldProperty.get("sourceFormat")) && !fieldProperty.get("sourceFormat").isJsonNull()) {
+                            fieldValue = this.getFormattedValue(
+                                fieldList.get(index),
+                                fieldProperty.get("dataType").getAsString(),
+                                fieldProperty.get("sourceFormat").getAsString()
+                            );
+                        } else {
+                            fieldValue = new Gson().toJsonTree(fieldList.get(index), String.class);
+                        }
+                    }
+                } else {
+                    // Regular integer position handling
+                    int position = fieldProperty.get("position").getAsInt();
+                    if (Objects.nonNull(fieldProperty.get("sourceFormat")) && !fieldProperty.get("sourceFormat").isJsonNull()) {
+                        fieldValue = this.getFormattedValue(
+                            fieldList.get(position),
+                            fieldProperty.get("dataType").getAsString(),
+                            fieldProperty.get("sourceFormat").getAsString()
+                        );
+                    } else {
+                        fieldValue = new Gson().toJsonTree(fieldList.get(position), String.class);
+                    }
+                }
+            }
+
+            // Add the fieldValue to exData if it's non-null
+            if (Objects.nonNull(fieldValue)) {
+                exData.add(field, fieldValue);
+            }
+
+        } catch (Exception e) {
+            // Handle the exception as needed
+            e.printStackTrace();
+            continue;
+        }
+    }
+
+    // Assuming TradeVO has a method to accept this exData object
+    tradeVO.setExData(exData);
+    return tradeVO;
+}
