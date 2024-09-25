@@ -320,3 +320,138 @@ public class XMLToCSVWithBacktracking {
         writer.newLine();
     }
 }
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.bson.BasicDBObject;
+
+public class TradeCalculatorTest {
+
+    private TradeCalculator calculator = new TradeCalculator();
+
+    @Test
+    void testCalculate() {
+        // Prepare input data
+        List<TradeVO> trades = new ArrayList<>();
+        TradeVO trade = new TradeVO();
+        trade.setData(new BasicDBObject("TRADE_DATE", "2022-01-01"));
+        trade.setData(new BasicDBObject("TRADE_TYPE", "AUTOBORROW"));
+        trades.add(trade);
+
+        // Execute calculation
+        List<TradeVD> result = calculator.calculate(trades);
+
+        // Verify results
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        TradeVD tradeVD = result.get(0);
+        assertNotNull(tradeVD.getAge());
+        assertEquals("AUTOBORROW", tradeVD.getTradeCategory());
+    }
+
+    @Test
+    void testUpdateAge_ValidDate() {
+        // Prepare input data
+        BasicDBObject data = new BasicDBObject("TRADE_DATE", "2022-01-01");
+
+        // Execute update age
+        BasicDBObject result = calculator.updateAge(data);
+
+        // Verify results
+        assertNotNull(result);
+        assertNotNull(result.get("AGE"));
+    }
+
+    @Test
+    void testUpdateAge_InvalidDate() {
+        // Prepare input data
+        BasicDBObject data = new BasicDBObject("TRADE_DATE", "INVALID_DATE");
+
+        // Execute update age
+        BasicDBObject result = calculator.updateAge(data);
+
+        // Verify results
+        assertNotNull(result);
+        assertEquals(null, result.get("AGE"));
+    }
+
+    @Test
+    void testUpdateAge_MissingTradeDate() {
+        // Prepare input data
+        BasicDBObject data = new BasicDBObject();
+
+        // Execute update age
+        BasicDBObject result = calculator.updateAge(data);
+
+        // Verify results
+        assertNotNull(result);
+        assertEquals(null, result.get("AGE"));
+    }
+
+    @Test
+    void testUpdateTradeCategory_ValidType() {
+        // Prepare input data
+        BasicDBObject data = new BasicDBObject("TRADE_TYPE", "AUTOBORROW");
+
+        // Execute update trade category
+        BasicDBObject result = calculator.updateTradeCategory(data);
+
+        // Verify results
+        assertNotNull(result);
+        assertEquals("AUTOBORROW", result.get("TRADE_CATEGORY"));
+    }
+
+    @Test
+    void testUpdateTradeCategory_InvalidType() {
+        // Prepare input data
+        BasicDBObject data = new BasicDBObject("TRADE_TYPE", "INVALID_TYPE");
+
+        // Execute update trade category
+        BasicDBObject result = calculator.updateTradeCategory(data);
+
+        // Verify results
+        assertNotNull(result);
+        assertEquals(null, result.get("TRADE_CATEGORY"));
+    }
+
+    @Test
+    void testUpdateTradeCategory_MissingTradeType() {
+        // Prepare input data
+        BasicDBObject data = new BasicDBObject();
+
+        // Execute update trade category
+        BasicDBObject result = calculator.updateTradeCategory(data);
+
+        // Verify results
+        assertNotNull(result);
+        assertEquals(null, result.get("TRADE_CATEGORY"));
+    }
+
+    @Test
+    void testParseDate_ValidDate() {
+        // Prepare input data
+        String dateString = "2022-01-01";
+
+        // Execute parse date
+        Date result = TradeCalculator.parseDate(dateString);
+
+        // Verify results
+        assertNotNull(result);
+    }
+
+    @Test
+    void testParseDate_InvalidDate() {
+        // Prepare input data
+        String dateString = "INVALID_DATE";
+
+        // Execute parse date
+        assertThrows(ParseException.class, () -> TradeCalculator.parseDate(dateString));
+    }
+}
