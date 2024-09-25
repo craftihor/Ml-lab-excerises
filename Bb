@@ -133,3 +133,58 @@ public class AutoborrowCalculationTest {
         assertThrows(ParseException.class, () -> calculation.parseDate(dateString));
     }
 }
+
+@Test
+    void testExtractFieldsWithXpath() {
+        // Prepare JSON template
+        String jsonTemplate = "{\"fields\":{\"field1\":{\"position\":1,\"xpath\":\"/root/field1\"},\"field2\":{\"position\":2,\"xpath\":\"/root/field2\"}}}";
+
+        // Execute extraction
+        TreeMap<Integer, String> positionToXpath = XMLToCSVWithBacktracking.extractFieldsWithXpath(new JsonObject(jsonTemplate));
+
+        // Verify results
+        assertEquals(2, positionToXpath.size());
+        assertEquals("/root/field1", positionToXpath.get(1));
+        assertEquals("/root/field2", positionToXpath.get(2));
+    }
+
+    @Test
+    void testTraverseAndBacktrack() throws ParserConfigurationException, SAXException, IOException {
+        // Prepare XML file
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File("input.xml"));
+        Element root = doc.getDocumentElement();
+
+        // Prepare JSON template
+        String jsonTemplate = "{\"fields\":{\"field1\":{\"position\":1,\"xpath\":\"/root/field1\"},\"field2\":{\"position\":2,\"xpath\":\"/root/field2\"}}}";
+
+        // Execute traversal
+        TreeMap<Integer, String> positionToXpath = XMLToCSVWithBacktracking.extractFieldsWithXpath(new JsonObject(jsonTemplate));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("output.csv"));
+        XMLToCSVWithBacktracking.traverseAndBacktrack(root, "", new Stack<>(), writer, positionToXpath);
+
+        // Verify results
+        writer.close();
+        File outputFile = new File("output.csv");
+        assertTrue(outputFile.exists());
+        assertEquals(2, outputFile.length()); // Assuming 2 rows in the output CSV
+    }
+
+    @Test
+    void testWriteDataToCSV() {
+        // Prepare data
+        Map<String, String> data = new LinkedHashMap<>();
+        data.put("/root/field1", "value1");
+        data.put("/root/field2", "value2");
+
+        // Prepare JSON template
+        String jsonTemplate = "{\"fields\":{\"field1\":{\"position\":1,\"xpath\":\"/root/field1\"},\"field2\":{\"position\":2,\"xpath\":\"/root/field2\"}}}";
+
+        // Execute writing
+        TreeMap<Integer, String> positionToXpath = XMLToCSVWithBacktracking.extractFieldsWithXpath(new JsonObject(jsonTemplate));
+        StringWriter writer = new StringWriter();
+        XMLToCSVWithBacktracking.writeDataToCSV(data, writer, positionToXpath);
+
+        // Verify results
+        String output = writer.toString();
+        assertEquals("value1,value2\n", output);
+    }
