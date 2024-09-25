@@ -1,146 +1,85 @@
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+@ExtendWith(MockitoExtension.class)
+public class XmlToCsvConverterTest {
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+    @InjectMocks
+    private XmlToCsvConverter converter;
 
-import org.bson.BasicDBObject;
+    @Mock
+    private XmRestClient xmRestClient;
 
-public class AutoborrowCalculationTest {
+    @Mock
+    private Logger logger;
 
-    private AutoborrowCalculation calculation = new AutoborrowCalculation();
+    @Captor
+    private ArgumentCaptor<String> filenameCaptor;
+
+    @Captor
+    private ArgumentCaptor<JsonObject> templateCaptor;
+
+    private Exchange exchange;
+
+    @BeforeEach
+    void setup() {
+        exchange = new DefaultExchange(new DefaultCamelContext());
+    }
 
     @Test
-    void testCalculate() {
+    void testConvertXmlToCsv() throws Exception {
         // Prepare input data
-        List<TradeVO> trades = new ArrayList<>();
-        TradeVO trade = new TradeVO();
-        trade.setData(new BasicDBObject("tradeDate", "Jan 1, 2022 12:00:00 PM EST"));
-        trade.setData(new BasicDBObject("tradingType", "AUTO BORROW"));
-        trades.add(trade);
+        String filename = "test.xml";
+        JsonObject template = new JsonObject();
+        template.add("fields", new JsonObject());
 
-        // Execute calculation
-        List<TradeVO> result = calculation.calculate(trades);
+        // Mock XmRestClient
+        when(xmRestClient.exceptionMetadata(filename)).thenReturn(template);
+
+        // Execute conversion
+        converter.process(exchange);
 
         // Verify results
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        TradeVO tradeVO = result.get(0);
-        BasicDBObject data = tradeVO.getData();
-        assertNotNull(data.get("autoborrowAge"));
-        assertEquals("AUTOBORROW", data.get("trdCategory"));
+        verify(xmRestClient).exceptionMetadata(filenameCaptor.capture());
+        assertEquals(filename, filenameCaptor.getValue());
+        verify(logger).info(Comments.XMLTOCSVSUCCESS);
     }
 
     @Test
-    void testUpdateAge_ValidDate() {
+    void testConvertXmlToCsv_FileAlreadyProcessed() throws Exception {
         // Prepare input data
-        BasicDBObject data = new BasicDBObject("tradeDate", "Jan 1, 2022 12:00:00 PM EST");
+        String filename = "test.xml";
+        JsonObject template = new JsonObject();
+        template.add("fields", new JsonObject());
+        String timestamp = "2022-01-01 12:00:00";
 
-        // Execute update age
-        BasicDBObject result = calculation.updateAge(data);
+        // Mock XmRestClient
+        when(xmRestClient.exceptionMetadata(filename)).thenReturn(template);
+
+        // Create test XML file
+        File xmlFile = new File("test.xml");
+        xmlFile.createNewFile();
+        FileWriter writer = new FileWriter(xmlFile);
+        writer.write("<root tmstmp=\"" + timestamp + "\"></root>");
+        writer.close();
+
+        // Execute conversion
+        assertThrows(FileRejectedException.class, () -> converter.process(exchange));
 
         // Verify results
-        assertNotNull(result);
-        assertNotNull(result.get("autoborrowAge"));
+        verify(xmRestClient).exceptionMetadata(filenameCaptor.capture());
+        assertEquals(filename, filenameCaptor.getValue());
+        verify(logger).warn(Comments.ENRICHMENT_FILE_REJECTED_ALREADY_PROCESSED_FILE);
     }
 
     @Test
-    void testUpdateAge_InvalidDate() {
+    void testExtractFieldswithXpath() {
         // Prepare input data
-        BasicDBObject data = new BasicDBObject("tradeDate", "INVALID_DATE");
-
-        // Execute update age
-        BasicDBObject result = calculation.updateAge(data);
-
-        // Verify results
-        assertNotNull(result);
-        assertEquals(null, result.get("autoborrowAge"));
-    }
-
-    @Test
-    void testUpdateAge_MissingTradeDate() {
-        // Prepare input data
-        BasicDBObject data = new BasicDBObject();
-
-        // Execute update age
-        BasicDBObject result = calculation.updateAge(data);
-
-        // Verify results
-        assertNotNull(result);
-        assertEquals(null, result.get("autoborrowAge"));
-    }
-
-    @Test
-    void testUpdateTrdCategory_ValidType() {
-        // Prepare input data
-        BasicDBObject data = new BasicDBObject("tradingType", "AUTO BORROW");
-
-        // Execute update trade category
-        BasicDBObject result = calculation.updatetrdCategory(data);
-
-        // Verify results
-        assertNotNull(result);
-        assertEquals("AUTOBORROW", result.get("trdCategory"));
-    }
-
-    @Test
-    void testUpdateTrdCategory_InvalidType() {
-        // Prepare input data
-        BasicDBObject data = new BasicDBObject("tradingType", "INVALID_TYPE");
-
-        // Execute update trade category
-        BasicDBObject result = calculation.updatetrdCategory(data);
-
-        // Verify results
-        assertNotNull(result);
-        assertEquals(null, result.get("trdCategory"));
-    }
-
-    @Test
-    void testUpdateTrdCategory_MissingTradingType() {
-        // Prepare input data
-        BasicDBObject data = new BasicDBObject();
-
-        // Execute update trade category
-        BasicDBObject result = calculation.updatetrdCategory(data);
-
-        // Verify results
-        assertNotNull(result);
-        assertEquals(null, result.get("trdCategory"));
-    }
-
-    @Test
-    void testParseDate_ValidDate() {
-        // Prepare input data
-        String dateString = "Jan 1, 2022 12:00:00 PM EST";
-
-        // Execute parse date
-        Date result = calculation.parseDate(dateString);
-
-        // Verify results
-        assertNotNull(result);
-    }
-
-    @Test
-    void testParseDate_InvalidDate() {
-        // Prepare input data
-        String dateString = "INVALID_DATE";
-
-        // Execute parse date
-        assertThrows(ParseException.class, () -> calculation.parseDate(dateString));
-    }
-}
-
-@Test
-    void testExtractFieldsWithXpath() {
-        // Prepare JSON template
-        String jsonTemplate = "{\"fields\":{\"field1\":{\"position\":1,\"xpath\":\"/root/field1\"},\"field2\":{\"position\":2,\"xpath\":\"/root/field2\"}}}";
+        JsonObject template = new JsonObject();
+        JsonObject fields = new JsonObject();
+        fields.add("field1", new JsonObject().add("position", 1).add("xpath", "/root/field1"));
+        fields.add("field2", new JsonObject().add("position", 2).add("xpath", "/root/field2"));
+        template.add("fields", fields);
 
         // Execute extraction
-        TreeMap<Integer, String> positionToXpath = XMLToCSVWithBacktracking.extractFieldsWithXpath(new JsonObject(jsonTemplate));
+        TreeMap<Integer, String> positionToXpath = converter.extractFieldswithXpath(template);
 
         // Verify results
         assertEquals(2, positionToXpath.size());
@@ -149,42 +88,96 @@ public class AutoborrowCalculationTest {
     }
 
     @Test
-    void testTraverseAndBacktrack() throws ParserConfigurationException, SAXException, IOException {
-        // Prepare XML file
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File("input.xml"));
-        Element root = doc.getDocumentElement();
-
-        // Prepare JSON template
-        String jsonTemplate = "{\"fields\":{\"field1\":{\"position\":1,\"xpath\":\"/root/field1\"},\"field2\":{\"position\":2,\"xpath\":\"/root/field2\"}}}";
-
-        // Execute traversal
-        TreeMap<Integer, String> positionToXpath = XMLToCSVWithBacktracking.extractFieldsWithXpath(new JsonObject(jsonTemplate));
-        BufferedWriter writer = new BufferedWriter(new FileWriter("output.csv"));
-        XMLToCSVWithBacktracking.traverseAndBacktrack(root, "", new Stack<>(), writer, positionToXpath);
-
-        // Verify results
-        writer.close();
-        File outputFile = new File("output.csv");
-        assertTrue(outputFile.exists());
-        assertEquals(2, outputFile.length()); // Assuming 2 rows in the output CSV
-    }
-
-    @Test
-    void testWriteDataToCSV() {
-        // Prepare data
+    void testWriteDataToCSV() throws IOException {
+        // Prepare input data
         Map<String, String> data = new LinkedHashMap<>();
         data.put("/root/field1", "value1");
         data.put("/root/field2", "value2");
-
-        // Prepare JSON template
-        String jsonTemplate = "{\"fields\":{\"field1\":{\"position\":1,\"xpath\":\"/root/field1\"},\"field2\":{\"position\":2,\"xpath\":\"/root/field2\"}}}";
+        TreeMap<Integer, String> positionToXpath = new TreeMap<>();
+        positionToXpath.put(1, "/root/field1");
+        positionToXpath.put(2, "/root/field2");
 
         // Execute writing
-        TreeMap<Integer, String> positionToXpath = XMLToCSVWithBacktracking.extractFieldsWithXpath(new JsonObject(jsonTemplate));
         StringWriter writer = new StringWriter();
-        XMLToCSVWithBacktracking.writeDataToCSV(data, writer, positionToXpath);
+        converter.writeDataToCSV(data, writer, positionToXpath);
 
         // Verify results
         String output = writer.toString();
-        assertEquals("value1,value2\n", output);
+        assertEquals("value1|value2\n", output);
     }
+@Test
+    void testTraverseAndBacktrack_ChildElements() throws IOException {
+        // Prepare input data
+        Element root = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File("test.xml")).getDocumentElement();
+        Stack<Map<String, String>> stack = new Stack<>();
+        stack.push(new LinkedHashMap<>());
+        TreeMap<Integer, String> positionToXpath = new TreeMap<>();
+        positionToXpath.put(1, "/root/field1");
+        positionToXpath.put(2, "/root/field2");
+
+        // Execute traversal
+        StringWriter writer = new StringWriter();
+        converter.traverseAndBacktrack(root, "", stack, "end_tag", writer, positionToXpath);
+
+        // Verify results
+        String output = writer.toString();
+        assertEquals("value1|value2\n", output);
+    }
+
+    @Test
+    void testTraverseAndBacktrack_TextNodes() throws IOException {
+        // Prepare input data
+        Element root = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File("test.xml")).getDocumentElement();
+        Stack<Map<String, String>> stack = new Stack<>();
+        stack.push(new LinkedHashMap<>());
+        TreeMap<Integer, String> positionToXpath = new TreeMap<>();
+        positionToXpath.put(1, "/root/field1");
+        positionToXpath.put(2, "/root/field2");
+
+        // Execute traversal
+        StringWriter writer = new StringWriter();
+        converter.traverseAndBacktrack(root, "", stack, "end_tag", writer, positionToXpath);
+
+        // Verify results
+        String output = writer.toString();
+        assertEquals("value1|value2\n", output);
+    }
+
+    @Test
+    void testCheckNewFile() throws ParseException {
+        // Prepare input data
+        String date = "2022-01-01 12:00:00";
+        String yesterdayAsString = "2022-01-01";
+
+        // Execute check
+        boolean result = converter.CheckNewFile(date, yesterdayAsString);
+
+        // Verify results
+        assertTrue(result);
+    }
+
+    @Test
+    void testConvertTimeStamp() throws ParseException {
+        // Prepare input data
+        String date = "2022-01-01 12:00:00";
+
+        // Execute conversion
+        String result = converter.ConvertTimeStamp(date);
+
+        // Verify results
+        assertEquals("2022-01-01", result);
+    }
+
+    @Test
+    void testGetFooters() {
+        // Prepare input data
+        String filename = "test.xml";
+        String yesterdayAsString = "2022-01-01";
+
+        // Execute footer generation
+        List<String> footers = converter.getFooters(filename, yesterdayAsString);
+
+        // Verify results
+        assertEquals(6, footers.size());
+    }
+}
