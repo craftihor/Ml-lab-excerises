@@ -1,111 +1,114 @@
+import org.apache.camel.Exchange;
+import org.apache.camel.Message;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.test.util.ReflectionTestUtils;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Arrays;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-class XmlToCsvConverterTest {
+class RuleProcessorTest {
 
     @InjectMocks
-    private XmlToCsvConverter converter;
+    private RuleProcessor ruleProcessor;
 
     @Mock
-    private XmRestClient xmRestClient;
+    private RuleEngineClient ruleEngineClient;
 
-    @TempDir
-    Path tempDir;
+    @Mock
+    private Exchange exchange;
 
-    private String xmlFilePath;
-    private String csvFilePath;
+    @Mock
+    private Message message;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        xmlFilePath = tempDir.resolve("xml").toString();
-        csvFilePath = tempDir.resolve("csv").toString();
-        new File(xmlFilePath).mkdirs();
-        new File(csvFilePath).mkdirs();
-
-        ReflectionTestUtils.setField(converter, "xmlFilePath", xmlFilePath);
-        ReflectionTestUtils.setField(converter, "csvFilePath", csvFilePath);
-    }
-
-    @Test
-    void testConvertXmlToCsv() throws Exception {
-        // Prepare test data
-        String filename = "test.xml";
-        String xmlContent = "<root tmstmp=\"2024-09-24T10:00:00\"><data>Test</data></root>";
-        Files.write(Path.of(xmlFilePath, filename), xmlContent.getBytes());
-
-        JsonObject template = new JsonParser().parse(
-            "{\"fields\":{\"field1\":{\"position\":1,\"xpath\":\"/root/data\"}},\"end_tag\":\"root\"}"
-        ).getAsJsonObject();
-
-        when(xmRestClient.exceptionMetadata(filename)).thenReturn(template);
-
-        // Execute
-        converter.convertXmlToCsv(filename, template);
-
-        // Verify
-        String csvFilename = filename.replace(".xml", "") + "_" + 
-            new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis() - 24*60*60*1000)) + ".csv";
-        Path csvPath = Path.of(csvFilePath, csvFilename);
-        assertTrue(Files.exists(csvPath), "CSV file should be created");
-
-        String csvContent = Files.readString(csvPath);
-        assertTrue(csvContent.contains("Test"), "CSV should contain data from XML");
-    }
-
-    @Test
-    void testConvertXmlToCsv_FileRejectedException() throws Exception {
-        // Prepare test data
-        String filename = "old.xml";
-        String oldDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis() - 48*60*60*1000));
-        String xmlContent = "<root tmstmp=\"" + oldDate + "T10:00:00\"><data>Old</data></root>";
-        Files.write(Path.of(xmlFilePath, filename), xmlContent.getBytes());
-
-        JsonObject template = new JsonParser().parse(
-            "{\"fields\":{\"field1\":{\"position\":1,\"xpath\":\"/root/data\"}},\"end_tag\":\"root\"}"
-        ).getAsJsonObject();
-
-        // Execute and verify
-        assertThrows(FileRejectedException.class, () -> converter.convertXmlToCsv(filename, template));
-    }
-
-    @Test
-    void testProcess() throws Exception {
-        // Prepare test data
-        String filename = "test.xml";
-        JsonObject template = new JsonParser().parse(
-            "{\"fields\":{\"field1\":{\"position\":1,\"xpath\":\"/root/data\"}},\"end_tag\":\"root\"}"
-        ).getAsJsonObject();
-
-        when(xmRestClient.exceptionMetadata(filename)).thenReturn(template);
-
-        Exchange exchange = mock(Exchange.class);
-        Message message = mock(Message.class);
         when(exchange.getIn()).thenReturn(message);
-        when(message.getHeader(Exchange.FILE_NAME, String.class)).thenReturn(filename);
+    }
 
-        // Execute
-        converter.process(exchange);
+    @ParameterizedTest
+    @CsvSource({
+        "0, EUR, 0, 1, 10, RP1, 10, true",
+        "400, EUR, 10, 3, 30, RP2, 25, true",
+        "750, EUR, 20, 5, 40, RP3, 40, false",
+        "3000, EUR, 30, 10, 50, RP4, 60, true",
+        "7500, EUR, 40, 20, 60, RP5, 80, false",
+        "15000, EUR, 100, 35, 100, RPT, 95, true"
+    })
+    void testProcess(double accrualAmount, String currency, int points, int autoBorrowAge, 
+                     int riskPoints, String riskPriority, int pointsToConsider, boolean wamRuleDisabled) throws Exception {
+        // Arrange
+        TradeVO tradeVO = new TradeVO();
+        tradeVO.setAccrualCommissionAmount(accrualAmount);
+        tradeVO.setAccrualCommissionAmountCurrency(currency);
+        tradeVO.setPoints(points);
+        tradeVO.setAutoBorrowAgeDays(autoBorrowAge);
+        
+        TradeEvent latestTradeEvent = new TradeEvent();
+        TradeProcessingFlag flag = new TradeProcessingFlag();
+        flag.setWAMRuleDisabled(wamRuleDisabled);
+        latestTradeEvent.setTradeProcessingFlag(flag);
+        tradeVO.setLatestTradeEvent(latestTradeEvent);
 
-        // Verify
-        verify(message).setHeader("process", false);
-        verify(message).setHeader("process", true);
-        verify(xmRestClient).exceptionMetadata(filename);
+        List<TradeVO> tradeVOs = Arrays.asList(tradeVO);
+        when(message.getBody()).thenReturn(tradeVOs);
+
+        // Mock the ruleEngineClient to return the input list
+        when(ruleEngineClient.execute(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        ruleProcessor.process(exchange);
+
+        // Assert
+        verify(ruleEngineClient, times(1)).execute(anyList());
+        verify(message).setBody(anyList());
+
+        // Capture the processed list
+        ArgumentCaptor<List<TradeVO>> processedListCaptor = ArgumentCaptor.forClass(List.class);
+        verify(message).setBody(processedListCaptor.capture());
+        List<TradeVO> processedList = processedListCaptor.getValue();
+
+        // Assert the processed list
+        assertEquals(1, processedList.size());
+        TradeVO processedTradeVO = processedList.get(0);
+        assertEquals(accrualAmount, processedTradeVO.getAccrualCommissionAmount());
+        assertEquals(currency, processedTradeVO.getAccrualCommissionAmountCurrency());
+        assertEquals(points, processedTradeVO.getPoints());
+        assertEquals(autoBorrowAge, processedTradeVO.getAutoBorrowAgeDays());
+        assertEquals(wamRuleDisabled, processedTradeVO.getLatestTradeEvent().getTradeProcessingFlag().isWAMRuleDisabled());
+    }
+
+    @Test
+    void testProcessWithEmptyList() throws Exception {
+        // Arrange
+        when(message.getBody()).thenReturn(Arrays.asList());
+
+        // Act
+        ruleProcessor.process(exchange);
+
+        // Assert
+        verify(ruleEngineClient, never()).execute(anyList());
+        verify(message, never()).setBody(anyList());
+    }
+
+    @Test
+    void testProcessWithNullBody() throws Exception {
+        // Arrange
+        when(message.getBody()).thenReturn(null);
+
+        // Act
+        ruleProcessor.process(exchange);
+
+        // Assert
+        verify(ruleEngineClient, never()).execute(anyList());
+        verify(message, never()).setBody(anyList());
     }
 }
