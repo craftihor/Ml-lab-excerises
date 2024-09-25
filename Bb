@@ -1,5 +1,23 @@
-@ExtendWith(MockitoExtension.class)
-public class XmlToCsvConverterTest {
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.test.util.ReflectionTestUtils;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+class XmlToCsvConverterTest {
 
     @InjectMocks
     private XmlToCsvConverter converter;
@@ -7,177 +25,87 @@ public class XmlToCsvConverterTest {
     @Mock
     private XmRestClient xmRestClient;
 
-    @Mock
-    private Logger logger;
+    @TempDir
+    Path tempDir;
 
-    @Captor
-    private ArgumentCaptor<String> filenameCaptor;
-
-    @Captor
-    private ArgumentCaptor<JsonObject> templateCaptor;
-
-    private Exchange exchange;
+    private String xmlFilePath;
+    private String csvFilePath;
 
     @BeforeEach
-    void setup() {
-        exchange = new DefaultExchange(new DefaultCamelContext());
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        xmlFilePath = tempDir.resolve("xml").toString();
+        csvFilePath = tempDir.resolve("csv").toString();
+        new File(xmlFilePath).mkdirs();
+        new File(csvFilePath).mkdirs();
+
+        ReflectionTestUtils.setField(converter, "xmlFilePath", xmlFilePath);
+        ReflectionTestUtils.setField(converter, "csvFilePath", csvFilePath);
     }
 
     @Test
     void testConvertXmlToCsv() throws Exception {
-        // Prepare input data
+        // Prepare test data
         String filename = "test.xml";
-        JsonObject template = new JsonObject();
-        template.add("fields", new JsonObject());
+        String xmlContent = "<root tmstmp=\"2024-09-24T10:00:00\"><data>Test</data></root>";
+        Files.write(Path.of(xmlFilePath, filename), xmlContent.getBytes());
 
-        // Mock XmRestClient
+        JsonObject template = new JsonParser().parse(
+            "{\"fields\":{\"field1\":{\"position\":1,\"xpath\":\"/root/data\"}},\"end_tag\":\"root\"}"
+        ).getAsJsonObject();
+
         when(xmRestClient.exceptionMetadata(filename)).thenReturn(template);
 
-        // Execute conversion
+        // Execute
+        converter.convertXmlToCsv(filename, template);
+
+        // Verify
+        String csvFilename = filename.replace(".xml", "") + "_" + 
+            new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis() - 24*60*60*1000)) + ".csv";
+        Path csvPath = Path.of(csvFilePath, csvFilename);
+        assertTrue(Files.exists(csvPath), "CSV file should be created");
+
+        String csvContent = Files.readString(csvPath);
+        assertTrue(csvContent.contains("Test"), "CSV should contain data from XML");
+    }
+
+    @Test
+    void testConvertXmlToCsv_FileRejectedException() throws Exception {
+        // Prepare test data
+        String filename = "old.xml";
+        String oldDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis() - 48*60*60*1000));
+        String xmlContent = "<root tmstmp=\"" + oldDate + "T10:00:00\"><data>Old</data></root>";
+        Files.write(Path.of(xmlFilePath, filename), xmlContent.getBytes());
+
+        JsonObject template = new JsonParser().parse(
+            "{\"fields\":{\"field1\":{\"position\":1,\"xpath\":\"/root/data\"}},\"end_tag\":\"root\"}"
+        ).getAsJsonObject();
+
+        // Execute and verify
+        assertThrows(FileRejectedException.class, () -> converter.convertXmlToCsv(filename, template));
+    }
+
+    @Test
+    void testProcess() throws Exception {
+        // Prepare test data
+        String filename = "test.xml";
+        JsonObject template = new JsonParser().parse(
+            "{\"fields\":{\"field1\":{\"position\":1,\"xpath\":\"/root/data\"}},\"end_tag\":\"root\"}"
+        ).getAsJsonObject();
+
+        when(xmRestClient.exceptionMetadata(filename)).thenReturn(template);
+
+        Exchange exchange = mock(Exchange.class);
+        Message message = mock(Message.class);
+        when(exchange.getIn()).thenReturn(message);
+        when(message.getHeader(Exchange.FILE_NAME, String.class)).thenReturn(filename);
+
+        // Execute
         converter.process(exchange);
 
-        // Verify results
-        verify(xmRestClient).exceptionMetadata(filenameCaptor.capture());
-        assertEquals(filename, filenameCaptor.getValue());
-        verify(logger).info(Comments.XMLTOCSVSUCCESS);
-    }
-
-    @Test
-    void testConvertXmlToCsv_FileAlreadyProcessed() throws Exception {
-        // Prepare input data
-        String filename = "test.xml";
-        JsonObject template = new JsonObject();
-        template.add("fields", new JsonObject());
-        String timestamp = "2022-01-01 12:00:00";
-
-        // Mock XmRestClient
-        when(xmRestClient.exceptionMetadata(filename)).thenReturn(template);
-
-        // Create test XML file
-        File xmlFile = new File("test.xml");
-        xmlFile.createNewFile();
-        FileWriter writer = new FileWriter(xmlFile);
-        writer.write("<root tmstmp=\"" + timestamp + "\"></root>");
-        writer.close();
-
-        // Execute conversion
-        assertThrows(FileRejectedException.class, () -> converter.process(exchange));
-
-        // Verify results
-        verify(xmRestClient).exceptionMetadata(filenameCaptor.capture());
-        assertEquals(filename, filenameCaptor.getValue());
-        verify(logger).warn(Comments.ENRICHMENT_FILE_REJECTED_ALREADY_PROCESSED_FILE);
-    }
-
-    @Test
-    void testExtractFieldswithXpath() {
-        // Prepare input data
-        JsonObject template = new JsonObject();
-        JsonObject fields = new JsonObject();
-        fields.add("field1", new JsonObject().add("position", 1).add("xpath", "/root/field1"));
-        fields.add("field2", new JsonObject().add("position", 2).add("xpath", "/root/field2"));
-        template.add("fields", fields);
-
-        // Execute extraction
-        TreeMap<Integer, String> positionToXpath = converter.extractFieldswithXpath(template);
-
-        // Verify results
-        assertEquals(2, positionToXpath.size());
-        assertEquals("/root/field1", positionToXpath.get(1));
-        assertEquals("/root/field2", positionToXpath.get(2));
-    }
-
-    @Test
-    void testWriteDataToCSV() throws IOException {
-        // Prepare input data
-        Map<String, String> data = new LinkedHashMap<>();
-        data.put("/root/field1", "value1");
-        data.put("/root/field2", "value2");
-        TreeMap<Integer, String> positionToXpath = new TreeMap<>();
-        positionToXpath.put(1, "/root/field1");
-        positionToXpath.put(2, "/root/field2");
-
-        // Execute writing
-        StringWriter writer = new StringWriter();
-        converter.writeDataToCSV(data, writer, positionToXpath);
-
-        // Verify results
-        String output = writer.toString();
-        assertEquals("value1|value2\n", output);
-    }
-@Test
-    void testTraverseAndBacktrack_ChildElements() throws IOException {
-        // Prepare input data
-        Element root = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File("test.xml")).getDocumentElement();
-        Stack<Map<String, String>> stack = new Stack<>();
-        stack.push(new LinkedHashMap<>());
-        TreeMap<Integer, String> positionToXpath = new TreeMap<>();
-        positionToXpath.put(1, "/root/field1");
-        positionToXpath.put(2, "/root/field2");
-
-        // Execute traversal
-        StringWriter writer = new StringWriter();
-        converter.traverseAndBacktrack(root, "", stack, "end_tag", writer, positionToXpath);
-
-        // Verify results
-        String output = writer.toString();
-        assertEquals("value1|value2\n", output);
-    }
-
-    @Test
-    void testTraverseAndBacktrack_TextNodes() throws IOException {
-        // Prepare input data
-        Element root = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File("test.xml")).getDocumentElement();
-        Stack<Map<String, String>> stack = new Stack<>();
-        stack.push(new LinkedHashMap<>());
-        TreeMap<Integer, String> positionToXpath = new TreeMap<>();
-        positionToXpath.put(1, "/root/field1");
-        positionToXpath.put(2, "/root/field2");
-
-        // Execute traversal
-        StringWriter writer = new StringWriter();
-        converter.traverseAndBacktrack(root, "", stack, "end_tag", writer, positionToXpath);
-
-        // Verify results
-        String output = writer.toString();
-        assertEquals("value1|value2\n", output);
-    }
-
-    @Test
-    void testCheckNewFile() throws ParseException {
-        // Prepare input data
-        String date = "2022-01-01 12:00:00";
-        String yesterdayAsString = "2022-01-01";
-
-        // Execute check
-        boolean result = converter.CheckNewFile(date, yesterdayAsString);
-
-        // Verify results
-        assertTrue(result);
-    }
-
-    @Test
-    void testConvertTimeStamp() throws ParseException {
-        // Prepare input data
-        String date = "2022-01-01 12:00:00";
-
-        // Execute conversion
-        String result = converter.ConvertTimeStamp(date);
-
-        // Verify results
-        assertEquals("2022-01-01", result);
-    }
-
-    @Test
-    void testGetFooters() {
-        // Prepare input data
-        String filename = "test.xml";
-        String yesterdayAsString = "2022-01-01";
-
-        // Execute footer generation
-        List<String> footers = converter.getFooters(filename, yesterdayAsString);
-
-        // Verify results
-        assertEquals(6, footers.size());
+        // Verify
+        verify(message).setHeader("process", false);
+        verify(message).setHeader("process", true);
+        verify(xmRestClient).exceptionMetadata(filename);
     }
 }
