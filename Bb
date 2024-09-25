@@ -1,326 +1,3 @@
-public class XMLToCSVWithBacktracking {
-
-    public static void main(String[] args) {
-        try {
-            // Parse the XML file
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse("input.xml");
-            Element root = doc.getDocumentElement();
-
-            // Collect all XPaths
-            Set<String> allXPaths = new LinkedHashSet<>();
-            collectXPaths(root, "", allXPaths);
-
-            // Prepare CSV writer
-            BufferedWriter writer = new BufferedWriter(new FileWriter("output.csv"));
-
-            // Write headers
-            writer.write(String.join(",", allXPaths));
-            writer.newLine();
-
-            // Initialize stack and data structures for backtracking
-            Stack<Map<String, String>> stack = new Stack<>();
-            stack.push(new LinkedHashMap<>());
-
-            // Traverse and write data
-            traverseAndBacktrack(root, "", stack, writer, allXPaths);
-
-            // Close CSV writer
-            writer.flush();
-            writer.close();
-
-            System.out.println("CSV file has been created successfully.");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void collectXPaths(Element element, String currentPath, Set<String> allXPaths) {
-        String tagName = element.getTagName();
-        String newPath = currentPath.isEmpty() ? tagName : currentPath + "/" + tagName;
-
-        allXPaths.add(newPath);
-
-        // Collect attribute XPaths
-        NamedNodeMap attributes = element.getAttributes();
-        for (int i = 0; i < attributes.getLength(); i++) {
-            Node attr = attributes.item(i);
-            String attrPath = newPath + "/@" + attr.getNodeName();
-            allXPaths.add(attrPath);
-        }
-
-        // Recursively collect child element XPaths
-        NodeList childNodes = element.getChildNodes();
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            Node node = childNodes.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                collectXPaths((Element) node, newPath, allXPaths);
-            }
-        }
-    }
-
-    private static void traverseAndBacktrack(Element element, String currentPath, Stack<Map<String, String>> stack, BufferedWriter writer, Set<String> allXPaths) throws IOException {
-        Map<String, String> currentData = stack.peek();
-        String tagName = element.getTagName();
-        String newPath = currentPath.isEmpty() ? tagName : currentPath + "/" + tagName;
-
-        // Process element attributes
-        NamedNodeMap attributes = element.getAttributes();
-        for (int i = 0; i < attributes.getLength(); i++) {
-            Node attr = attributes.item(i);
-            String attrPath = newPath + "/@" + attr.getNodeName();
-            currentData.put(attrPath, attr.getNodeValue());
-        }
-
-        // Process child elements
-        NodeList childNodes = element.getChildNodes();
-        boolean hasChildElements = false;
-        boolean isSecLendCommissDetl = "SecLendCommissDetl".equals(tagName);
-
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            Node node = childNodes.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                hasChildElements = true;
-                if (isSecLendCommissDetl) {
-                    // Save current data and push a new map for the next section
-                    Map<String, String> newData = new LinkedHashMap<>(currentData);
-                    stack.push(newData);
-                }
-                traverseAndBacktrack((Element) node, newPath, stack, writer, allXPaths);
-                if (isSecLendCommissDetl) {
-                    // Process and write the data when backtracking from SecLendCommissDetl
-                    writeDataToCSV(stack.pop(), writer, allXPaths);
-                }
-            } else if (node.getNodeType() == Node.TEXT_NODE) {
-                String text = node.getTextContent().trim();
-                if (!text.isEmpty()) {
-                    currentData.put(newPath, text);
-                }
-            }
-        }
-
-        // If this is a leaf node and SecLendCommissDetl, record the data
-        if (!hasChildElements && isSecLendCommissDetl) {
-            writeDataToCSV(currentData, writer, allXPaths);
-        }
-    }
-
-    private static void writeDataToCSV(Map<String, String> data, BufferedWriter writer, Set<String> allXPaths) throws IOException {
-        List<String> row = new ArrayList<>();
-        for (String xpath : allXPaths) {
-            row.add(data.getOrDefault(xpath, "").replace(",", "\\,"));  // Escape commas in values
-        }
-        writer.write(String.join(",", row));
-        writer.newLine();
-    }
-}
-
-
-private TradeVO setFields(TradeVO tradeVO, JsonObject jsonTemplate, List<String> fieldList, boolean otlFile, BasicDBObject basicDBObject) {
-
-    JsonObject fields = jsonTemplate.get("fields").getAsJsonObject();
-    JsonObject exData = new JsonObject();
-
-    String extype = jsonTemplate.has("extype") && !jsonTemplate.get("extype").isJsonNull() ? jsonTemplate.get("extype").getAsString() : null;
-
-    for (String field : fields.keySet()) {
-        try {
-            JsonObject fieldProperty = fields.getAsJsonObject(field);
-
-            // Default value handling
-            if (Objects.nonNull(fieldProperty.get("defaultValue")) && !fieldProperty.get("defaultValue").isJsonNull()) {
-                exData.add(field, fieldProperty.get("defaultValue"));
-            }
-
-            JsonElement fieldValue = null;
-
-            // Handling based on extype == "clr"
-            if (Objects.nonNull(fieldProperty.get("position")) && !fieldProperty.get("position").isJsonNull()) {
-                if ("clr".equalsIgnoreCase(extype)) {
-                    // Use the position as a column name (string) instead of an integer index
-                    String columnName = fieldProperty.get("position").getAsString();
-                    int index = fieldList.indexOf(columnName);
-
-                    if (index != -1) {
-                        // If a matching column name is found, process it
-                        if (Objects.nonNull(fieldProperty.get("sourceFormat")) && !fieldProperty.get("sourceFormat").isJsonNull()) {
-                            fieldValue = this.getFormattedValue(
-                                fieldList.get(index),
-                                fieldProperty.get("dataType").getAsString(),
-                                fieldProperty.get("sourceFormat").getAsString()
-                            );
-                        } else {
-                            fieldValue = new Gson().toJsonTree(fieldList.get(index), String.class);
-                        }
-                    }
-                } else {
-                    // Regular integer position handling
-                    int position = fieldProperty.get("position").getAsInt();
-                    if (Objects.nonNull(fieldProperty.get("sourceFormat")) && !fieldProperty.get("sourceFormat").isJsonNull()) {
-                        fieldValue = this.getFormattedValue(
-                            fieldList.get(position),
-                            fieldProperty.get("dataType").getAsString(),
-                            fieldProperty.get("sourceFormat").getAsString()
-                        );
-                    } else {
-                        fieldValue = new Gson().toJsonTree(fieldList.get(position), String.class);
-                    }
-                }
-            }
-
-            // Add the fieldValue to exData if it's non-null
-            if (Objects.nonNull(fieldValue)) {
-                exData.add(field, fieldValue);
-            }
-
-        } catch (Exception e) {
-            // Handle the exception as needed
-            e.printStackTrace();
-            continue;
-        }
-    }
-
-    // Assuming TradeVO has a method to accept this exData object
-    tradeVO.setExData(exData);
-    return tradeVO;
-}
-
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.*;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.*;
-
-public class XMLToCSVWithBacktracking {
-
-    public static void main(String[] args) {
-        try {
-            // Parse the XML file
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse("input.xml");
-            Element root = doc.getDocumentElement();
-
-            // JSON template with field XPaths and positions (you'll need to initialize this)
-            JsonObject jsonTemplate = new JsonObject(); // Replace this with your actual JSON template
-
-            // Extract the XPaths and positions from the JSON template
-            TreeMap<Integer, String> positionToXpath = extractFieldsWithXpath(jsonTemplate);
-
-            // Prepare CSV writer
-            BufferedWriter writer = new BufferedWriter(new FileWriter("output.csv"));
-
-            // Write headers based on XPaths from the JSON template
-            writer.write(String.join(",", positionToXpath.values()));
-            writer.newLine();
-
-            // Initialize stack and data structures for backtracking
-            Stack<Map<String, String>> stack = new Stack<>();
-            stack.push(new LinkedHashMap<>());
-
-            // Traverse and write data
-            traverseAndBacktrack(root, "", stack, writer, positionToXpath);
-
-            // Close CSV writer
-            writer.flush();
-            writer.close();
-
-            System.out.println("CSV file has been created successfully.");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Extract XPaths and positions from the JSON template
-    private static TreeMap<Integer, String> extractFieldsWithXpath(JsonObject jsonTemplate) {
-        TreeMap<Integer, String> positionToXpathMap = new TreeMap<>();
-
-        JsonObject fields = jsonTemplate.getAsJsonObject("fields");
-        for (Map.Entry<String, JsonElement> fieldEntry : fields.entrySet()) {
-            JsonObject fieldObject = fieldEntry.getValue().getAsJsonObject();
-
-            // Extract position and xpath from each field
-            JsonElement positionElement = fieldObject.get("position");
-            JsonElement xpathElement = fieldObject.get("xpath");
-
-            if (positionElement != null && !positionElement.isJsonNull() && positionElement.getAsJsonPrimitive().isNumber()) {
-                int position = positionElement.getAsInt();
-                String xpath = xpathElement != null && !xpathElement.isJsonNull() ? xpathElement.getAsString() : "null";
-
-                // Add to the map
-                positionToXpathMap.put(position, xpath);
-            }
-        }
-
-        return positionToXpathMap;
-    }
-
-    // Traverse and backtrack the XML
-    private static void traverseAndBacktrack(Element element, String currentPath, Stack<Map<String, String>> stack, BufferedWriter writer, TreeMap<Integer, String> positionToXpath) throws IOException {
-        Map<String, String> currentData = stack.peek();
-        String tagName = element.getTagName();
-        String newPath = currentPath.isEmpty() ? tagName : currentPath + "/" + tagName;
-
-        // Process element attributes
-        NamedNodeMap attributes = element.getAttributes();
-        for (int i = 0; i < attributes.getLength(); i++) {
-            Node attr = attributes.item(i);
-            String attrPath = newPath + "/@" + attr.getNodeName();
-            if (positionToXpath.containsValue(attrPath)) {
-                currentData.put(attrPath, attr.getNodeValue());
-            }
-        }
-
-        // Process child elements
-        NodeList childNodes = element.getChildNodes();
-        boolean hasChildElements = false;
-        boolean isSecLendCommissDetl = "SecLendCommissDetl".equals(tagName);
-
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            Node node = childNodes.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                hasChildElements = true;
-                if (isSecLendCommissDetl) {
-                    // Save current data and push a new map for the next section
-                    Map<String, String> newData = new LinkedHashMap<>(currentData);
-                    stack.push(newData);
-                }
-                traverseAndBacktrack((Element) node, newPath, stack, writer, positionToXpath);
-                if (isSecLendCommissDetl) {
-                    // Process and write the data when backtracking from SecLendCommissDetl
-                    writeDataToCSV(stack.pop(), writer, positionToXpath);
-                }
-            } else if (node.getNodeType() == Node.TEXT_NODE) {
-                String text = node.getTextContent().trim();
-                if (!text.isEmpty()) {
-                    currentData.put(newPath, text);
-                }
-            }
-        }
-
-        // If this is a leaf node and SecLendCommissDetl, record the data
-        if (!hasChildElements && isSecLendCommissDetl) {
-            writeDataToCSV(currentData, writer, positionToXpath);
-        }
-    }
-
-    // Write data to CSV with the specified XPaths from the JSON template
-    private static void writeDataToCSV(Map<String, String> data, BufferedWriter writer, TreeMap<Integer, String> positionToXpath) throws IOException {
-        List<String> row = new ArrayList<>();
-        for (String xpath : positionToXpath.values()) {
-            row.add(data.getOrDefault(xpath, "").replace(",", "\\,"));  // Escape commas in values
-        }
-        writer.write(String.join(",", row));
-        writer.newLine();
-    }
-}
-
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -332,54 +9,55 @@ import java.util.List;
 
 import org.bson.BasicDBObject;
 
-public class TradeCalculatorTest {
+public class AutoborrowCalculationTest {
 
-    private TradeCalculator calculator = new TradeCalculator();
+    private AutoborrowCalculation calculation = new AutoborrowCalculation();
 
     @Test
     void testCalculate() {
         // Prepare input data
         List<TradeVO> trades = new ArrayList<>();
         TradeVO trade = new TradeVO();
-        trade.setData(new BasicDBObject("TRADE_DATE", "2022-01-01"));
-        trade.setData(new BasicDBObject("TRADE_TYPE", "AUTOBORROW"));
+        trade.setData(new BasicDBObject("tradeDate", "Jan 1, 2022 12:00:00 PM EST"));
+        trade.setData(new BasicDBObject("tradingType", "AUTO BORROW"));
         trades.add(trade);
 
         // Execute calculation
-        List<TradeVD> result = calculator.calculate(trades);
+        List<TradeVO> result = calculation.calculate(trades);
 
         // Verify results
         assertNotNull(result);
         assertEquals(1, result.size());
-        TradeVD tradeVD = result.get(0);
-        assertNotNull(tradeVD.getAge());
-        assertEquals("AUTOBORROW", tradeVD.getTradeCategory());
+        TradeVO tradeVO = result.get(0);
+        BasicDBObject data = tradeVO.getData();
+        assertNotNull(data.get("autoborrowAge"));
+        assertEquals("AUTOBORROW", data.get("trdCategory"));
     }
 
     @Test
     void testUpdateAge_ValidDate() {
         // Prepare input data
-        BasicDBObject data = new BasicDBObject("TRADE_DATE", "2022-01-01");
+        BasicDBObject data = new BasicDBObject("tradeDate", "Jan 1, 2022 12:00:00 PM EST");
 
         // Execute update age
-        BasicDBObject result = calculator.updateAge(data);
+        BasicDBObject result = calculation.updateAge(data);
 
         // Verify results
         assertNotNull(result);
-        assertNotNull(result.get("AGE"));
+        assertNotNull(result.get("autoborrowAge"));
     }
 
     @Test
     void testUpdateAge_InvalidDate() {
         // Prepare input data
-        BasicDBObject data = new BasicDBObject("TRADE_DATE", "INVALID_DATE");
+        BasicDBObject data = new BasicDBObject("tradeDate", "INVALID_DATE");
 
         // Execute update age
-        BasicDBObject result = calculator.updateAge(data);
+        BasicDBObject result = calculation.updateAge(data);
 
         // Verify results
         assertNotNull(result);
-        assertEquals(null, result.get("AGE"));
+        assertEquals(null, result.get("autoborrowAge"));
     }
 
     @Test
@@ -388,59 +66,59 @@ public class TradeCalculatorTest {
         BasicDBObject data = new BasicDBObject();
 
         // Execute update age
-        BasicDBObject result = calculator.updateAge(data);
+        BasicDBObject result = calculation.updateAge(data);
 
         // Verify results
         assertNotNull(result);
-        assertEquals(null, result.get("AGE"));
+        assertEquals(null, result.get("autoborrowAge"));
     }
 
     @Test
-    void testUpdateTradeCategory_ValidType() {
+    void testUpdateTrdCategory_ValidType() {
         // Prepare input data
-        BasicDBObject data = new BasicDBObject("TRADE_TYPE", "AUTOBORROW");
+        BasicDBObject data = new BasicDBObject("tradingType", "AUTO BORROW");
 
         // Execute update trade category
-        BasicDBObject result = calculator.updateTradeCategory(data);
+        BasicDBObject result = calculation.updatetrdCategory(data);
 
         // Verify results
         assertNotNull(result);
-        assertEquals("AUTOBORROW", result.get("TRADE_CATEGORY"));
+        assertEquals("AUTOBORROW", result.get("trdCategory"));
     }
 
     @Test
-    void testUpdateTradeCategory_InvalidType() {
+    void testUpdateTrdCategory_InvalidType() {
         // Prepare input data
-        BasicDBObject data = new BasicDBObject("TRADE_TYPE", "INVALID_TYPE");
+        BasicDBObject data = new BasicDBObject("tradingType", "INVALID_TYPE");
 
         // Execute update trade category
-        BasicDBObject result = calculator.updateTradeCategory(data);
+        BasicDBObject result = calculation.updatetrdCategory(data);
 
         // Verify results
         assertNotNull(result);
-        assertEquals(null, result.get("TRADE_CATEGORY"));
+        assertEquals(null, result.get("trdCategory"));
     }
 
     @Test
-    void testUpdateTradeCategory_MissingTradeType() {
+    void testUpdateTrdCategory_MissingTradingType() {
         // Prepare input data
         BasicDBObject data = new BasicDBObject();
 
         // Execute update trade category
-        BasicDBObject result = calculator.updateTradeCategory(data);
+        BasicDBObject result = calculation.updatetrdCategory(data);
 
         // Verify results
         assertNotNull(result);
-        assertEquals(null, result.get("TRADE_CATEGORY"));
+        assertEquals(null, result.get("trdCategory"));
     }
 
     @Test
     void testParseDate_ValidDate() {
         // Prepare input data
-        String dateString = "2022-01-01";
+        String dateString = "Jan 1, 2022 12:00:00 PM EST";
 
         // Execute parse date
-        Date result = TradeCalculator.parseDate(dateString);
+        Date result = calculation.parseDate(dateString);
 
         // Verify results
         assertNotNull(result);
@@ -452,6 +130,6 @@ public class TradeCalculatorTest {
         String dateString = "INVALID_DATE";
 
         // Execute parse date
-        assertThrows(ParseException.class, () -> TradeCalculator.parseDate(dateString));
+        assertThrows(ParseException.class, () -> calculation.parseDate(dateString));
     }
 }
