@@ -112,3 +112,77 @@ class RuleProcessorTest {
         verify(message, never()).setBody(anyList());
     }
 }
+
+
+@Async
+public void initiateAsyncTradeProcessing(List<String> tradeIds, String odysseyNotificationId, TradeEvent tradeEventFromUI) {
+    if (!CollectionUtils.isEmpty(tradeIds)) {
+        // Define batch size to limit the number of trades fetched at once
+        int fetchBatchSize = CommonConstants.TRADE_EVENT_TRADE_FETCH_LIMIT;
+        int processingBatchSize = CommonConstants.TRADE_EVENT_TRADE_PROCESSING_LIMIT;
+        int totalTrades = tradeIds.size();
+        AtomicInteger index = new AtomicInteger();
+        String xTransactionId = Utils.getXTransactionId();
+
+        // Define a custom thread pool for running async tasks if necessary
+        ExecutorService customExecutor = Executors.newFixedThreadPool(10);  // Or a size based on your need
+
+        // A list to track all CompletableFutures
+        List<CompletableFuture<Void>> completableFutures = new ArrayList<>();
+
+        // Parallelize fetching trades by splitting into batches
+        IntStream.range(0, (int) Math.ceil((double) totalTrades / fetchBatchSize))
+            .parallel()
+            .forEach(batchIndex -> {
+                int start = batchIndex * fetchBatchSize;
+                int end = Math.min(start + fetchBatchSize, totalTrades);
+                List<String> tradeIdBatch = tradeIds.subList(start, end);
+
+                // Fetch trades for the current batch asynchronously
+                CompletableFuture<Void> fetchFuture = CompletableFuture.runAsync(() -> {
+                    try {
+                        List<TradeVO> trades = opsDashboardService.findAllOpenTradesByIds(tradeIdBatch);
+
+                        // Group fetched trades by exception type and process
+                        trades.stream()
+                              .collect(Collectors.groupingBy(TradeVO::getExceptionType))
+                              .forEach((extype, tradesForExtype) -> {
+                                  // Partition into smaller batches and process
+                                  ListUtils.partition(tradesForExtype, processingBatchSize)
+                                           .forEach(tradeBatch -> {
+                                               CompletableFuture<Void> processFuture = CompletableFuture.runAsync(() -> {
+                                                   List<String> tradeIdsForBatch = tradeBatch.stream()
+                                                           .map(trade -> trade.getId().toString())
+                                                           .collect(Collectors.toList());
+
+                                                   // Initiate trade processing for the batch
+                                                   initiateTradeProcessing(tradeBatch, odysseyNotificationId, xTransactionId + "-" + index.incrementAndGet(), tradeEventFromUI);
+                                               }, customExecutor);
+
+                                               // Track the processing future
+                                               completableFutures.add(processFuture);
+                                           });
+                              });
+                    } catch (Exception e) {
+                        // Log and handle exception
+                        LOGGER.error("Error fetching or processing trades for batch {}", tradeIdBatch, e);
+                    }
+                }, customExecutor);
+
+                // Track the fetch future
+                completableFutures.add(fetchFuture);
+            });
+
+        // Wait for all async tasks to complete
+        CompletableFuture<Void> allFutures = CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0]));
+
+        // Handle completion and closing logic
+        allFutures.whenComplete((result, ex) -> {
+            if (ex != null) {
+                LOGGER.error("Error during async trade processing", ex);
+            }
+            closeAsyncTradeProcessing(odysseyNotificationId);
+            customExecutor.shutdown();  // Shut down the custom executor
+        });
+    }
+}
