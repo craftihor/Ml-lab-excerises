@@ -186,3 +186,49 @@ public void initiateAsyncTradeProcessing(List<String> tradeIds, String odysseyNo
         });
     }
 }
+
+
+@Async
+public void initiateAsyncTradeProcessing(List<String> tradeIds, String odysseyNotificationId, TradeEvent tradeEventFromUI) {
+    if (CollectionUtils.isEmpty(tradeIds)) {
+        return;
+    }
+
+    String xTransactionId = Utils.getXTransactionId();
+    AtomicInteger index = new AtomicInteger();
+    int batchSize = CommonConstants.TRADE_EVENT_TRADE_PROCESSING_LIMIT;
+
+    // Process trades in batches
+    for (int i = 0; i < tradeIds.size(); i += batchSize) {
+        List<String> batch = tradeIds.subList(i, Math.min(tradeIds.size(), i + batchSize));
+        
+        CompletableFuture.runAsync(() -> {
+            Map<String, List<String>> tradesByExtype = new HashMap<>();
+            
+            // Process each trade in the batch
+            opsDashboardService.streamOpenTradesByIds(batch).forEach(trade -> {
+                tradesByExtype.computeIfAbsent(trade.getExtype(), k -> new ArrayList<>()).add(trade.getId());
+                
+                // If we've reached the processing limit for this extype, process and clear
+                if (tradesByExtype.get(trade.getExtype()).size() >= batchSize) {
+                    processTradeGroup(trade.getExtype(), tradesByExtype.get(trade.getExtype()), 
+                                      odysseyNotificationId, xTransactionId, index, tradeEventFromUI);
+                    tradesByExtype.get(trade.getExtype()).clear();
+                }
+            });
+            
+            // Process any remaining trades
+            tradesByExtype.forEach((extype, remainingIds) -> {
+                if (!remainingIds.isEmpty()) {
+                    processTradeGroup(extype, remainingIds, odysseyNotificationId, xTransactionId, index, tradeEventFromUI);
+                }
+            });
+        });
+    }
+}
+
+private void processTradeGroup(String extype, List<String> tradeIds, String odysseyNotificationId, 
+                               String xTransactionId, AtomicInteger index, TradeEvent tradeEventFromUI) {
+    String transactionId = xTransactionId + "-" + index.incrementAndGet() + "-" + extype;
+    initiateTradeProcessing(tradeIds, odysseyNotificationId, transactionId, tradeEventFromUI);
+}
