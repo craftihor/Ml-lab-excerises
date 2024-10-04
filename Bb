@@ -291,3 +291,77 @@ public void initiateAsyncTradeProcessing(List<String> tradeIds, String odysseyNo
         CompletableFuture.runAsync(() -> closeAsyncTradeProcessing(odysseyNotificationId, completableFutures));
     }
 }
+
+
+@Async
+public void initiateAsyncTradeProcessing(List<String> tradeIds, String odysseyNotificationId, TradeEvent tradeEventFromUI) {
+    if (!CollectionUtils.isEmpty(tradeIds)) {
+        AtomicInteger index = new AtomicInteger();
+        String xTransactionId = Utils.getXTransactionId();
+        List<CompletableFuture<List<String>>> completableFutures = new ArrayList<>();
+
+        // Define batch size to limit the number of trades fetched at once
+        int fetchBatchSize = CommonConstants.TRADE_EVENT_TRADE_FETCH_LIMIT;
+        int processingBatchSize = CommonConstants.TRADE_EVENT_TRADE_PROCESSING_LIMIT;
+        int totalTrades = tradeIds.size();
+
+        // Loop through the tradeIds in batches for fetching trades
+        for (int start = 0; start < totalTrades; start += fetchBatchSize) {
+            int end = Math.min(start + fetchBatchSize, totalTrades);
+            List<String> tradeIdBatch = tradeIds.subList(start, end);
+
+            // Fetch trades for the current batch asynchronously
+            CompletableFuture<List<String>> fetchFuture = CompletableFuture.supplyAsync(() -> {
+                List<TradeVO> trades = opsDashboardService.findAllOpenTradesByIds(tradeIdBatch);
+
+                // Group fetched trades by exception type
+                Map<String, List<TradeVO>> tradesGroupedByExtype = trades.stream()
+                        .collect(Collectors.groupingBy(TradeVO::getExceptionType));
+
+                List<String> processedTradeIds = new ArrayList<>();
+
+                tradesGroupedByExtype.forEach((extype, tradesForExtype) -> {
+                    // Partition the trades for each exception type into smaller batches
+                    List<List<TradeVO>> tradeBatches = ListUtils.partition(tradesForExtype, processingBatchSize);
+
+                    LOGGER.info("Number of subsets for trades by ex_type [{}]: {}", extype, tradeBatches.size());
+
+                    // Process each batch asynchronously and collect trade IDs
+                    tradeBatches.forEach(tradeBatch -> {
+                        CompletableFuture<List<String>> processFuture = CompletableFuture.supplyAsync(() -> {
+                            List<String> tradeIdsForBatch = tradeBatch.stream()
+                                    .map(trade -> trade.getId().toString())
+                                    .collect(Collectors.toList());
+
+                            // Initiate trade processing for the batch
+                            initiateTradeProcessing(tradeBatch, odysseyNotificationId, xTransactionId + "-" + index.incrementAndGet(), tradeEventFromUI);
+
+                            // Return the list of processed trade IDs
+                            return tradeIdsForBatch;
+                        });
+
+                        completableFutures.add(processFuture);
+                    });
+                });
+
+                return processedTradeIds;
+            });
+
+            // Add the fetch future to the list of futures
+            completableFutures.add(fetchFuture);
+        }
+
+        // Wait for all fetch and processing tasks to complete and collect results
+        CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0])).thenAccept(v -> {
+            List<String> allProcessedTradeIds = completableFutures.stream()
+                .map(CompletableFuture::join)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+
+            LOGGER.info("All trades processed: {}", allProcessedTradeIds);
+
+            // Close the asynchronous trade processing
+            closeAsyncTradeProcessing(odysseyNotificationId, allProcessedTradeIds);
+        });
+    }
+}
