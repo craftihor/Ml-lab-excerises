@@ -365,3 +365,190 @@ public void initiateAsyncTradeProcessing(List<String> tradeIds, String odysseyNo
         });
     }
 }
+
+ I'll help you structure your achievements into the global objectives framework. Let's organize your experiences to highlight how they align with each objective.
+
+1) Drive simplicity and efficiency, seek out every opportunity to automate
+- Developed a dynamic XML to CSV parsing processor for Clearstream files, automating the conversion process and enabling reuse of existing codebase
+- Created a mapping API that automatically maps fields across indices under the same alias for MongoDB to Elastic mapping
+- Modified the exception handling system to make it more dynamic, replacing hard-coded "fails" with flexible exception types
+
+2) Focus on businesses and projects where we can excel
+- Successfully delivered the Clearstream integration project, expanding the team's file processing capabilities to handle new vendor formats
+- Contributed to long-term system sustainability by designing solutions that work within existing infrastructure while adding new capabilities
+- Demonstrated quick learning ability by mastering Java SpringBoot and API development within three months
+
+3) Have precision in our operations, risk management and controls
+- Implemented robust exception handling for the new Clearstream processing system
+- Ensured accurate file processing by maintaining strict data validation and transformation rules
+- Collaborated with team members to establish and follow proper development processes and standards
+- Utilized the existing rule engine service to implement appropriate business rules
+
+4) Promote diversity of thought, champion new thinking and challenge the status quo
+- Brought fresh perspective as a new grad, proposing and implementing dynamic parsing solutions
+- Actively participated in brainstorming sessions with UI team members and colleagues
+- Challenged existing hard-coded exception types and implemented a more flexible solution
+
+5) Provide world-class service to our customers and clients every time
+- Developed solutions that maintained compatibility with existing systems while adding new capabilities
+- Ensured smooth integration of new vendor data (Clearstream) without disrupting existing processes
+- Collaborated across teams to ensure solutions met all stakeholder requirements
+
+Would you like me to elaborate on any of these points or help you phrase them differently? Also, I can help you add specific metrics or outcomes if you have any quantitative results to share.Here’s how you could frame concise responses for each of the global objectives based on your work so far:
+
+1) Drive Simplicity and Efficiency, Seek Out Opportunities to Automate:
+
+Answer: In my role, I focused on automating the file processing workflow by developing a dynamic XML-to-CSV processor for Clearstream. This reduced manual intervention and reused existing code, streamlining the process and improving efficiency. I also contributed to making exception handling dynamic, removing the need for hardcoded values and ensuring smoother processing for new vendor files.
+
+2) Focus on Businesses and Projects Where We Can Excel:
+
+Answer: I contributed to enhancing our file processing systems by integrating Clearstream and creating scalable solutions that align with the team’s strategic goals. My work in handling new exception types at the root (e.g., autoborrow exceptions) helped ensure the system remains robust and future-proof, directly impacting performance and long-term success.
+
+3) Have Precision in Our Operations, Risk Management, and Controls:
+
+Answer: By ensuring that the Clearstream integration adhered to existing operational processes, I maintained accuracy and reliability in file processing. I actively worked with my team to identify potential risks in handling new data formats and adjusted the system controls to ensure regulatory and operational compliance.
+
+4) Promote Diversity of Thought, Champion New Thinking and Challenge the Status Quo:
+
+Answer: I approached the Clearstream integration with a mindset of continuous improvement, collaborating with both UI and backend teams to brainstorm innovative solutions. By challenging existing workflows, I was able to develop a more flexible exception handling system, embracing change and simplifying the process.
+
+5) Provide World-Class Service to Our Customers and Clients Every Time:
+
+Answer: In building the dynamic XML-to-CSV processor, I ensured that the system delivers consistent and high-quality outcomes for Clearstream’s file processing, minimizing errors and ensuring accurate results. This contributes to a reliable and world-class service by allowing us to expand our vendor support while maintaining the integrity of the system.
+
+These concise answers link your contributions to the broader objectives and demonstrate how your work aligns with the company’s goals.
+
+
+
+
+
+ I'll help you structure your "How Summary Comments" based on the demonstrated Values and Mindsets from your experiences. Here's a comprehensive summary:
+
+Mindsets:
+Challenge:
+- Demonstrated strong curiosity in learning new technologies, moving from no API development experience to successfully handling complex file processing systems
+- Actively questioned existing processes, leading to improvements like converting hard-coded exception types to dynamic ones
+- Used data-driven insights when designing the XML to CSV parsing solution, ensuring compatibility with existing systems
+
+Drive:
+- Took personal ownership of the Clearstream integration project, managing both primary and linked tasks
+- Operated with precision in developing the mapping API, ensuring accurate field mappings between MongoDB and Elastic
+- Proactively managed risks by implementing comprehensive exception handling for new file types
+
+Empower:
+- Actively collaborated with UI team members and colleagues to gather insights and improve solutions
+- Showed continuous learning ability, quickly mastering Java SpringBoot and API development
+- Turned initial challenges with file processing into opportunities for system improvement
+
+Values:
+Respect:
+- Actively engaged in collaborative discussions with team members, valuing diverse perspectives
+- Sought and incorporated feedback from experienced colleagues during the knowledge transfer phase
+- Maintained open communication with UI team members throughout development
+
+Integrity:
+- Approached challenges transparently, openly discussing technical limitations and proposing solutions
+- Maintained honest communication about development progress and challenges
+- Demonstrated courage in suggesting improvements to existing systems
+
+Service:
+- Put service at the center by ensuring new solutions integrated smoothly with existing processes
+- Developed solutions with end-users in mind, creating efficient file processing systems
+- Maintained focus on delivering quality results while meeting business requirements
+
+Excellence:
+- Set high standards for code quality and system design
+- Innovated through the creation of dynamic parsing solutions
+- Successfully delivered both minor and major API development tasks
+
+Stewardship:
+- Developed sustainable solutions that can accommodate future vendor integrations
+- Created reusable components like the dynamic XML parser
+- Built upon existing systems while improving their flexibility and capability
+
+Throughout my first three months, I've demonstrated a strong commitment to learning and growth while maintaining focus on delivering value to the organization. I've shown initiative in identifying areas for improvement and collaborated effectively with team members to implement solutions. My work on the Clearstream integration project showcases my ability to handle complex technical challenges while maintaining alignment with business objectives and team values.
+
+Would you like me to expand on any particular aspect of these comments or adjust the emphasis on certain areas?
+
+Here’s how you can frame your "How Summary Comments" based on the values, mindset, and behaviors:
+
+Mindset - Challenge: I continuously sought ways to challenge the existing processes, particularly when integrating Clearstream’s XML format into a system originally designed for CSV processing. By questioning the status quo, I was able to simplify the process, reduce manual intervention, and propose automation solutions, such as the dynamic XML-to-CSV parser. This helped streamline the system and enhance overall efficiency.
+
+Mindset - Drive: I took ownership of the Clearstream integration project and actively drove its success from start to finish. Despite my limited experience in API development and Java, I pushed myself to learn quickly, delivering a high-quality solution. I also proactively engaged with team members to resolve challenges and ensure that we met our deadlines effectively.
+
+Mindset - Empower: I empowered my colleagues by openly discussing the challenges of the project and actively contributing to team brainstorming sessions. I listened to diverse viewpoints from both UI and backend teams and integrated those insights into the final solution. This helped foster an inclusive and collaborative environment that supported innovation and growth.
+
+Values - Respect: Throughout my work, I ensured that I respected the contributions of my colleagues and sought their feedback to improve my own work. By valuing diverse perspectives and creating a supportive atmosphere, I built stronger relationships within the team.
+
+Values - Integrity: I maintained transparency in all aspects of the project, communicating openly about potential risks and issues. I ensured that the solutions I developed adhered to the system’s guidelines and delivered reliable results, upholding the highest standards of accuracy and fairness.
+
+Values - Service: I kept the needs of the clients and stakeholders at the forefront of my work, ensuring that the Clearstream integration was designed with their long-term goals in mind. By improving the efficiency and flexibility of the file processing system, I helped deliver better service to both internal and external clients.
+
+Values - Excellence: I set high standards for myself and my work, always striving to produce the best possible outcomes. By tackling complex challenges like dynamic exception handling, I pushed the boundaries of what the system could achieve and contributed to enhancing overall team performance.
+
+Values - Stewardship: I remained conscious of the long-term sustainability of the solutions I created. By automating and improving existing processes, I contributed to the team’s goal of leaving things better than we found them, ensuring that future projects could benefit from the groundwork laid.
+
+These comments tie in your individual contributions to the broader organizational values and mindset, while also demonstrating how you embodied leadership qualities like ownership, collaboration, and innovation.
+
+Closing Comments:
+
+This year has been a transformative learning experience for me, especially as a new graduate stepping into API development and Java for the first time. I am proud of my ability to quickly adapt and contribute meaningfully to the team, particularly through the Clearstream integration project. Developing the dynamic XML-to-CSV processor not only sharpened my technical skills but also allowed me to collaborate effectively across teams and address complex challenges.
+
+I’ve embraced the opportunity to challenge existing processes, drive automation, and provide scalable solutions, all while upholding the company’s values of integrity, service, and excellence. These experiences have given me a strong foundation in both technical development and teamwork, which I am eager to build upon in the coming year.
+
+Development Opportunities for the Year Ahead:
+
+Looking ahead, I aim to deepen my expertise in API development, particularly by exploring advanced features of Java and Spring Boot. Additionally, I plan to further improve my problem-solving skills by taking on more complex projects and learning about other areas such as cloud services and microservices architecture. I’m also keen to continue enhancing my collaboration and leadership abilities by taking on more responsibility within the team and contributing to strategic projects.
+
+I am excited to continue growing and contributing to the team’s success in the year ahead.
+
+ Here's a draft of your closing comments that summarizes your performance and outlines development opportunities:
+
+Year Performance Summary:
+As a new graduate hire, I have demonstrated significant growth and contribution during my initial period:
+
+Performance Highlights:
+- Successfully transitioned from no prior API development experience to independently handling complex integration projects
+- Mastered key technologies including Java SpringBoot, API development, and microservices architecture within three months
+- Delivered a major project implementing Clearstream file processing, showcasing ability to handle complex technical challenges
+- Developed innovative solutions including dynamic XML parsing and automated field mapping systems
+- Demonstrated strong collaboration skills by working effectively with UI team members and other stakeholders
+
+Development Opportunities for the Year Ahead:
+
+Technical Growth:
+- Deepen expertise in Java SpringBoot and microservices architecture
+- Expand knowledge of database technologies, particularly MongoDB and Elasticsearch
+- Build proficiency in additional file processing formats and integration patterns
+- Enhance understanding of system architecture and design patterns
+
+Professional Development:
+- Take on increasingly complex project responsibilities
+- Develop project management and estimation skills
+- Build expertise in requirements gathering and technical documentation
+- Strengthen ability to present technical solutions to non-technical stakeholders
+
+Focus Areas:
+1. Technical Leadership
+   - Lead smaller technical initiatives independently
+   - Mentor newer team members as they join the team
+   - Contribute to technical design discussions
+
+2. Process Improvement
+   - Identify and propose additional automation opportunities
+   - Contribute to improving development and deployment processes
+   - Help standardize integration patterns for new vendors
+
+3. Business Knowledge
+   - Deepen understanding of business domain and requirements
+   - Build knowledge of regulatory and compliance aspects
+   - Understand end-to-end business processes and workflows
+
+4. Innovation
+   - Research and propose new technologies that could benefit the team
+   - Contribute to modernization initiatives
+   - Develop proof-of-concepts for process improvements
+
+I am committed to continuing my professional growth and look forward to taking on new challenges that will help me develop both technically and professionally while contributing more value to the team and organization.
+
+Would you like me to modify or expand on any of these points?
