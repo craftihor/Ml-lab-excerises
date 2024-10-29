@@ -656,3 +656,107 @@ Process Improvements:
 - Standardized mapping procedures between systems
 
 Would you like me to expand on any of these points or add additional details to either section?
+
+
+
+
+import com.google.gson.*;
+import java.io.*;
+import java.util.*;
+
+public class JSONToCSVWithBacktracking {
+
+    public static void main(String[] args) {
+        try {
+            // Parse the JSON file
+            Gson gson = new Gson();
+            JsonElement jsonElement = gson.fromJson(new FileReader("input.json"), JsonElement.class);
+            
+            // Collect all JSON paths
+            Set<String> allPaths = new LinkedHashSet<>();
+            collectPaths(jsonElement, "", allPaths);
+
+            // Prepare CSV writer
+            BufferedWriter writer = new BufferedWriter(new FileWriter("output.csv"));
+
+            // Write headers
+            writer.write(String.join(",", allPaths));
+            writer.newLine();
+
+            // Initialize stack and data structures for backtracking
+            Stack<Map<String, String>> stack = new Stack<>();
+            stack.push(new LinkedHashMap<>());
+
+            // Traverse and write data
+            traverseAndBacktrack(jsonElement, "", stack, writer, allPaths);
+
+            // Close CSV writer
+            writer.flush();
+            writer.close();
+
+            System.out.println("CSV file has been created successfully.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Collect all paths in JSON (similar to XPath)
+    private static void collectPaths(JsonElement element, String currentPath, Set<String> allPaths) {
+        if (element.isJsonObject()) {
+            JsonObject jsonObject = element.getAsJsonObject();
+            for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+                String newPath = currentPath.isEmpty() ? entry.getKey() : currentPath + "." + entry.getKey();
+                collectPaths(entry.getValue(), newPath, allPaths);
+            }
+        } else if (element.isJsonArray()) {
+            JsonArray jsonArray = element.getAsJsonArray();
+            for (int i = 0; i < jsonArray.size(); i++) {
+                String newPath = currentPath + "[" + i + "]";
+                collectPaths(jsonArray.get(i), newPath, allPaths);
+            }
+        } else {
+            // Primitive values or nulls
+            allPaths.add(currentPath);
+        }
+    }
+
+    // Traverse the JSON and backtrack
+    private static void traverseAndBacktrack(JsonElement element, String currentPath, Stack<Map<String, String>> stack, BufferedWriter writer, Set<String> allPaths) throws IOException {
+        Map<String, String> currentData = stack.peek();
+
+        if (element.isJsonObject()) {
+            JsonObject jsonObject = element.getAsJsonObject();
+            for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+                String newPath = currentPath.isEmpty() ? entry.getKey() : currentPath + "." + entry.getKey();
+                traverseAndBacktrack(entry.getValue(), newPath, stack, writer, allPaths);
+            }
+        } else if (element.isJsonArray()) {
+            JsonArray jsonArray = element.getAsJsonArray();
+            for (int i = 0; i < jsonArray.size(); i++) {
+                String newPath = currentPath + "[" + i + "]";
+                Map<String, String> newData = new LinkedHashMap<>(currentData);
+                stack.push(newData);
+                traverseAndBacktrack(jsonArray.get(i), newPath, stack, writer, allPaths);
+                writeDataToCSV(stack.pop(), writer, allPaths);  // Write each array element
+            }
+        } else if (element.isJsonPrimitive() || element.isJsonNull()) {
+            // Process leaf nodes (primitive values or nulls)
+            currentData.put(currentPath, element.isJsonNull() ? "" : element.getAsString());
+        }
+
+        // If this is the last node, record the data
+        if (currentPath.isEmpty() || !currentData.isEmpty()) {
+            writeDataToCSV(currentData, writer, allPaths);
+        }
+    }
+
+    // Write the data to CSV
+    private static void writeDataToCSV(Map<String, String> data, BufferedWriter writer, Set<String> allPaths) throws IOException {
+        List<String> row = new ArrayList<>();
+        for (String path : allPaths) {
+            row.add(data.getOrDefault(path, "").replace(",", "\\,"));  // Escape commas in values
+        }
+        writer.write(String.join(",", row));
+        writer.newLine();
+    }
+}
