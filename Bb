@@ -1,6 +1,5 @@
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
 import com.mongodb.BasicDBObject;
 
 import java.io.IOException;
@@ -10,26 +9,26 @@ import java.util.function.Predicate;
 
 public class ConditionalJsonParser {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         // Example JSON input
         String jsonString = "{ \"root\": { \"payload\": { \"BCSettlementTransaction\": { \"originatingSource\": { \"system\": { \"id\": [ { \"type\": \"otherType\", \"value\": \"12345\" }, { \"type\": \"bcPublisherSystem\", \"value\": \"67890\" } ], \"name\": \"SystemNameExample\" } }, \"transactionDetails\": { \"transactionId\": \"txn123456\", \"amount\": 1000 } } } } }";
 
         // Define field mappings with conditions
         Map<String, FieldConfig> fieldConfigs = new HashMap<>();
         fieldConfigs.put("systemId", new FieldConfig(
-            "$.root.payload.BCSettlementTransaction.originatingSource.system.id",
+            "/root/payload/BCSettlementTransaction/originatingSource/system/id",
             node -> "bcPublisherSystem".equals(node.get("type").asText()),  // Condition: type == "bcPublisherSystem"
             "value"  // Field to extract if condition is met
         ));
         
         fieldConfigs.put("transactionId", new FieldConfig(
-            "$.root.payload.BCSettlementTransaction.transactionDetails.transactionId",
+            "/root/payload/BCSettlementTransaction/transactionDetails/transactionId",
             null,  // No condition for a simple field
             null
         ));
         
         fieldConfigs.put("amount", new FieldConfig(
-            "$.root.payload.BCSettlementTransaction.transactionDetails.amount",
+            "/root/payload/BCSettlementTransaction/transactionDetails/amount",
             null,  // No condition for a simple field
             null
         ));
@@ -39,36 +38,30 @@ public class ConditionalJsonParser {
         System.out.println("Resulting BasicDBObject: " + basicDBObject);
     }
 
-    private static BasicDBObject extractFieldsWithConditions(String jsonString, Map<String, FieldConfig> fieldConfigs) {
+    private static BasicDBObject extractFieldsWithConditions(String jsonString, Map<String, FieldConfig> fieldConfigs) throws IOException {
         BasicDBObject basicDBObject = new BasicDBObject();
         ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode rootNode = objectMapper.readTree(jsonString);
 
         for (Map.Entry<String, FieldConfig> entry : fieldConfigs.entrySet()) {
             String fieldName = entry.getKey();
             FieldConfig config = entry.getValue();
 
-            // Use JSONPath to extract the node or list of nodes
-            Object jsonPathResult = JsonPath.parse(jsonString).read(config.jsonPath);
+            // Traverse JSON based on the path specified in FieldConfig
+            JsonNode node = rootNode.at(config.jsonPath.replace("/", "/"));
 
-            // Process the result based on whether it's a list or a single value
-            if (jsonPathResult instanceof java.util.List<?>) {
-                // Iterate over list and apply condition if present
-                for (Object item : (java.util.List<?>) jsonPathResult) {
-                    JsonNode node = objectMapper.convertValue(item, JsonNode.class);
-                    if (config.condition == null || config.condition.test(node)) {
-                        // Extract the specific field if condition is met
-                        if (config.subField != null) {
-                            basicDBObject.put(fieldName, node.get(config.subField).asText());
-                        } else {
-                            basicDBObject.put(fieldName, node.toString());
+            // Check if the node is found and apply the condition if present
+            if (!node.isMissingNode()) {
+                if (node.isArray()) {
+                    for (JsonNode item : node) {
+                        if (config.condition == null || config.condition.test(item)) {
+                            basicDBObject.put(fieldName, config.subField != null ? item.get(config.subField).asText() : item.asText());
+                            break;
                         }
-                        break;
                     }
+                } else {
+                    basicDBObject.put(fieldName, config.subField != null ? node.get(config.subField).asText() : node.asText());
                 }
-            } else {
-                // If the result is a single value and there's no condition
-                JsonNode node = objectMapper.convertValue(jsonPathResult, JsonNode.class);
-                basicDBObject.put(fieldName, node.asText());
             }
         }
         return basicDBObject;
