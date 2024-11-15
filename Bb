@@ -1,86 +1,135 @@
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.BasicDBObject;
-
-import java.io.IOException;
-import java.util.HashMap;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.ReadContext;
+import com.jayway.jsonpath.PathNotFoundException;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.Option;
+import net.minidev.json.JSONArray;
 import java.util.Map;
-import java.util.function.Predicate;
+import java.util.HashMap;
 
-public class ConditionalJsonParser {
+public class JsonPathParser {
+    private ReadContext jsonContext;
+    private Map<String, Object> resultMap;
 
-    public static void main(String[] args) throws IOException {
-        // Example JSON input
-        String jsonString = "{ \"root\": { \"payload\": { \"BCSettlementTransaction\": { \"originatingSource\": { \"system\": { \"id\": [ { \"type\": \"otherType\", \"value\": \"12345\" }, { \"type\": \"bcPublisherSystem\", \"value\": \"67890\" } ], \"name\": \"SystemNameExample\" } }, \"transactionDetails\": { \"transactionId\": \"txn123456\", \"amount\": 1000 } } } } }";
-
-        // Define field mappings with conditions
-        Map<String, FieldConfig> fieldConfigs = new HashMap<>();
-        fieldConfigs.put("systemId", new FieldConfig(
-            "/root/payload/BCSettlementTransaction/originatingSource/system/id",
-            node -> "bcPublisherSystem".equals(node.get("type").asText()),  // Condition: type == "bcPublisherSystem"
-            "value"  // Field to extract if condition is met
-        ));
-        
-        fieldConfigs.put("transactionId", new FieldConfig(
-            "/root/payload/BCSettlementTransaction/transactionDetails/transactionId",
-            null,  // No condition for a simple field
-            null
-        ));
-        
-        fieldConfigs.put("amount", new FieldConfig(
-            "/root/payload/BCSettlementTransaction/transactionDetails/amount",
-            null,  // No condition for a simple field
-            null
-        ));
-        
-        BasicDBObject basicDBObject = extractFieldsWithConditions(jsonString, fieldConfigs);
-        
-        System.out.println("Resulting BasicDBObject: " + basicDBObject);
+    public JsonPathParser() {
+        this.resultMap = new HashMap<>();
+        // Configure JsonPath to be lenient
+        Configuration conf = Configuration.defaultConfiguration()
+            .addOptions(Option.SUPPRESS_EXCEPTIONS)
+            .addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL);
     }
 
-    private static BasicDBObject extractFieldsWithConditions(String jsonString, Map<String, FieldConfig> fieldConfigs) throws IOException {
-        BasicDBObject basicDBObject = new BasicDBObject();
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode rootNode = objectMapper.readTree(jsonString);
+    public void loadJsonString(String jsonString) {
+        try {
+            this.jsonContext = JsonPath.parse(jsonString);
+        } catch (Exception e) {
+            System.err.println("Error parsing JSON string: " + e.getMessage());
+            throw e;
+        }
+    }
 
-        for (Map.Entry<String, FieldConfig> entry : fieldConfigs.entrySet()) {
-            String fieldName = entry.getKey();
-            FieldConfig config = entry.getValue();
+    public Object readPath(String jsonPath) {
+        try {
+            return jsonContext.read(jsonPath);
+        } catch (PathNotFoundException e) {
+            System.err.println("Path not found: " + jsonPath);
+            return null;
+        } catch (Exception e) {
+            System.err.println("Error reading path " + jsonPath + ": " + e.getMessage());
+            return null;
+        }
+    }
 
-            // Traverse JSON based on the path specified in FieldConfig
-            JsonNode node = rootNode.at(config.jsonPath.replace("/", "/"));
-
-            // Check if the node is found and apply the condition if present
-            if (!node.isMissingNode()) {
-                if (node.isArray()) {
-                    for (JsonNode item : node) {
-                        if (config.condition == null || config.condition.test(item)) {
-                            basicDBObject.put(fieldName, config.subField != null ? item.get(config.subField).asText() : item.asText());
-                            break;
+    public static void main(String[] args) {
+        // Example JSON with BCSettlementTransaction structure
+        String jsonString = """
+        {
+            "payload": {
+                "BCSettlementTransaction": {
+                    "originatingSource": {
+                        "system": {
+                            "id": "123",
+                            "name": "TestSystem"
                         }
+                    },
+                    "transactionDetails": {
+                        "amount": 1000.00,
+                        "currency": "USD"
                     }
-                } else {
-                    basicDBObject.put(fieldName, config.subField != null ? node.get(config.subField).asText() : node.asText());
                 }
             }
         }
-        return basicDBObject;
+        """;
+
+        JsonPathParser parser = new JsonPathParser();
+        
+        try {
+            parser.loadJsonString(jsonString);
+            
+            // Correct path examples
+            System.out.println("\nReading JSON paths with proper error handling:");
+            
+            // Read system ID
+            Object systemId = parser.readPath("$.payload.BCSettlementTransaction.originatingSource.system.id");
+            System.out.println("System ID: " + systemId);
+            
+            // Read system name
+            Object systemName = parser.readPath("$.payload.BCSettlementTransaction.originatingSource.system.name");
+            System.out.println("System Name: " + systemName);
+            
+            // Read transaction amount
+            Object amount = parser.readPath("$.payload.BCSettlementTransaction.transactionDetails.amount");
+            System.out.println("Amount: " + amount);
+            
+            // Example of handling non-existent path
+            Object nonExistent = parser.readPath("$.payload.BCSettlementTransaction.nonexistent.path");
+            System.out.println("Non-existent path result: " + nonExistent);
+            
+            // Example of reading entire BCSettlementTransaction object
+            Object fullTransaction = parser.readPath("$.payload.BCSettlementTransaction");
+            System.out.println("Full transaction: " + fullTransaction);
+
+        } catch (Exception e) {
+            System.err.println("Error processing JSON: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
-    // Helper class to store each field's JSON path, condition, and target subfield
-    static class FieldConfig {
-        String jsonPath;
-        Predicate<JsonNode> condition;
-        String subField; // the field within a matched node to extract
+    // Utility method to safely read nested JSON paths
+    public static Object safeRead(ReadContext context, String path) {
+        try {
+            return context.read(path);
+        } catch (PathNotFoundException e) {
+            System.err.println("Warning: Path not found - " + path);
+            return null;
+        } catch (Exception e) {
+            System.err.println("Error reading path " + path + ": " + e.getMessage());
+            return null;
+        }
+    }
 
-        public FieldConfig(String jsonPath, Predicate<JsonNode> condition, String subField) {
-            this.jsonPath = jsonPath;
-            this.condition = condition;
-            this.subField = subField;
+    // Method to validate if a path exists
+    public boolean pathExists(String path) {
+        try {
+            Object result = jsonContext.read(path);
+            return result != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // Method to safely get array values
+    public JSONArray getArraySafely(String path) {
+        try {
+            Object result = jsonContext.read(path);
+            if (result instanceof JSONArray) {
+                return (JSONArray) result;
+            }
+            System.err.println("Warning: Path does not contain an array - " + path);
+            return new JSONArray();
+        } catch (Exception e) {
+            System.err.println("Error reading array at path " + path + ": " + e.getMessage());
+            return new JSONArray();
         }
     }
 }
-
-
-
-import com.jayway.jsonpath.JsonPath; import com.jayway.jsonpath.ReadContext; import java.io.File; import java.nio.file.Files; import java.util.List; import java.util.Map; import java.util.HashMap; public class JsonXPathParser { private ReadContext jsonContext; private Map<String, Object> resultMap; public JsonXPathParser() { this.resultMap = new HashMap<>(); } public void loadJsonFromFile(String filePath) throws Exception { String jsonContent = new String(Files.readAllBytes(new File(filePath).toPath())); this.jsonContext = JsonPath.parse(jsonContent); } public void loadJsonFromString(String jsonString) { this.jsonContext = JsonPath.parse(jsonString); } public void addFieldToMap(String fieldName, String jsonPath) { try { Object value = jsonContext.read(jsonPath); resultMap.put(fieldName, value); } catch (Exception e) { System.err.println("Error reading path: " + jsonPath + " - " + e.getMessage()); } } public Map<String, Object> getResultMap() { return resultMap; } public static void main(String[] args) { // Example JSON String jsonString = """ { "store": { "book": [ { "category": "reference", "author": "Nigel Rees", "title": "Sayings of the Century", "price": 8.95 }, { "category": "fiction", "author": "J.R.R. Tolkien", "title": "The Lord of the Rings", "price": 22.99 } ], "bicycle": { "color": "red", "price": 19.95 } }, "expensive": 10 } """; JsonXPathParser parser = new JsonXPathParser(); parser.loadJsonFromString(jsonString); // Using JsonPath expressions to extract data parser.addFieldToMap("allAuthors", "$.store.book[*].author"); // Get all authors parser.addFieldToMap("firstBook", "$.store.book[0]"); // Get first book parser.addFieldToMap("expensiveBooks", "$.store.book[?(@.price > 20)]"); // Get books over $20 parser.addFieldToMap("bookTitles", "$.store.book[*].title"); // Get all book titles parser.addFieldToMap("bicycleColor", "$.store.bicycle.color"); // Get bicycle color parser.addFieldToMap("expensiveLimit", "$.expensive"); // Get expensive limit // Print results Map<String, Object> results = parser.getResultMap(); results.forEach((key, value) -> { System.out.println(key + ":"); if (value instanceof List) { ((List<?>) value).forEach(item -> System.out.println("\t" + item)); } else { System.out.println("\t" + value); } }); // Example of advanced JsonPath queries try { // Find all books with price less than expensive limit List<Map<String, Object>> affordableBooks = JsonPath.parse(jsonString) .read("$.store.book[?(@.price < $.expensive)]"); System.out.println("\nAffordable books:"); affordableBooks.forEach(book -> System.out.println("\t" + book)); // Calculate average book price List<Double> prices = JsonPath.parse(jsonString) .read("$.store.book[*].price"); double avgPrice = prices.stream() .mapToDouble(Double::valueOf) .average() .orElse(0.0); System.out.println("\nAverage book price: " + avgPrice); } catch (Exception e) { e.printStackTrace(); } } }
