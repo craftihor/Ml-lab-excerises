@@ -1,135 +1,55 @@
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.ReadContext;
-import com.jayway.jsonpath.PathNotFoundException;
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.Option;
-import net.minidev.json.JSONArray;
-import java.util.Map;
-import java.util.HashMap;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
-public class JsonPathParser {
-    private ReadContext jsonContext;
-    private Map<String, Object> resultMap;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
-    public JsonPathParser() {
-        this.resultMap = new HashMap<>();
-        // Configure JsonPath to be lenient
-        Configuration conf = Configuration.defaultConfiguration()
-            .addOptions(Option.SUPPRESS_EXCEPTIONS)
-            .addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL);
+@Service
+public class YourSchedulerService {
+
+    @Autowired
+    private YourRepository yourRepository;
+
+    @Scheduled(fixedRate = 60000) // Run every 60 seconds
+    public void fetchAndProcessData() {
+        // Fetch records with status "pending"
+        List<YourEntity> pendingRecords = yourRepository.findByStatus("pending");
+
+        // Process all entities in parallel
+        List<CompletableFuture<Void>> futures = pendingRecords.stream()
+                .map(entity -> CompletableFuture.runAsync(() -> processAndSaveEntity(entity)))
+                .collect(Collectors.toList());
+
+        // Wait for all tasks to complete
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+
+        System.out.println("All entities processed.");
     }
 
-    public void loadJsonString(String jsonString) {
+    private void processAndSaveEntity(YourEntity entity) {
         try {
-            this.jsonContext = JsonPath.parse(jsonString);
+            // Call the asynchronous processing function
+            processEntity(entity);
+
+            // Update the status to "processed" after processing
+            entity.setStatus("processed");
+            yourRepository.save(entity);
+
+            System.out.println("Processed entity with ID: " + entity.getId());
         } catch (Exception e) {
-            System.err.println("Error parsing JSON string: " + e.getMessage());
-            throw e;
+            System.err.println("Error processing entity with ID: " + entity.getId() + " - " + e.getMessage());
         }
     }
 
-    public Object readPath(String jsonPath) {
+    private void processEntity(YourEntity entity) {
+        // Simulate async processing (replace with your actual async logic)
         try {
-            return jsonContext.read(jsonPath);
-        } catch (PathNotFoundException e) {
-            System.err.println("Path not found: " + jsonPath);
-            return null;
-        } catch (Exception e) {
-            System.err.println("Error reading path " + jsonPath + ": " + e.getMessage());
-            return null;
-        }
-    }
-
-    public static void main(String[] args) {
-        // Example JSON with BCSettlementTransaction structure
-        String jsonString = """
-        {
-            "payload": {
-                "BCSettlementTransaction": {
-                    "originatingSource": {
-                        "system": {
-                            "id": "123",
-                            "name": "TestSystem"
-                        }
-                    },
-                    "transactionDetails": {
-                        "amount": 1000.00,
-                        "currency": "USD"
-                    }
-                }
-            }
-        }
-        """;
-
-        JsonPathParser parser = new JsonPathParser();
-        
-        try {
-            parser.loadJsonString(jsonString);
-            
-            // Correct path examples
-            System.out.println("\nReading JSON paths with proper error handling:");
-            
-            // Read system ID
-            Object systemId = parser.readPath("$.payload.BCSettlementTransaction.originatingSource.system.id");
-            System.out.println("System ID: " + systemId);
-            
-            // Read system name
-            Object systemName = parser.readPath("$.payload.BCSettlementTransaction.originatingSource.system.name");
-            System.out.println("System Name: " + systemName);
-            
-            // Read transaction amount
-            Object amount = parser.readPath("$.payload.BCSettlementTransaction.transactionDetails.amount");
-            System.out.println("Amount: " + amount);
-            
-            // Example of handling non-existent path
-            Object nonExistent = parser.readPath("$.payload.BCSettlementTransaction.nonexistent.path");
-            System.out.println("Non-existent path result: " + nonExistent);
-            
-            // Example of reading entire BCSettlementTransaction object
-            Object fullTransaction = parser.readPath("$.payload.BCSettlementTransaction");
-            System.out.println("Full transaction: " + fullTransaction);
-
-        } catch (Exception e) {
-            System.err.println("Error processing JSON: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    // Utility method to safely read nested JSON paths
-    public static Object safeRead(ReadContext context, String path) {
-        try {
-            return context.read(path);
-        } catch (PathNotFoundException e) {
-            System.err.println("Warning: Path not found - " + path);
-            return null;
-        } catch (Exception e) {
-            System.err.println("Error reading path " + path + ": " + e.getMessage());
-            return null;
-        }
-    }
-
-    // Method to validate if a path exists
-    public boolean pathExists(String path) {
-        try {
-            Object result = jsonContext.read(path);
-            return result != null;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    // Method to safely get array values
-    public JSONArray getArraySafely(String path) {
-        try {
-            Object result = jsonContext.read(path);
-            if (result instanceof JSONArray) {
-                return (JSONArray) result;
-            }
-            System.err.println("Warning: Path does not contain an array - " + path);
-            return new JSONArray();
-        } catch (Exception e) {
-            System.err.println("Error reading array at path " + path + ": " + e.getMessage());
-            return new JSONArray();
+            Thread.sleep(1000); // Simulating delay
+            System.out.println("Asynchronously processing entity with ID: " + entity.getId());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 }
