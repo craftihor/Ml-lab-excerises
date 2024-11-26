@@ -1,11 +1,3 @@
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-
 @Service
 public class YourSchedulerService {
 
@@ -14,42 +6,38 @@ public class YourSchedulerService {
 
     @Scheduled(fixedRate = 60000) // Run every 60 seconds
     public void fetchAndProcessData() {
-        // Fetch records with status "pending"
-        List<YourEntity> pendingRecords = yourRepository.findByStatus("pending");
+        // Get the current time and calculate the timestamp for 5 minutes ago
+        long fiveMinutesAgoMillis = System.currentTimeMillis() - (5 * 60 * 1000);
 
-        // Process all entities in parallel
-        List<CompletableFuture<Void>> futures = pendingRecords.stream()
-                .map(entity -> CompletableFuture.runAsync(() -> processAndSaveEntity(entity)))
-                .collect(Collectors.toList());
+        // Fetch all records where status is not "processed"
+        List<YourEntity> records = yourRepository.findByStatusNot("processed");
 
-        // Wait for all tasks to complete
-        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+        // Filter the records based on the `updatedAt` timestamp
+        List<YourEntity> recordsToProcess = records.stream()
+                .filter(record -> record.getUpdatedAt().getTime() < fiveMinutesAgoMillis)
+                .toList();
 
-        System.out.println("All entities processed.");
+        // Process records in batches
+        int batchSize = 50; // Define batch size
+        for (int i = 0; i < recordsToProcess.size(); i += batchSize) {
+            List<YourEntity> batch = recordsToProcess.subList(i, Math.min(i + batchSize, recordsToProcess.size()));
+            processBatch(batch);
+        }
     }
 
-    private void processAndSaveEntity(YourEntity entity) {
-        try {
-            // Call the asynchronous processing function
-            processEntity(entity);
+    private void processBatch(List<YourEntity> batch) {
+        batch.forEach(record -> {
+            processEntity(record);
+            record.setStatus("processed");
+            record.setUpdatedAt(new Date());
+        });
 
-            // Update the status to "processed" after processing
-            entity.setStatus("processed");
-            yourRepository.save(entity);
-
-            System.out.println("Processed entity with ID: " + entity.getId());
-        } catch (Exception e) {
-            System.err.println("Error processing entity with ID: " + entity.getId() + " - " + e.getMessage());
-        }
+        // Save the updated batch to the database
+        yourRepository.saveAll(batch);
     }
 
     private void processEntity(YourEntity entity) {
-        // Simulate async processing (replace with your actual async logic)
-        try {
-            Thread.sleep(1000); // Simulating delay
-            System.out.println("Asynchronously processing entity with ID: " + entity.getId());
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+        // Add your processing logic here
+        System.out.println("Processing entity with ID: " + entity.getId());
     }
 }
