@@ -1,43 +1,62 @@
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
+
 @Service
-public class YourSchedulerService {
+public class KafkaProducerService {
+
+    private static final int MIN_PARTITION = 12;
+    private static final int MAX_PARTITION = 24;
 
     @Autowired
-    private YourRepository yourRepository;
+    private KafkaTemplate<String, String> kafkaTemplate;
 
-    @Scheduled(fixedRate = 60000) // Run every 60 seconds
-    public void fetchAndProcessData() {
-        // Get the current time and calculate the timestamp for 5 minutes ago
-        long fiveMinutesAgoMillis = System.currentTimeMillis() - (5 * 60 * 1000);
-
-        // Fetch all records where status is not "processed"
-        List<YourEntity> records = yourRepository.findByStatusNot("processed");
-
-        // Filter the records based on the `updatedAt` timestamp
-        List<YourEntity> recordsToProcess = records.stream()
-                .filter(record -> record.getUpdatedAt().getTime() < fiveMinutesAgoMillis)
-                .toList();
-
-        // Process records in batches
-        int batchSize = 50; // Define batch size
-        for (int i = 0; i < recordsToProcess.size(); i += batchSize) {
-            List<YourEntity> batch = recordsToProcess.subList(i, Math.min(i + batchSize, recordsToProcess.size()));
-            processBatch(batch);
+    /**
+     * Calculates the partition dynamically based on the message value.
+     *
+     * @param value The message value.
+     * @return The partition number.
+     */
+    private int calculatePartition(String value) {
+        if (value == null || value.isEmpty()) {
+            throw new IllegalArgumentException("Message value cannot be null or empty");
         }
+
+        int hashCode = value.hashCode();
+        int range = MAX_PARTITION - MIN_PARTITION;
+        return MIN_PARTITION + (Math.abs(hashCode) % range);
     }
 
-    private void processBatch(List<YourEntity> batch) {
-        batch.forEach(record -> {
-            processEntity(record);
-            record.setStatus("processed");
-            record.setUpdatedAt(new Date());
-        });
-
-        // Save the updated batch to the database
-        yourRepository.saveAll(batch);
+    /**
+     * Sends a message to a specific partition based on its calculated value.
+     *
+     * @param topic   The Kafka topic.
+     * @param message The message to send.
+     */
+    public void sendMessage(String topic, String message) {
+        int partition = calculatePartition(message);
+        kafkaTemplate.send(topic, partition, null, message);
+        System.out.printf("Sent message: %s to partition: %d%n", message, partition);
     }
+}
 
-    private void processEntity(YourEntity entity) {
-        // Add your processing logic here
-        System.out.println("Processing entity with ID: " + entity.getId());
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
+@Component
+public class KafkaProducerRunner implements CommandLineRunner {
+
+    @Autowired
+    private KafkaProducerService kafkaProducerService;
+
+    @Override
+    public void run(String... args) {
+        String topic = "your-topic";
+
+        String[] messages = {"Message1", "Message2", "Message3", "Message4"};
+        for (String message : messages) {
+            kafkaProducerService.sendMessage(topic, message);
+        }
     }
 }
