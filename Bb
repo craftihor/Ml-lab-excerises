@@ -60,3 +60,59 @@ public class KafkaProducerRunner implements CommandLineRunner {
         }
     }
 }
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.time.Duration;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Service
+public class SyncService {
+
+    @Autowired
+    private CollectionARepository collectionARepository;
+
+    @Autowired
+    private CollectionBRepository collectionBRepository;
+
+    // Scheduled to run every 30 minutes
+    @Scheduled(fixedRate = 30 * 60 * 1000) // 30 minutes
+    public void syncData() {
+        // Calculate the time range (last 35 minutes)
+        Instant now = Instant.now();
+        Instant thirtyFiveMinutesAgo = now.minus(Duration.ofMinutes(35));
+
+        // Fetch data from Collection A and Collection B
+        List<DocumentA> recentDocsA = collectionARepository.findDocumentsByTimeRange(thirtyFiveMinutesAgo, now);
+        List<DocumentB> recentDocsB = collectionBRepository.findDocumentsByTimeRange(thirtyFiveMinutesAgo, now);
+
+        // Convert Collection B documents to a set of messageIds for quick lookup
+        Set<String> messageIdsB = recentDocsB.stream()
+                                             .map(DocumentB::getMessageId)
+                                             .collect(Collectors.toSet());
+
+        // Find documents from Collection A that don't have corresponding entries in Collection B
+        List<DocumentA> toBeSynced = recentDocsA.stream()
+                                                .filter(doc -> !messageIdsB.contains(doc.getMessageId()))
+                                                .collect(Collectors.toList());
+
+        // Process the documents that need to be synced
+        syncDocuments(toBeSynced);
+    }
+
+    // Logic for syncing documents (could be a DB update or any other operation)
+    private void syncDocuments(List<DocumentA> toBeSynced) {
+        // Implement the logic to sync or update the documents
+        for (DocumentA docA : toBeSynced) {
+            // For example, you might trigger an endpoint, or update Collection B with the missing data
+            System.out.println("Syncing document with messageId: " + docA.getMessageId());
+            // For example, you could save or update documents in Collection B
+            // collectionBRepository.save(convertToDocumentB(docA));
+        }
+    }
+}
