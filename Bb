@@ -1,118 +1,70 @@
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Service;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.spi.json.JsonProvider;
+import com.jayway.jsonpath.spi.json.JsonSmartJsonProvider;
 
-@Service
-public class KafkaProducerService {
+import java.util.HashMap;
+import java.util.Map;
 
-    private static final int MIN_PARTITION = 12;
-    private static final int MAX_PARTITION = 24;
+public class JsonPathWithCustomFunctions {
 
-    @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
-
-    /**
-     * Calculates the partition dynamically based on the message value.
-     *
-     * @param value The message value.
-     * @return The partition number.
-     */
-    private int calculatePartition(String value) {
-        if (value == null || value.isEmpty()) {
-            throw new IllegalArgumentException("Message value cannot be null or empty");
+    public static void main(String[] args) {
+        // JSON Input
+        String json = """
+        {
+          "people": [
+            { "name": "Jonathan", "age": 30 },
+            { "name": "Alice", "age": 25 },
+            { "name": "Bob", "age": 35 }
+          ]
         }
+        """;
 
-        int hashCode = value.hashCode();
-        int range = MAX_PARTITION - MIN_PARTITION;
-        return MIN_PARTITION + (Math.abs(hashCode) % range);
-    }
+        // Configure JSONPath with a custom function
+        Configuration config = Configuration.builder()
+                .jsonProvider(new JsonSmartJsonProvider())
+                .mappingProvider(new CustomMappingProvider())
+                .build();
 
-    /**
-     * Sends a message to a specific partition based on its calculated value.
-     *
-     * @param topic   The Kafka topic.
-     * @param message The message to send.
-     */
-    public void sendMessage(String topic, String message) {
-        int partition = calculatePartition(message);
-        kafkaTemplate.send(topic, partition, null, message);
-        System.out.printf("Sent message: %s to partition: %d%n", message, partition);
+        // Example 1: Substring function
+        String substringResult = JsonPath
+                .using(config)
+                .parse(json)
+                .read("$.people[*].name.substring(1, 4)");
+
+        System.out.println("Substring Result: " + substringResult);
+
+        // Example 2: Concat function
+        String concatResult = JsonPath
+                .using(config)
+                .parse(json)
+                .read("$.people[*].concat(name, age)");
+
+        System.out.println("Concat Result: " + concatResult);
     }
 }
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
+// Custom MappingProvider (registers functions like substring and concat)
+class CustomMappingProvider implements JsonPath.FunctionMappingProvider {
+    private final Map<String, JsonPath.Function> functions = new HashMap<>();
 
-@Component
-public class KafkaProducerRunner implements CommandLineRunner {
+    public CustomMappingProvider() {
+        functions.put("substring", (args) -> {
+            String str = args.get(0).toString();
+            int start = Integer.parseInt(args.get(1).toString());
+            int end = Integer.parseInt(args.get(2).toString());
+            return str.substring(start, Math.min(end, str.length()));
+        });
 
-    @Autowired
-    private KafkaProducerService kafkaProducerService;
+        functions.put("concat", (args) -> {
+            String str1 = args.get(0).toString();
+            String str2 = args.get(1).toString();
+            return str1 + " " + str2;
+        });
+    }
 
     @Override
-    public void run(String... args) {
-        String topic = "your-topic";
-
-        String[] messages = {"Message1", "Message2", "Message3", "Message4"};
-        for (String message : messages) {
-            kafkaProducerService.sendMessage(topic, message);
-        }
-    }
-}
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-
-import java.time.Instant;
-import java.time.Duration;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-@Service
-public class SyncService {
-
-    @Autowired
-    private CollectionARepository collectionARepository;
-
-    @Autowired
-    private CollectionBRepository collectionBRepository;
-
-    // Scheduled to run every 30 minutes
-    @Scheduled(fixedRate = 30 * 60 * 1000) // 30 minutes
-    public void syncData() {
-        // Calculate the time range (last 35 minutes)
-        Instant now = Instant.now();
-        Instant thirtyFiveMinutesAgo = now.minus(Duration.ofMinutes(35));
-
-        // Fetch data from Collection A and Collection B
-        List<DocumentA> recentDocsA = collectionARepository.findDocumentsByTimeRange(thirtyFiveMinutesAgo, now);
-        List<DocumentB> recentDocsB = collectionBRepository.findDocumentsByTimeRange(thirtyFiveMinutesAgo, now);
-
-        // Convert Collection B documents to a set of messageIds for quick lookup
-        Set<String> messageIdsB = recentDocsB.stream()
-                                             .map(DocumentB::getMessageId)
-                                             .collect(Collectors.toSet());
-
-        // Find documents from Collection A that don't have corresponding entries in Collection B
-        List<DocumentA> toBeSynced = recentDocsA.stream()
-                                                .filter(doc -> !messageIdsB.contains(doc.getMessageId()))
-                                                .collect(Collectors.toList());
-
-        // Process the documents that need to be synced
-        syncDocuments(toBeSynced);
-    }
-
-    // Logic for syncing documents (could be a DB update or any other operation)
-    private void syncDocuments(List<DocumentA> toBeSynced) {
-        // Implement the logic to sync or update the documents
-        for (DocumentA docA : toBeSynced) {
-            // For example, you might trigger an endpoint, or update Collection B with the missing data
-            System.out.println("Syncing document with messageId: " + docA.getMessageId());
-            // For example, you could save or update documents in Collection B
-            // collectionBRepository.save(convertToDocumentB(docA));
-        }
+    public Map<String, JsonPath.Function> functions() {
+        return functions;
     }
 }
