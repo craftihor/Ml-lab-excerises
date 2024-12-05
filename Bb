@@ -1,5 +1,4 @@
 import pandas as pd
-import networkx as nx
 
 # Example DataFrame
 data = {
@@ -7,52 +6,27 @@ data = {
     'date': ['2024-12-01', '2024-12-01', '2024-12-01', '2024-12-01', '2024-12-01'],
     'quantity': [100, 100, 100, 100, 100],
     'amount': [1000, 1000, 1000, 1000, 1000],
-    'from': ['A', 'B', 'C', 'A', 'B'],
-    'to': ['B', 'C', 'D', 'C', 'D'],
-    'drf': ['d', 'd', 'd', 'd', 'd']
+    'from': ['A', 'B', 'C', 'D', 'E'],
+    'to': ['B', 'A', 'D', 'C', 'F'],
+    'drf': ['d', 'r', 'd', 'r', 'f']
 }
 
 df = pd.DataFrame(data)
 
-# Create a directed graph from the trades
-G = nx.DiGraph()
+# Create a new DataFrame where `from` and `to` are swapped
+reversed_df = df.rename(columns={'from': 'to', 'to': 'from'}).copy()
+reversed_df['drf'] = 'f'  # The reverse trade must have `drf == 'f'`
 
-# Add edges to the graph (from, to) with attributes (quantity, amount, trade_id)
-for _, row in df.iterrows():
-    G.add_edge(
-        row['from'], row['to'],
-        quantity=row['quantity'], 
-        amount=row['amount'], 
-        trade_id=row['trade_id']
-    )
+# Merge the original DataFrame with the reversed DataFrame
+merged = df.merge(
+    reversed_df,
+    on=['date', 'quantity', 'amount', 'from', 'to', 'drf'],
+    suffixes=('_original', '_reverse')
+)
 
-# Find all possible paths for all node pairs
-all_possible_paths = []
-for start_node in G.nodes:
-    for end_node in G.nodes:
-        if start_node != end_node:
-            paths = list(nx.all_simple_paths(G, source=start_node, target=end_node))
-            for path in paths:
-                quantities = []
-                amounts = []
-                trade_ids = []
-
-                # Traverse the path and collect transaction details
-                for i in range(len(path) - 1):
-                    edge_data = G[path[i]][path[i+1]]
-                    quantities.append(edge_data['quantity'])
-                    amounts.append(edge_data['amount'])
-                    trade_ids.append(edge_data['trade_id'])
-
-                # Validate consistency of quantities and amounts
-                if len(set(quantities)) == 1 and len(set(amounts)) == 1:
-                    all_possible_paths.append({
-                        'path': path,
-                        'quantity': quantities[0],
-                        'amount': amounts[0],
-                        'trade_ids': trade_ids
-                    })
-
-# Display results
-for trade in all_possible_paths:
-    print(f"Path: {trade['path']}, Quantity: {trade['quantity']}, Amount: {trade['amount']}, Trade IDs: {trade['trade_ids']}")
+# Display matching reverse trades
+if not merged.empty:
+    print("Matching reverse trades found:")
+    print(merged[['trade_id_original', 'trade_id_reverse', 'from', 'to', 'quantity', 'amount', 'date']])
+else:
+    print("No matching reverse trades found.")
