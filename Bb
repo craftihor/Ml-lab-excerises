@@ -1,70 +1,58 @@
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.spi.json.JsonProvider;
-import com.jayway.jsonpath.spi.json.JsonSmartJsonProvider;
+import pandas as pd
+import networkx as nx
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class JsonPathWithCustomFunctions {
-
-    public static void main(String[] args) {
-        // JSON Input
-        String json = """
-        {
-          "people": [
-            { "name": "Jonathan", "age": 30 },
-            { "name": "Alice", "age": 25 },
-            { "name": "Bob", "age": 35 }
-          ]
-        }
-        """;
-
-        // Configure JSONPath with a custom function
-        Configuration config = Configuration.builder()
-                .jsonProvider(new JsonSmartJsonProvider())
-                .mappingProvider(new CustomMappingProvider())
-                .build();
-
-        // Example 1: Substring function
-        String substringResult = JsonPath
-                .using(config)
-                .parse(json)
-                .read("$.people[*].name.substring(1, 4)");
-
-        System.out.println("Substring Result: " + substringResult);
-
-        // Example 2: Concat function
-        String concatResult = JsonPath
-                .using(config)
-                .parse(json)
-                .read("$.people[*].concat(name, age)");
-
-        System.out.println("Concat Result: " + concatResult);
-    }
+# Example DataFrame
+data = {
+    'trade_id': [1, 2, 3, 4, 5],
+    'date': ['2024-12-01', '2024-12-01', '2024-12-01', '2024-12-01', '2024-12-01'],
+    'quantity': [100, 100, 100, 100, 100],
+    'amount': [1000, 1000, 1000, 1000, 1000],
+    'from': ['A', 'B', 'C', 'A', 'B'],
+    'to': ['B', 'C', 'D', 'C', 'D'],
+    'drf': ['d', 'd', 'd', 'd', 'd']
 }
 
-// Custom MappingProvider (registers functions like substring and concat)
-class CustomMappingProvider implements JsonPath.FunctionMappingProvider {
-    private final Map<String, JsonPath.Function> functions = new HashMap<>();
+df = pd.DataFrame(data)
 
-    public CustomMappingProvider() {
-        functions.put("substring", (args) -> {
-            String str = args.get(0).toString();
-            int start = Integer.parseInt(args.get(1).toString());
-            int end = Integer.parseInt(args.get(2).toString());
-            return str.substring(start, Math.min(end, str.length()));
-        });
+# Create a directed graph from the trades
+G = nx.DiGraph()
 
-        functions.put("concat", (args) -> {
-            String str1 = args.get(0).toString();
-            String str2 = args.get(1).toString();
-            return str1 + " " + str2;
-        });
-    }
+# Add edges to the graph (from, to) with attributes (quantity, amount, trade_id)
+for _, row in df.iterrows():
+    G.add_edge(
+        row['from'], row['to'],
+        quantity=row['quantity'], 
+        amount=row['amount'], 
+        trade_id=row['trade_id']
+    )
 
-    @Override
-    public Map<String, JsonPath.Function> functions() {
-        return functions;
-    }
-}
+# Find all possible paths for all node pairs
+all_possible_paths = []
+for start_node in G.nodes:
+    for end_node in G.nodes:
+        if start_node != end_node:
+            paths = list(nx.all_simple_paths(G, source=start_node, target=end_node))
+            for path in paths:
+                quantities = []
+                amounts = []
+                trade_ids = []
+
+                # Traverse the path and collect transaction details
+                for i in range(len(path) - 1):
+                    edge_data = G[path[i]][path[i+1]]
+                    quantities.append(edge_data['quantity'])
+                    amounts.append(edge_data['amount'])
+                    trade_ids.append(edge_data['trade_id'])
+
+                # Validate consistency of quantities and amounts
+                if len(set(quantities)) == 1 and len(set(amounts)) == 1:
+                    all_possible_paths.append({
+                        'path': path,
+                        'quantity': quantities[0],
+                        'amount': amounts[0],
+                        'trade_ids': trade_ids
+                    })
+
+# Display results
+for trade in all_possible_paths:
+    print(f"Path: {trade['path']}, Quantity: {trade['quantity']}, Amount: {trade['amount']}, Trade IDs: {trade['trade_ids']}")
