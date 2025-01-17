@@ -1,32 +1,121 @@
-import pandas as pd
+import org.apache.camel.CamelContext;
+import org.apache.camel.EndpointInject;
+import org.apache.camel.Exchange;
+import org.apache.camel.ProducerTemplate;
+import org.apache.camel.builder.AdviceWithRouteBuilder;
+import org.apache.camel.component.mock.MockEndpoint;
+import org.apache.camel.test.junit5.CamelTestSupport;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-# Example DataFrame
-data = {
-    'trade_id': [1, 2, 3, 4, 5],
-    'date': ['2024-12-01', '2024-12-01', '2024-12-01', '2024-12-01', '2024-12-01'],
-    'quantity': [100, 100, 100, 100, 100],
-    'amount': [1000, 1000, 1000, 1000, 1000],
-    'from': ['A', 'B', 'C', 'D', 'E'],
-    'to': ['B', 'A', 'D', 'C', 'F'],
-    'drf': ['d', 'r', 'd', 'r', 'f']
+import static org.mockito.Mockito.*;
+
+class InboundMessageRouteTest extends CamelTestSupport {
+
+    @Mock
+    private OMGService omgService;
+
+    @Mock
+    private MessageProcessor messageProcessor;
+
+    @InjectMocks
+    private InboundMessageRoute inboundMessageRoute;
+
+    @EndpointInject("mock:result")
+    private MockEndpoint mockResult;
+
+    @EndpointInject("direct:start")
+    private ProducerTemplate producerTemplate;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        MockitoAnnotations.openMocks(this);
+
+        // Mocking the route
+        context.getRouteDefinition("inbound-message-route")
+                .adviceWith(context, new AdviceWithRouteBuilder() {
+                    @Override
+                    public void configure() {
+                        replaceFromWith("direct:start"); // Replace the actual endpoint URI with a test endpoint
+                        weaveByToUri("mock:result").replace().to("mock:result");
+                    }
+                });
+
+        context.start();
+    }
+
+    @Test
+    void testRoute_withValidTransactionId() throws Exception {
+        // Arrange
+        OdysseyInboundMessage inputMessage = new OdysseyInboundMessage();
+        inputMessage.setId("12345");
+        inputMessage.setProgressStatus(OdysseyInboundMessage.ProgressStatus.PENDING);
+
+        when(omgService.saveOdysseyInboundMessage(any())).thenReturn(inputMessage);
+
+        // Expectations
+        mockResult.expectedMessageCount(1);
+        mockResult.message(0).body(OdysseyInboundMessage.class);
+
+        // Act
+        producerTemplate.sendBody("direct:start", inputMessage);
+
+        // Assert
+        mockResult.assertIsSatisfied();
+
+        verify(omgService, times(1)).saveOdysseyInboundMessage(any());
+        verify(messageProcessor, times(1)).process(any());
+    }
+
+    @Test
+    void testRoute_withMissingTransactionId() throws Exception {
+        // Arrange
+        OdysseyInboundMessage inputMessage = new OdysseyInboundMessage();
+        inputMessage.setId("12345");
+        inputMessage.setProgressStatus(OdysseyInboundMessage.ProgressStatus.PENDING);
+
+        when(omgService.saveOdysseyInboundMessage(any())).thenReturn(inputMessage);
+
+        // Simulate missing transaction ID
+        Exchange exchange = context.getEndpoint("direct:start").createExchange();
+        exchange.getIn().setBody(inputMessage);
+        exchange.setProperty(OMGConstant.CAMEL_PROPERTY_X_TRANSACTION_ID, null);
+
+        // Expectations
+        mockResult.expectedMessageCount(1);
+
+        // Act
+        producerTemplate.send("direct:start", exchange);
+
+        // Assert
+        mockResult.assertIsSatisfied();
+
+        verify(omgService, times(1)).saveOdysseyInboundMessage(any());
+        verify(messageProcessor, times(1)).process(any());
+    }
+
+    @Test
+    void testRoute_messageProcessingException() throws Exception {
+        // Arrange
+        OdysseyInboundMessage inputMessage = new OdysseyInboundMessage();
+        inputMessage.setId("12345");
+        inputMessage.setProgressStatus(OdysseyInboundMessage.ProgressStatus.PENDING);
+
+        doThrow(new RuntimeException("Processing error")).when(messageProcessor).process(any());
+
+        // Expectations
+        mockResult.expectedMessageCount(0); // Should not reach the end due to exception
+
+        // Act & Assert
+        try {
+            producerTemplate.sendBody("direct:start", inputMessage);
+        } catch (Exception e) {
+            // Ignore exception, verify behavior
+        }
+
+        verify(messageProcessor, times(1)).process(any());
+    }
 }
-
-df = pd.DataFrame(data)
-
-# Create a new DataFrame where `from` and `to` are swapped
-reversed_df = df.rename(columns={'from': 'to', 'to': 'from'}).copy()
-reversed_df['drf'] = 'f'  # The reverse trade must have `drf == 'f'`
-
-# Merge the original DataFrame with the reversed DataFrame
-merged = df.merge(
-    reversed_df,
-    on=['date', 'quantity', 'amount', 'from', 'to', 'drf'],
-    suffixes=('_original', '_reverse')
-)
-
-# Display matching reverse trades
-if not merged.empty:
-    print("Matching reverse trades found:")
-    print(merged[['trade_id_original', 'trade_id_reverse', 'from', 'to', 'quantity', 'amount', 'date']])
-else:
-    print("No matching reverse trades found.")
