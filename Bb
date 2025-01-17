@@ -119,3 +119,49 @@ class InboundMessageRouteTest extends CamelTestSupport {
         verify(messageProcessor, times(1)).process(any());
     }
 }
+
+
+import org.apache.camel.CamelContext;
+import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.test.junit5.CamelTestSupport;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+class InboundMessageRouteTest extends CamelTestSupport {
+
+    @BeforeEach
+    void setup() throws Exception {
+        // Stop the Camel context
+        context.stop();
+
+        // Remove existing routes (if needed)
+        context.removeRouteDefinitions(context.getRouteDefinitions());
+
+        // Add a test-specific route
+        context.addRoutes(new RouteBuilder() {
+            @Override
+            public void configure() {
+                from("direct:start") // Replace the original `from` endpoint
+                    .routeId("test-inbound-message-route")
+                    .process(exchange -> {
+                        String body = exchange.getIn().getBody(String.class);
+                        exchange.getIn().setBody("Processed: " + body); // Example processing
+                    })
+                    .to("mock:result"); // Mock endpoint for assertions
+            }
+        });
+
+        // Start the Camel context
+        context.start();
+    }
+
+    @Test
+    void testRoute() throws Exception {
+        // Send a test message to the new "direct:start" route
+        template.sendBody("direct:start", "Test Message");
+
+        // Mock endpoint assertions
+        getMockEndpoint("mock:result").expectedBodiesReceived("Processed: Test Message");
+        assertMockEndpointsSatisfied();
+    }
+}
