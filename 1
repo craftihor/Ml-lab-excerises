@@ -1,0 +1,40 @@
+import pandas as pd
+
+# --- Step 1: Load the datasets ---
+dataset_a = pd.read_csv("dataset_a.csv", delimiter=",")
+dataset_b = pd.read_csv("dataset_b.csv", delimiter=",")
+
+# --- Step 2: Set _id as index for reliable comparison ---
+dataset_a.set_index('_id', inplace=True)
+dataset_b.set_index('_id', inplace=True)
+
+# --- Step 3: Determine columns to compare (intersection) ---
+fields_to_compare = list(set(dataset_a.columns).intersection(dataset_b.columns))
+
+# --- Step 4: Prepare the output DataFrame ---
+comparison_df = pd.DataFrame(index=dataset_a.index)
+
+# --- Step 5: Compare each field and add match results ---
+for field in fields_to_compare:
+    col_a = f"{field}_A"
+    col_b = f"{field}_B"
+    col_match = f"{field}_Match"
+
+    comparison_df[col_a] = dataset_a[field]
+    comparison_df[col_b] = dataset_b[field].reindex(dataset_a.index)
+
+    def match_values(row):
+        val_a = row[col_a]
+        val_b = row[col_b]
+        if pd.isna(val_b):
+            return 'Not Found'
+        return '✅' if val_a == val_b else '❌'
+
+    comparison_df[col_match] = comparison_df.apply(match_values, axis=1)
+
+# --- Step 6: Reset index (_id) and export to CSV ---
+comparison_df.reset_index(inplace=True)
+comparison_df.to_csv("comparison_output.csv", index=False)
+
+# Done. Output file: comparison_output.csv
+print("✅ Comparison complete. Results saved to 'comparison_output.csv'.")
