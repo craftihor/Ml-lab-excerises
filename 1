@@ -40,40 +40,4 @@ comparison_df.to_csv("comparison_output.csv", index=False)
 print("✅ Comparison complete. Results saved to 'comparison_output.csv'.")
 
 
-
-You are a highly skilled software engineer with extensive experience in writing and maintaining unit tests. Your expertise lies in ensuring maximum code coverage and high-quality test cases that not only validate functionality but also enhance code reliability and maintainability.
-
-Your task is to generate JUnit test cases that achieve maximum coverage for the following Java class. Here are the details of the class you need to test:  
-- Class Name: __________  
-- Methods to be tested: __________  
-- Dependencies: __________  
-- Specific scenarios or edge cases to cover: __________  
-
----
-
-The JUnit test cases should be structured in a clear and organized manner, following best practices for naming conventions and annotations. Each test case should include assertions to validate expected outcomes, and comments should be provided to explain the purpose of each test.
-
----
-
-Please ensure the test cases address all public methods and consider both normal and exceptional scenarios. Aim for comprehensive coverage that includes typical inputs, boundary conditions, and invalid inputs.
-
----
-
-Example of what a test case might look like:
-
-@Test
-public void testMethodName_withValidInput_shouldReturnExpectedOutput() {
-    // Arrange
-    ClassName classInstance = new ClassName();
-    InputType input = new InputType(...);
-    
-    // Act
-    OutputType result = classInstance.methodName(input);
-    
-    // Assert
-    assertEquals(expectedOutput, result);
-}
-
----
-
-Be cautious to avoid unnecessary dependencies in your test cases and ensure that they can run independently without relying on external systems or databases. The focus should be on unit testing and keeping tests isolated.
+You're an expert software engineer specializing in Java and JUnit testing frameworks. I want you to help me with generating maximum coverage JUnit test cases using parameterized test cases to minimize boilerplate code. This is important because I have been facing difficulties in maintaining readability and efficiency in my test code due to repetitive lines and lack of coverage. I want a set of optimized, well-structured JUnit test cases that utilize parameterization effectively, ensuring high test coverage while keeping the code concise and maintainable.
