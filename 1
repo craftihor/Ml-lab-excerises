@@ -1,58 +1,31 @@
-import pandas as pd
+I want you to generate comprehensive unit tests for services, controllers, and utility classes in a Java application. The result I want here is to ensure robust testing coverage, particularly focusing on edge cases and null inputs. Additionally, I need MockMvc-based tests for REST endpoints and suggestions for improving test coverage to reach 100%. Furthermore, generate test data builders or factory methods for the provided DTOs/entities.
 
-# --- Step 1: Load the datasets ---
-dataset_a = pd.read_csv("dataset_a.csv", delimiter=",")
-dataset_b = pd.read_csv("dataset_b.csv", delimiter=",")
+Here are some essential details about the project:
+- Framework/Technology Used: ________
+- Testing Framework: ________
+- Specific Services, Controllers, or Utility Classes to Test: ________
+- Edge Cases to Consider: ________
 
-# --- Step 2: Set _id as index for reliable comparison ---
-dataset_a.set_index('_id', inplace=True)
-dataset_b.set_index('_id', inplace=True)
+The final output should include full unit test implementations, parameterized tests for edge cases, MockMvc tests with clear assertion statements, and a summary of suggested improvements for achieving complete test coverage. Additionally, provide examples of test data builders or factory methods that can be used to create instances of the specified DTOs/entities.
 
-# --- Step 3: Determine columns to compare (intersection) ---
-fields_to_compare = list(set(dataset_a.columns).intersection(dataset_b.columns))
-
-# --- Step 4: Prepare the output DataFrame ---
-comparison_df = pd.DataFrame(index=dataset_a.index)
-
-# --- Step 5: Compare each field and add match results ---
-for field in fields_to_compare:
-    col_a = f"{field}_A"
-    col_b = f"{field}_B"
-    col_match = f"{field}_Match"
-
-    comparison_df[col_a] = dataset_a[field]
-    comparison_df[col_b] = dataset_b[field].reindex(dataset_a.index)
-
-    def match_values(row):
-        val_a = row[col_a]
-        val_b = row[col_b]
-        if pd.isna(val_b):
-            return 'Not Found'
-        return '✅' if val_a == val_b else '❌'
-
-    comparison_df[col_match] = comparison_df.apply(match_values, axis=1)
-
-# --- Step 6: Reset index (_id) and export to CSV ---
-comparison_df.reset_index(inplace=True)
-comparison_df.to_csv("comparison_output.csv", index=False)
-
-# Done. Output file: comparison_output.csv
-print("✅ Comparison complete. Results saved to 'comparison_output.csv'.")
+For instance, if testing a UserController, you might include a MockMvc test that checks the response for valid and invalid user creation requests, alongside a parameterized test that examines various boundary conditions for user input validation. 
 
 
-You're an expert software engineer specializing in Java and JUnit testing frameworks. I want you to help me with generating maximum coverage JUnit test cases using parameterized test cases to minimize boilerplate code. This is important because I have been facing difficulties in maintaining readability and efficiency in my test code due to repetitive lines and lack of coverage. I want a set of optimized, well-structured JUnit test cases that utilize parameterization effectively, ensuring high test coverage while keeping the code concise and maintainable.
+I want you to refactor the code to remove common code smells such as long methods, duplicate code, and large classes. The result I want here is to apply SOLID principles to reduce complexity and improve maintainability, while also fixing security hotspots like input sanitization and logging sensitive data. 
+
+The final output should include a comprehensive analysis that reduces cyclomatic complexity of functions and methods, enforces a consistent logging strategy using SLF4J, removes unused code, suppresses warnings correctly, and complies with naming conventions. Additionally, identify and remove hidden technical debt flagged by Sonar to ensure the codebase is clean and efficient. 
+
+Present the refactored code in a well-organized format, clearly explaining each change made and the reasoning behind it. Include before-and-after comparisons for critical sections to highlight improvements in readability, maintainability, and security.
 
 
-You're an expert Java developer with extensive experience in code refactoring and exception handling. I want you to help me with refactoring a piece of Java code. This is what has been happening with me: I have a Java codebase that is functional but lacks proper exception management and could benefit from improved readability and structure. I want the refactored code to maintain the original logic while ensuring robust exception handling and best practices in coding standards.
+I want you to generate Swagger/OpenAPI documentation from code annotations. The result I want here is a comprehensive and well-structured set of API documentation that clearly outlines the API endpoints, request/response formats, and any authentication requirements. Additionally, scaffold Postman collections or REST client scripts based on the generated documentation to facilitate easy testing and integration of the API. 
 
---- 
+Here are some essential details about the code annotations you will be working with:  
+- Programming Language: ________  
+- Framework/Library: ________  
+- Specific Annotations Used: ________  
+- Any Additional Configuration Details: ________  
 
-Please refactor the following Java code while ensuring proper exception management and preserving the existing logic: 
+The goal is to ensure that the generated documentation is clear, accurate, and user-friendly, enabling developers to understand and utilize the API effectively. Additionally, the Postman collections or REST client scripts should be easily importable and customizable, allowing for quick testing of the API endpoints. 
 
-```java
-[Insert your Java code here]
-```
-
----
-
-The outcome should be a clean, well-structured version of the code that follows best practices for exception handling and readability, making it easier to maintain and understand for future developers.
+The final output should include the complete Swagger/OpenAPI documentation in a standard format, followed by the Postman collection file, which should include examples for each endpoint. Ensure that the documentation adheres to best practices and is ready for immediate use by developers.
