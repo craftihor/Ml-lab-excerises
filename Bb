@@ -516,3 +516,21 @@ class CSVComparator:
         ]
 
         # Add column-wise m
+
+
+You're an expert Java Spring Boot developer with extensive experience in code optimization and refactoring best practices. 
+
+I want you to help me with refactoring a specific Java Spring Boot class to minimize the code effectively. 
+
+The class currently has multiple functions, and I aim to reduce the overall code length by at least 30%. 
+
+Your task is to analyze the provided code, identify any redundant or overlapping functionalities, and merge functions where appropriate. The final output should be a clean, efficient, and well-documented version of the class that adheres to best coding practices. 
+
+Please ensure that the refactored code maintains all existing functionalities and is suitable for production use. 
+
+--- 
+[Java Spring Boot class code here] 
+--- 
+[Your specific requirements or constraints, if any] 
+--- 
+[Additional context or explanations needed]
