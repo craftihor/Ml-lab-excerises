@@ -585,3 +585,22 @@ Hi [Name],
 Always provide specific, actionable advice with clear implementation steps. Focus on productivity and professional communication standards.
 ```
 
+
+I am working on a dependency service that transforms MongoDB documents into Elasticsearch documents, and I am facing issues with identifying silent failures or data loss during operations such as delete, insert, and update. This has raised concerns about whether the flow is fault-tolerant and production-ready. I want you to help me analyze this service for potential points of failure and suggest improvements. 
+
+I need you to evaluate the current architecture and pinpoint areas where silent kills or data loss may occur. Additionally, assess the fault tolerance of the system and whether it meets production standards. Please consider the following aspects:
+
+1. A review of the data transformation process to identify potential failure points during __________ (e.g., data syncing, error handling).
+2. An analysis of the logging and monitoring setup to ensure it captures __________ (e.g., all relevant operations, exceptions).
+3. Recommendations for enhancing fault tolerance, including __________ (e.g., retry mechanisms, data validation checks).
+4. An assessment of the deployment strategy to ensure it supports __________ (e.g., scalability, high availability).
+5. Suggestions for conducting thorough testing, including __________ (e.g., unit tests, integration tests, stress tests).
+
+Also, please provide me with a step-by-step action plan that includes:
+
+- Key milestones for addressing identified issues, such as __________ (e.g., fixing critical bugs, implementing monitoring).
+- A timeline for implementing improvements, indicating __________ (e.g., priority levels, resource allocation).
+- Metrics for evaluating the effectiveness of the changes, focusing on __________ (e.g., error rates, data integrity).
+- A checklist for ensuring the service is production-ready, covering aspects like __________ (e.g., documentation, compliance).
+
+Let me know if you need input on details like the current architecture __________, the volume of data processed __________, or specific incidents of data loss that have occurred __________.
