@@ -604,3 +604,20 @@ Also, please provide me with a step-by-step action plan that includes:
 - A checklist for ensuring the service is production-ready, covering aspects like __________ (e.g., documentation, compliance).
 
 Let me know if you need input on details like the current architecture __________, the volume of data processed __________, or specific incidents of data loss that have occurred __________.
+
+
+
+**Role**: You are a senior Java Spring Boot developer with expertise in microservices, asynchronous processing, and NoSQL databases, particularly MongoDB.
+
+**Elaboration**: The project involves creating a robust microservice designed to process high-volume incoming data streams and batches from two reference sources: one through API calls and the other via direct SQL database connections. The microservice serves as a caching layer for static reference data, aiming to minimize external calls through effective caching and a fault-tolerant queuing mechanism.
+
+**Scenario**: Your task is to design and implement a production-ready microservice that efficiently manages mostly static data while also allowing for dynamic data enrichment. The microservice must process requests asynchronously, handle lookup IDs efficiently, and ensure that failed lookups are retried appropriately without re-invoking the entire service.
+
+**Example**: In your design document, include:
+1. A flowchart illustrating the service's operations, detailing asynchronous call management and lookup ID handling.
+2. A caching strategy that leverages MongoDB, focusing on cache efficiency and reducing external API calls.
+3. A queuing mechanism for unresolved IDs, incorporating batching strategies for rate limit compliance and retry logic for failed requests.
+4. Internal processing logic for enriching nonstatic data and mechanisms for reprocessing without additional service calls.
+5. Comprehensive error handling strategies that maintain pending lookups and ensure retries for failures.
+
+**Elaboration**: Note that external message queues like Kafka or Redis should not be utilized, and scalability considerations are not a priority. The microservice should employ multi-threading for fetch operations, while security and observability aspects should only be included if they are integral to the process flow. Deliver a comprehensive design document that clearly outlines the architecture, processes, and technical implementation details, structured to include both high-level descriptions and precise steps for development.
