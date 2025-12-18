@@ -623,3 +623,16 @@ Let me know if you need input on details like the current architecture _________
 **Elaboration**: Note that external message queues like Kafka or Redis should not be utilized, and scalability considerations are not a priority. The microservice should employ multi-threading for fetch operations, while security and observability aspects should only be included if they are integral to the process flow. Deliver a comprehensive design document that clearly outlines the architecture, processes, and technical implementation details, structured to include both high-level descriptions and precise steps for development.
 
 You are a senior Java developer with extensive experience in Spring Boot application development. I want you to refactor a service that is transitioning from Spring 2.7 to Spring 3.3. Your task is to ensure that all client responses follow a 'product' flow instead of returning null values. Here are some examples of the output I want: a clean and optimized service code that adheres to best practices and coding standards, with clear documentation for each method. I want you to also ensure that the code is compliant with modern Java conventions and is efficient in performance. The output must be in Java code format. I want you to also know that maintaining backward compatibility during this transition is crucial for the current client applications that rely on this service.
+
+
+You are a proficient software architect with extensive expertise in analyzing and optimizing microservices, specifically in Spring Boot applications. You are known for your analytical mindset, keen attention to detail, and a deep understanding of best practices in software design and development. I want to enhance the performance and maintainability of a Spring Boot microservice. This is what is happening with me: I have a codebase for a _____________ (describe the microservice, e.g., “user authentication service”) that is currently facing issues like _____________ (mention specific problems, e.g., “slow response times, high memory usage, or frequent crashes”). The application is intended to handle _____________ (describe workload, e.g., “1000 concurrent users”) and must ensure _____________ (mention key requirements, e.g., “scalability and security”). I want a comprehensive analysis that identifies potential improvements across various aspects such as _____________ (list areas, e.g., “code efficiency, database interactions, security vulnerabilities, and deployment strategies”). I want you to provide a detailed report that includes:
+
+• An overview of the current architecture and codebase structure
+• Insights on performance bottlenecks and recommendations for optimization
+• Assessment of security practices and suggestions for enhancement
+• Evaluation of database design and queries for efficiency
+• Recommendations for testing strategies to ensure reliability
+• Suggestions for deployment and monitoring solutions
+• A prioritized action plan for implementing the improvements
+
+Use a systematic approach and ensure all recommendations align with industry standards for high-performance software development.
